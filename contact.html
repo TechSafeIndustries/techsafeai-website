@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact & Enquiries - TechSafeAI</title>
+    <meta name="description"
+        content="Submit enquiries for pilot requests, technical support, module consultation, and general information about TechSafeAI.">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="index.html"><span class="brand-tech">Tech</span><span class="brand-safe">Safe</span><span
+                        class="brand-ai">AI</span></a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="modules.html">Modules</a></li>
+                <li><a href="pilots.html">Pilots</a></li>
+                <li><a href="compliance.html">Compliance</a></li>
+                <li><a href="contact.html" class="nav-cta active">Request Pilot</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1>Contact & Enquiry Handling</h1>
+            <p>Submit your enquiry and receive acknowledgment within 5 minutes</p>
+        </div>
+    </header>
+
+    <section class="contact-intro">
+        <div class="container">
+            <p class="lead">All enquiries are submitted through the Contact Form on the TechSafeAI website. The form
+                captures organization name, industry sector, jurisdiction, contact details, and enquiry type.</p>
+        </div>
+    </section>
+
+    <section class="contact-form-section">
+        <div class="container">
+            <div class="form-container">
+                <form id="contactForm" class="contact-form">
+                    <div class="form-group">
+                        <label for="organizationName">Organization Name *</label>
+                        <input type="text" id="organizationName" name="organizationName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="industrySector">Industry Sector *</label>
+                        <select id="industrySector" name="industrySector" required>
+                            <option value="">Select Industry Sector</option>
+                            <option value="construction">Construction</option>
+                            <option value="mining">Mining</option>
+                            <option value="manufacturing">Manufacturing</option>
+                            <option value="oilgas">Oil & Gas</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="jurisdiction">Jurisdiction *</label>
+                        <input type="text" id="jurisdiction" name="jurisdiction"
+                            placeholder="e.g., Queensland, New South Wales" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactName">Contact Name *</label>
+                        <input type="text" id="contactName" name="contactName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactEmail">Contact Email *</label>
+                        <input type="email" id="contactEmail" name="contactEmail" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactPhone">Contact Phone</label>
+                        <input type="tel" id="contactPhone" name="contactPhone">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="enquiryType">Enquiry Type *</label>
+                        <select id="enquiryType" name="enquiryType" required>
+                            <option value="">Select Enquiry Type</option>
+                            <option value="pilot">Pilot Request</option>
+                            <option value="general">General Information</option>
+                            <option value="technical">Technical Support</option>
+                            <option value="module">Module Consultation</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Message *</label>
+                        <textarea id="message" name="message" rows="6" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Submit Enquiry</button>
+                </form>
+
+                <div id="formSuccess" class="form-success" style="display: none;">
+                    <h3>✓ Enquiry Submitted Successfully</h3>
+                    <p>You will receive an automated acknowledgment email within 5 minutes confirming receipt and
+                        providing a unique enquiry reference number.</p>
+                    <p><strong>Your Reference Number:</strong> <span id="referenceNumber"></span></p>
+                    <p>This reference number should be quoted in all subsequent correspondence.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="response-timelines">
+        <div class="container">
+            <h2>Response Timelines</h2>
+            <div class="timeline-grid">
+                <div class="timeline-card">
+                    <h3>Pilot Requests</h3>
+                    <div class="timeline-duration">2 Business Days</div>
+                    <p>Initial response to pilot requests provided within 2 business days. Qualified requests proceed to
+                        discovery call scheduling.</p>
+                </div>
+                <div class="timeline-card">
+                    <h3>General Information</h3>
+                    <div class="timeline-duration">1 Business Day</div>
+                    <p>General information enquiries receive response within 1 business day.</p>
+                </div>
+                <div class="timeline-card">
+                    <h3>Technical Support</h3>
+                    <div class="timeline-duration">4 Business Hours</div>
+                    <p>Technical support requests for existing users prioritized and addressed within 4 business hours
+                        during standard business hours.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="pilot-qualification">
+        <div class="container">
+            <h2>Pilot Request Qualification</h2>
+            <p>Pilot requests undergo qualification assessment to ensure alignment with platform capabilities and
+                organizational readiness. The qualification process evaluates:</p>
+            <div class="qualification-criteria">
+                <div class="criteria-item">
+                    <div class="criteria-icon">🏭</div>
+                    <h3>Industry Sector Compatibility</h3>
+                    <p>Compatibility with available modules</p>
+                </div>
+                <div class="criteria-item">
+                    <div class="criteria-icon">📊</div>
+                    <h3>Incident Volume</h3>
+                    <p>Estimated incident volume and reporting frequency</p>
+                </div>
+                <div class="criteria-item">
+                    <div class="criteria-icon">💻</div>
+                    <h3>Current Systems</h3>
+                    <p>Current compliance management systems in use</p>
+                </div>
+                <div class="criteria-item">
+                    <div class="criteria-icon">👥</div>
+                    <h3>User Distribution</h3>
+                    <p>Number of anticipated users and role distribution</p>
+                </div>
+                <div class="criteria-item">
+                    <div class="criteria-icon">📅</div>
+                    <h3>Implementation Timeline</h3>
+                    <p>Implementation timeline expectations</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="enquiry-tracking">
+        <div class="container">
+            <h2>Enquiry Tracking</h2>
+            <p>All enquiry communications are logged in the customer relationship management system. Follow-up actions
+                are tracked and escalated if response timelines are not met. Users can check enquiry status by
+                referencing their unique enquiry number through the website portal.</p>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>TechSafeAI</h4>
+                    <p>A division of TechSafe Industries</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Platform</h4>
+                    <ul>
+                        <li><a href="modules.html">Module Catalogue</a></li>
+                        <li><a href="pilots.html">Pilot Programs</a></li>
+                        <li><a href="compliance.html">Compliance Mapping</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 TechSafe Industries. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+
+</html>
