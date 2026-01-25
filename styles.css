@@ -11,17 +11,17 @@ html {
 }
 
 :root {
-    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    --dark-bg: #0a0e27;
-    --dark-card: #151b3d;
-    --accent-blue: #667eea;
-    --accent-purple: #764ba2;
-    --accent-pink: #f5576c;
-    --text-primary: #ffffff;
-    --text-secondary: #a0aec0;
+    --primary-gradient: linear-gradient(135deg, #2DB8F9 0%, #1a8fd1 100%);
+    --secondary-gradient: linear-gradient(135deg, #2DB8F9 0%, #0A1F3E 100%);
+    --dark-bg: #0A1F3E;
+    --dark-card: #0d2847;
+    --accent-blue: #2DB8F9;
+    --accent-secondary: #1a8fd1;
+    --accent-navy: #0A1F3E;
+    --text-primary: #FFFFFF;
+    --text-secondary: #A6A6A6;
     --text-dark: #1a202c;
-    --border-color: rgba(255, 255, 255, 0.1);
+    --border-color: rgba(45, 184, 249, 0.15);
     --success-green: #48bb78;
     --warning-orange: #ed8936;
     --error-red: #f56565;

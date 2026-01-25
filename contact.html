@@ -86,14 +86,25 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="enquiryType">Enquiry Type *</label>
-                        <select id="enquiryType" name="enquiryType" required>
-                            <option value="">Select Enquiry Type</option>
-                            <option value="pilot">Pilot Request</option>
-                            <option value="general">General Information</option>
-                            <option value="technical">Technical Support</option>
-                            <option value="module">Module Consultation</option>
-                        </select>
+                        <label>Enquiry Type *</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" id="enquiryGeneral" name="enquiryType" value="general" required>
+                                <span class="radio-label">General Information</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" id="enquiryPilot" name="enquiryType" value="pilot" required>
+                                <span class="radio-label">Pilot Request</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" id="enquiryModule" name="enquiryType" value="module" required>
+                                <span class="radio-label">Module Consultation</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" id="enquiryTechnical" name="enquiryType" value="technical" required>
+                                <span class="radio-label">Technical Support</span>
+                            </label>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -133,7 +144,7 @@
                 <div class="timeline-card">
                     <h3>Technical Support</h3>
                     <div class="timeline-duration">4 Business Hours</div>
-                    <p>Technical support requests for existing users prioritized and addressed within 4 business hours
+                    <p>Technical support requests for existing users prioritised and addressed within 4 business hours
                         during standard business hours.</p>
                 </div>
             </div>

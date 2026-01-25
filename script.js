@@ -75,21 +75,21 @@ document.addEventListener('DOMContentLoaded', function () {
         // Handle URL query parameters for enquiry preselection
         const urlParams = new URLSearchParams(window.location.search);
         const enquiryParam = urlParams.get('enquiry');
-        const enquiryTypeField = document.getElementById('enquiryType');
 
-        if (enquiryTypeField && enquiryParam) {
-            // Map query parameter to form values
+        if (enquiryParam) {
+            // Map query parameter to radio button IDs
             const enquiryMap = {
-                'pilot': 'pilot',
-                'general': 'general',
-                'technical': 'technical',
-                'module': 'module'
+                'pilot': 'enquiryPilot',
+                'general': 'enquiryGeneral',
+                'technical': 'enquiryTechnical',
+                'module': 'enquiryModule'
             };
 
-            const selectedEnquiry = enquiryMap[enquiryParam.toLowerCase()];
+            const radioId = enquiryMap[enquiryParam.toLowerCase()];
+            const radioButton = document.getElementById(radioId);
 
-            if (selectedEnquiry) {
-                enquiryTypeField.value = selectedEnquiry;
+            if (radioButton) {
+                radioButton.checked = true;
 
                 // Auto-scroll to form and focus first field
                 setTimeout(() => {
@@ -109,7 +109,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const referenceNumber = 'TSA-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substr(2, 5).toUpperCase();
 
             // Check if this was a pilot enquiry
-            const isPilotEnquiry = enquiryTypeField && enquiryTypeField.value === 'pilot';
+            const pilotRadio = document.getElementById('enquiryPilot');
+            const isPilotEnquiry = pilotRadio && pilotRadio.checked;
 
             // Show success message
             const formSuccess = document.getElementById('formSuccess');
