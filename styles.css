@@ -100,6 +100,20 @@ body {
     color: #48bb78;
 }
 
+.brand-lockup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.brand-tagline {
+    font-size: 0.625rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
 .nav-menu {
     display: flex;
     list-style: none;
@@ -840,7 +854,9 @@ section {
     color: var(--text-secondary);
     line-height: 1.7;
     margin: 0;
-}/* Radio button group styling */
+}
+
+/* Radio button group styling */
 .radio-group {
     display: flex;
     flex-direction: column;
