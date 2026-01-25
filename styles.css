@@ -61,9 +61,17 @@ body {
     gap: 0;
 }
 
-.brand-tech { color: #667eea; }
-.brand-safe { color: #f5576c; }
-.brand-ai { color: #48bb78; }
+.brand-tech {
+    color: #667eea;
+}
+
+.brand-safe {
+    color: #f5576c;
+}
+
+.brand-ai {
+    color: #48bb78;
+}
 
 .nav-menu {
     display: flex;
@@ -105,7 +113,7 @@ body {
     right: 0;
     bottom: 0;
     background: radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(245, 87, 108, 0.15) 0%, transparent 50%);
+        radial-gradient(circle at 80% 80%, rgba(245, 87, 108, 0.15) 0%, transparent 50%);
     z-index: 0;
 }
 
@@ -665,20 +673,20 @@ section {
     .hero h1 {
         font-size: 2.5rem;
     }
-    
+
     .nav-menu {
         gap: 1rem;
         font-size: 0.875rem;
     }
-    
+
     .pilot-content {
         grid-template-columns: 1fr;
     }
-    
+
     .hero-cta {
         flex-direction: column;
     }
-    
+
     .capabilities-grid,
     .industries-grid {
         grid-template-columns: 1fr;
@@ -707,4 +715,47 @@ section {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
     margin-top: 2rem;
+}
+
+/* ===== TARGET AUDIENCE ===== */
+.target-audience {
+    background: var(--dark-card);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.audience-list {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.audience-list ul {
+    list-style: none;
+    display: grid;
+    gap: 1.5rem;
+}
+
+.audience-list li {
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 3px solid var(--accent-blue);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+}
+
+/* ===== TRUST SIGNAL ===== */
+.trust-signal {
+    background: rgba(102, 126, 234, 0.05);
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-top: 2rem;
+}
+
+.trust-signal p {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin: 0;
 }
