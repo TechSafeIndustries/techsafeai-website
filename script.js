@@ -72,11 +72,44 @@ document.addEventListener('DOMContentLoaded', function () {
     const contactForm = document.getElementById('contactForm');
 
     if (contactForm) {
+        // Handle URL query parameters for enquiry preselection
+        const urlParams = new URLSearchParams(window.location.search);
+        const enquiryParam = urlParams.get('enquiry');
+        const enquiryTypeField = document.getElementById('enquiryType');
+
+        if (enquiryTypeField && enquiryParam) {
+            // Map query parameter to form values
+            const enquiryMap = {
+                'pilot': 'pilot',
+                'general': 'general',
+                'technical': 'technical',
+                'module': 'module'
+            };
+
+            const selectedEnquiry = enquiryMap[enquiryParam.toLowerCase()];
+
+            if (selectedEnquiry) {
+                enquiryTypeField.value = selectedEnquiry;
+
+                // Auto-scroll to form and focus first field
+                setTimeout(() => {
+                    contactForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    const firstInput = document.getElementById('organizationName');
+                    if (firstInput) {
+                        setTimeout(() => firstInput.focus(), 500);
+                    }
+                }, 300);
+            }
+        }
+
         contactForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
             // Generate unique reference number
             const referenceNumber = 'TSA-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substr(2, 5).toUpperCase();
+
+            // Check if this was a pilot enquiry
+            const isPilotEnquiry = enquiryTypeField && enquiryTypeField.value === 'pilot';
 
             // Show success message
             const formSuccess = document.getElementById('formSuccess');
@@ -84,6 +117,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (formSuccess && referenceNumberSpan) {
                 referenceNumberSpan.textContent = referenceNumber;
+
+                // Add pilot-specific confirmation if applicable
+                const existingPilotMessage = formSuccess.querySelector('.pilot-confirmation');
+                if (existingPilotMessage) {
+                    existingPilotMessage.remove();
+                }
+
+                if (isPilotEnquiry) {
+                    const pilotConfirmation = document.createElement('p');
+                    pilotConfirmation.className = 'pilot-confirmation';
+                    pilotConfirmation.innerHTML = '<strong>Your pilot request has been received for qualification review.</strong>';
+                    pilotConfirmation.style.marginTop = '1rem';
+                    pilotConfirmation.style.color = 'var(--success-green)';
+
+                    const referenceP = formSuccess.querySelector('p:nth-of-type(2)');
+                    if (referenceP) {
+                        referenceP.insertAdjacentElement('afterend', pilotConfirmation);
+                    }
+                }
+
                 contactForm.style.display = 'none';
                 formSuccess.style.display = 'block';
 
