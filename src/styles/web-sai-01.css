@@ -1,0 +1,56 @@
+/* WEB-SAI-01 — exact approved SAI binaries used as decorative support only.
+   Surrounding text carries all meaning; SAI is never required to understand the page. */
+
+#approach .section-title::after {
+  content: "";
+  display: block;
+  width: 42px;
+  height: 42px;
+  max-width: 42px;
+  max-height: 42px;
+  margin-top: 24px;
+  background: url('/assets/sai/sai-mark-na-na-website-xs64-dark-fc-v1.0.0.png') center / contain no-repeat;
+}
+
+#security .security-detail::after {
+  content: "";
+  display: block;
+  width: min(100%, 420px);
+  max-width: 420px;
+  aspect-ratio: 420 / 213;
+  margin: 24px 0 0 auto;
+  background: url('/assets/sai/sai-comp-handoff-upper-website-l-light-fc-v1.0.0.webp') center / contain no-repeat;
+}
+
+.cta-band .cta-band-grid > div:last-child::after {
+  content: "";
+  display: block;
+  width: min(100%, 285px);
+  max-width: 285px;
+  max-height: 213px;
+  aspect-ratio: 285 / 213;
+  margin: 24px 0 0 auto;
+  background: url('/assets/sai/sai-state-orient-upper-website-m-light-fc-v1.0.0.webp') center / contain no-repeat;
+}
+
+@media (max-width: 767px) {
+  #security .security-detail::after {
+    width: min(100%, 320px);
+    margin-left: 0;
+  }
+
+  .cta-band .cta-band-grid > div:last-child::after {
+    width: min(100%, 220px);
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 390px) {
+  #security .security-detail::after {
+    width: min(100%, 260px);
+  }
+
+  .cta-band .cta-band-grid > div:last-child::after {
+    width: min(100%, 200px);
+  }
+}

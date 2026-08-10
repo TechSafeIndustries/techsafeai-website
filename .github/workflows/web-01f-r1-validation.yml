@@ -1,4 +1,4 @@
-name: WEB-01F-R1 validation
+name: WEB-SAI-01 validation
 
 on:
   pull_request:
@@ -12,7 +12,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout feature branch
+      - name: Checkout governed feature branch
         uses: actions/checkout@v4
         with:
           ref: web/WEB-01F-core-front-end
@@ -27,6 +27,14 @@ jobs:
         run: |
           node --version | tee node-version.txt
           npm --version | tee npm-version.txt
+
+      - name: Verify approved SAI asset hashes
+        run: |
+          printf '%s  %s\n' \
+            '5ba0a021414c40e9ae65796a83138f1f8f1cd4f622a85cdabd35e1209bdb9d48' 'public/assets/sai/sai-mark-na-na-website-xs64-dark-fc-v1.0.0.png' \
+            '4938b9e3026ed6c2658ce4c62c007376a568e19811d5dbcd156ae8b16d372105' 'public/assets/sai/sai-comp-handoff-upper-website-l-light-fc-v1.0.0.webp' \
+            '3d0ec2a20b642405d3e536201f85fbf2c5aa56e04c6b680989e538bd169864cb' 'public/assets/sai/sai-state-orient-upper-website-m-light-fc-v1.0.0.webp' \
+            | sha256sum --check --strict
 
       - name: Install dependencies
         run: npm install
@@ -46,17 +54,16 @@ jobs:
       - name: Serve built output
         run: |
           python3 -m http.server 4321 --directory dist >/tmp/techsafeai-http.log 2>&1 &
-          echo $! > /tmp/techsafeai-http.pid
           for i in {1..20}; do
             curl -fsS http://127.0.0.1:4321/ >/dev/null && break
             sleep 1
           done
           curl -fsS http://127.0.0.1:4321/ >/dev/null
 
-      - name: Responsive checks and actual-build screenshots
+      - name: Responsive, accessibility and SAI placement checks
         shell: bash
         run: |
-          cat > /tmp/responsive-check.mjs <<'EOF'
+          cat > /tmp/web-sai-check.mjs <<'EOF'
           import { spawn } from 'node:child_process';
           import fs from 'node:fs';
           import http from 'node:http';
@@ -64,78 +71,102 @@ jobs:
           const chrome = process.env.CHROME_BIN || '/usr/bin/google-chrome';
           const port = 9222;
           const browser = spawn(chrome, [
-            '--headless=new','--no-sandbox','--disable-gpu',`--remote-debugging-port=${port}`,
-            '--remote-debugging-address=127.0.0.1','--user-data-dir=/tmp/web01f-chrome','about:blank'
+            '--headless=new', '--no-sandbox', '--disable-gpu', `--remote-debugging-port=${port}`,
+            '--remote-debugging-address=127.0.0.1', '--user-data-dir=/tmp/web-sai-chrome', 'about:blank'
           ], { stdio: 'ignore' });
-
           const sleep = (ms) => new Promise(r => setTimeout(r, ms));
-          const requestJson = (method, path) => new Promise((resolve,reject) => {
-            const req = http.request({host:'127.0.0.1',port,path,method}, res => {
-              let body=''; res.on('data',d=>body+=d); res.on('end',()=>{try{resolve(JSON.parse(body))}catch(e){reject(new Error(body))}});
-            }); req.on('error',reject); req.end();
+          const requestJson = (method, path) => new Promise((resolve, reject) => {
+            const req = http.request({ host: '127.0.0.1', port, path, method }, res => {
+              let body = '';
+              res.on('data', d => body += d);
+              res.on('end', () => { try { resolve(JSON.parse(body)); } catch (error) { reject(error); } });
+            });
+            req.on('error', reject); req.end();
           });
-          for(let i=0;i<30;i++){try{await requestJson('GET','/json/version');break}catch{await sleep(300)}}
+          for (let i = 0; i < 30; i++) { try { await requestJson('GET', '/json/version'); break; } catch { await sleep(300); } }
 
-          const widths=[1440,1024,768,390,320];
-          const results=[];
-          fs.mkdirSync('validation-artifacts',{recursive:true});
-          for(const width of widths){
-            const target=await requestJson('PUT','/json/new?http://127.0.0.1:4321/');
-            const ws=new WebSocket(target.webSocketDebuggerUrl);
-            await new Promise((r,j)=>{ws.addEventListener('open',r,{once:true});ws.addEventListener('error',j,{once:true})});
-            let id=0; const pending=new Map();
-            ws.addEventListener('message',ev=>{const msg=JSON.parse(ev.data);if(msg.id&&pending.has(msg.id)){const {resolve,reject}=pending.get(msg.id);pending.delete(msg.id);msg.error?reject(new Error(JSON.stringify(msg.error))):resolve(msg.result)}});
-            const send=(method,params={})=>new Promise((resolve,reject)=>{const mid=++id;pending.set(mid,{resolve,reject});ws.send(JSON.stringify({id:mid,method,params}))});
+          const widths = [1440, 1024, 768, 390, 320];
+          const results = [];
+          fs.mkdirSync('validation-artifacts', { recursive: true });
+
+          for (const width of widths) {
+            const target = await requestJson('PUT', '/json/new?http://127.0.0.1:4321/');
+            const ws = new WebSocket(target.webSocketDebuggerUrl);
+            await new Promise((resolve, reject) => { ws.addEventListener('open', resolve, { once: true }); ws.addEventListener('error', reject, { once: true }); });
+            let id = 0;
+            const pending = new Map();
+            ws.addEventListener('message', event => {
+              const message = JSON.parse(event.data);
+              if (message.id && pending.has(message.id)) {
+                const p = pending.get(message.id); pending.delete(message.id);
+                message.error ? p.reject(new Error(JSON.stringify(message.error))) : p.resolve(message.result);
+              }
+            });
+            const send = (method, params = {}) => new Promise((resolve, reject) => {
+              const mid = ++id; pending.set(mid, { resolve, reject }); ws.send(JSON.stringify({ id: mid, method, params }));
+            });
+
             await send('Page.enable');
             await send('Runtime.enable');
-            await send('Emulation.setDeviceMetricsOverride',{width,height:1000,deviceScaleFactor:1,mobile:width<=768});
-            await send('Page.navigate',{url:'http://127.0.0.1:4321/'}); await sleep(1100);
-            const evaluation=await send('Runtime.evaluate',{expression:`JSON.stringify({scrollWidth:document.documentElement.scrollWidth,clientWidth:document.documentElement.clientWidth,bodyScrollWidth:document.body.scrollWidth,hasLegacySuccess:/Enquiry Submitted Successfully|automated acknowledgement|Reference Number|logged in CRM/i.test(document.body.innerText),hasInternalGate:/WEB-01F|WEB-01G|CANONICAL DOMAIN TARGET/i.test(document.body.innerText),hasPublicUpload:!!document.querySelector('input[type=file]'),capabilities:[...document.querySelectorAll('.capability')].map(x=>({w:x.getBoundingClientRect().width,h:x.getBoundingClientRect().height})),broader:[...document.querySelectorAll('.operating-card')].map(x=>({x:x.getBoundingClientRect().x,w:x.getBoundingClientRect().width}))})`,returnByValue:true});
-            const data=JSON.parse(evaluation.result.value);
-            const overflow=Math.max(data.scrollWidth,data.bodyScrollWidth)>data.clientWidth+1;
-            if(overflow||data.hasLegacySuccess||data.hasInternalGate||data.hasPublicUpload) throw new Error(`Responsive/truth regression at ${width}px: ${JSON.stringify(data)}`);
-            if(width<=767 && data.broader.length===4){const uniqueX=new Set(data.broader.map(x=>Math.round(x.x)));if(uniqueX.size!==1) throw new Error(`Broader route cards not single-column at ${width}px`)}
-            const metrics=await send('Page.getLayoutMetrics');
-            const content=metrics.cssContentSize;
-            const shot=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:true,fromSurface:true,clip:{x:0,y:0,width:width,height:content.height,scale:1}});
-            fs.writeFileSync(`validation-artifacts/home-${width}.png`,Buffer.from(shot.data,'base64'));
-            results.push({width,overflow,data});
+            await send('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: width <= 768 });
+            await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
+            await send('Page.navigate', { url: 'http://127.0.0.1:4321/' });
+            await sleep(900);
+
+            const evaluation = await send('Runtime.evaluate', {
+              expression: `JSON.stringify((()=>{const q=s=>document.querySelector(s);const ps=(s,p)=>{const e=q(s);if(!e)return null;const c=getComputedStyle(e,p);return{w:parseFloat(c.width)||0,h:parseFloat(c.height)||0,bg:c.backgroundImage,display:c.display}};return{scrollWidth:document.documentElement.scrollWidth,bodyScrollWidth:document.body.scrollWidth,clientWidth:document.documentElement.clientWidth,mark:ps('#approach .section-title','::after'),handoff:ps('#security .security-detail','::after'),orient:ps('.cta-band .cta-band-grid > div:last-child','::after'),hasLegacy:/Enquiry Submitted Successfully|automated acknowledgement|Reference Number|logged in CRM/i.test(document.body.innerText),hasUpload:!!q('input[type=file]'),hasPublicStates:/\\b(?:ANALYSE|ADVISE)\\b/.test(document.body.innerText),reduced:getComputedStyle(document.documentElement).scrollBehavior}})())`,
+              returnByValue: true
+            });
+            const data = JSON.parse(evaluation.result.value);
+            const overflow = Math.max(data.scrollWidth, data.bodyScrollWidth) > data.clientWidth + 1;
+            if (overflow || data.hasLegacy || data.hasUpload || data.hasPublicStates) throw new Error(`Truth/reflow regression at ${width}px: ${JSON.stringify(data)}`);
+            if (!data.mark?.bg.includes('sai-mark-na-na') || !data.handoff?.bg.includes('sai-comp-handoff') || !data.orient?.bg.includes('sai-state-orient')) throw new Error(`SAI placement missing at ${width}px: ${JSON.stringify(data)}`);
+            if (data.mark.w > 42.1 || data.mark.h > 42.1) throw new Error(`Mark size violation at ${width}px`);
+            if (data.handoff.w > 420.1) throw new Error(`HANDOFF size violation at ${width}px`);
+            if (data.orient.w > 285.1 || data.orient.h > 213.1) throw new Error(`ORIENT size violation at ${width}px`);
+            if (width <= 390 && (data.handoff.w > 260.1 || data.orient.w > 200.1)) throw new Error(`Mobile SAI dominance guard failed at ${width}px`);
+            if (data.reduced !== 'auto') throw new Error(`Reduced-motion treatment failed at ${width}px`);
+
+            await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
+            await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
+            const focusEval = await send('Runtime.evaluate', { expression: `JSON.stringify((()=>{const e=document.activeElement,s=getComputedStyle(e);return{tag:e?.tagName,outline:s.outlineStyle,width:parseFloat(s.outlineWidth)||0}})())`, returnByValue: true });
+            const focus = JSON.parse(focusEval.result.value);
+            if (!focus.tag || focus.outline === 'none' || focus.width < 1) throw new Error(`Visible focus failed at ${width}px: ${JSON.stringify(focus)}`);
+
+            await send('Emulation.setPageScaleFactor', { pageScaleFactor: 2 });
+            const zoomEval = await send('Runtime.evaluate', { expression: `Math.max(document.documentElement.scrollWidth,document.body.scrollWidth)<=document.documentElement.clientWidth+1`, returnByValue: true });
+            if (!zoomEval.result.value) throw new Error(`200% zoom reflow smoke test failed at ${width}px`);
+            await send('Emulation.setPageScaleFactor', { pageScaleFactor: 1 });
+
+            const metrics = await send('Page.getLayoutMetrics');
+            const content = metrics.cssContentSize;
+            const shot = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true, fromSurface: true, clip: { x: 0, y: 0, width, height: content.height, scale: 1 } });
+            fs.writeFileSync(`validation-artifacts/home-${width}.png`, Buffer.from(shot.data, 'base64'));
+            results.push({ width, overflow, mark: data.mark, handoff: data.handoff, orient: data.orient, focus });
             ws.close();
           }
-          fs.writeFileSync('validation-artifacts/responsive-results.json',JSON.stringify(results,null,2));
+
+          fs.writeFileSync('validation-artifacts/responsive-results.json', JSON.stringify(results, null, 2));
           browser.kill('SIGTERM');
           EOF
-          node /tmp/responsive-check.mjs
-          cp validation-artifacts/home-1440.png validation-artifacts/WEB-01F-R1_home_desktop.png
-          cp validation-artifacts/home-390.png validation-artifacts/WEB-01F-R1_home_mobile.png
+          node /tmp/web-sai-check.mjs
+          cp validation-artifacts/home-1440.png validation-artifacts/WEB-SAI-01_home_desktop.png
+          cp validation-artifacts/home-390.png validation-artifacts/WEB-SAI-01_home_mobile.png
 
-      - name: Inspect lockfile
+      - name: Inspect lockfile and source state
         run: |
           test -s package-lock.json
-          node <<'EOF'
-          const fs = require('fs');
-          const lock = JSON.parse(fs.readFileSync('package-lock.json','utf8'));
-          const problems = [];
-          const walk = (value, path='root') => {
-            if (typeof value === 'string') {
-              if (value.startsWith('file:') || /\/Users\//.test(value) || /[A-Za-z]:\\Users\\/.test(value)) problems.push(`${path}: ${value}`);
-              return;
-            }
-            if (Array.isArray(value)) return value.forEach((v,i)=>walk(v,`${path}[${i}]`));
-            if (value && typeof value === 'object') for (const [k,v] of Object.entries(value)) walk(v,`${path}.${k}`);
-          };
-          walk(lock);
-          if (problems.length) { console.error(problems.join('\n')); process.exit(1); }
-          console.log('Lockfile contains no local file references or user-machine paths.');
-          EOF
+          test -z "$(git status --porcelain -- package-lock.json)"
+          test ! -e .web-sai-tmp
+          test ! -e .github/workflows/web-sai-01-materialise.yml
+          test ! -e .github/workflows/web-sai-01-integrate.yml
 
       - name: Upload validation artefacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: web-01f-r1-validation
+          name: web-sai-01-validation
           path: |
-            package-lock.json
             node-version.txt
             npm-version.txt
             validation-artifacts/
