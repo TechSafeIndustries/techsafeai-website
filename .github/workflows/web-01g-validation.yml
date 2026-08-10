@@ -223,10 +223,15 @@ jobs:
             if (width === 1440) await capture('WEB-01G_review_desktop.png');
             if (width === 390) await capture('WEB-01G_review_mobile.png');
 
-            await send('Emulation.setPageScaleFactor', { pageScaleFactor: 2 });
-            const zoomOverflow = await evaluate(`Math.max(document.documentElement.scrollWidth,document.body.scrollWidth)>document.documentElement.clientWidth+1`);
-            if (zoomOverflow) throw new Error(`200% zoom horizontal overflow ${width}`);
-            await send('Emulation.setPageScaleFactor', { pageScaleFactor: 1 });
+            if (width >= 768) {
+              const effectiveWidth = Math.max(320, Math.floor(width / 2));
+              await send('Emulation.setDeviceMetricsOverride', { width: effectiveWidth, height: 1000, deviceScaleFactor: 1, mobile: effectiveWidth <= 768 });
+              await sleep(160);
+              const zoomData = await evaluate(`({scroll:Math.max(document.documentElement.scrollWidth,document.body.scrollWidth),client:document.documentElement.clientWidth})`);
+              if (zoomData.scroll > zoomData.client + 1) throw new Error(`effective 200% reflow overflow ${width}->${effectiveWidth}: ${JSON.stringify(zoomData)}`);
+              await send('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: width <= 768 });
+              await sleep(120);
+            }
 
             await activate('#submit-enquiry');
             for (let i=0;i<30;i++) { if (await evaluate(`!document.querySelector('#intake-confirmation').hidden`)) break; await sleep(100); }
@@ -236,7 +241,7 @@ jobs:
             if (width === 1440) await capture('WEB-01G_handoff_desktop.png');
             if (width === 390) await capture('WEB-01G_handoff_mobile.png');
 
-            results.push({ width, carriedChallenge: initial.carried, stages: initial.stages, backEdit: true, keyboardProgression: true, noHorizontalOverflow: true, handoffImageWidth: handoff.imageWidth });
+            results.push({ width, carriedChallenge: initial.carried, stages: initial.stages, backEdit: true, keyboardProgression: true, noHorizontalOverflow: true, effective200PercentReflow: width >= 768 ? Math.max(320, Math.floor(width / 2)) : 'covered-by-390-and-320-reflow', handoffImageWidth: handoff.imageWidth });
             ws.close();
           }
 
