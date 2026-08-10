@@ -1,9 +1,234 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/PageHero.astro';
-import { painPoints } from '../../data/site';
+import '../../styles/intake.css';
+import {
+  ACTIVITIES,
+  CHALLENGES,
+  INDUSTRIES,
+  JURISDICTION_SCOPES,
+  OPERATING_ENVIRONMENTS,
+  ORGANISATION_SIZES,
+  READINESS,
+  SECURITY_LEVELS,
+  TIMING,
+  TRIGGERS
+} from '../../lib/intake/options.mjs';
 ---
-<BaseLayout title="Start with your challenge" description="Start with high-level business context. Do not provide confidential or protected information through the public website." noindex={true}>
-<PageHero eyebrow="Preliminary business context" title="Start with your challenge" intro="Start with context, not confidential files. Online enquiry submission is not yet available." />
-<section class="content-section"><div class="shell safe-intake"><div class="safe-intake-panel"><div class="eyebrow">Information we’ll ask for</div><h2>Enough context for a useful first discussion.</h2><ul><li>Primary business problem</li><li>Organisation and function</li><li>Industry, activity and operating environment</li><li>Jurisdiction</li><li>Desired outcome and timing</li><li>High-level internal capability</li><li>High-level security requirements</li><li>Business contact information</li></ul><p class="warning notice"><strong>Do not provide:</strong> incident files, personal records, credentials, restricted contracts, legal advice, evidence packs, system exports or detailed cyber architecture.</p></div><div class="disabled-form" aria-label="Enquiry form preview"><p class="preview-only">ONLINE ENQUIRY SUBMISSION IS NOT YET AVAILABLE.</p><div class="form-field"><label for="challenge">Primary challenge</label><select id="challenge" disabled><option>Select a challenge</option>{painPoints.map((pain)=><option>{pain.label}</option>)}</select></div><div class="form-field"><label for="organisation">Organisation</label><input id="organisation" disabled placeholder="Organisation name" /></div><div class="form-field"><label for="context">High-level context</label><textarea id="context" disabled maxlength="300" placeholder="Problem summary — 300 characters maximum"></textarea></div><button class="button button-primary" type="button" disabled aria-disabled="true">Online submission unavailable</button><p style="font-size:12px;color:#4f6571">No information entered on this page is submitted or stored.</p></div></div></section>
+
+<BaseLayout title="Start with your challenge" description="Share preliminary business context for human review. Do not provide confidential or protected information through the public website." noindex={true}>
+  <PageHero eyebrow="Preliminary business context" title="Start with your challenge" intro="Start with context, not confidential files. Share only enough information to prepare a useful human review." />
+
+  <section class="intake-shell section-light">
+    <div class="shell intake-layout">
+      <aside class="intake-aside" aria-labelledby="intake-boundary-title">
+        <div class="eyebrow">Structured Hybrid</div>
+        <h2 id="intake-boundary-title">Problem first. Context second. Human review at the end.</h2>
+        <p>This public intake organises preliminary context. It does not assess compliance, determine applicable law, rate risk or provide professional advice.</p>
+        <div class="intake-boundary">
+          <strong>Security boundary</strong>
+          <p>Do not paste or upload confidential evidence, protected personal information, credentials or safety-critical restricted detail.</p>
+        </div>
+      </aside>
+
+      <div class="intake-main">
+        <nav class="intake-progress" aria-label="Enquiry progress">
+          {['Challenge', 'Organisation', 'Operating Context', 'Outcome', 'Capability', 'Security', 'Contact & Review'].map((label, index) => (
+            <span class="progress-step" data-progress-stage={index + 1} aria-current={index === 0 ? 'step' : undefined}>
+              <span class="progress-number">{index + 1}</span>
+              <span>{label}</span>
+            </span>
+          ))}
+        </nav>
+
+        <div id="intake-errors" class="intake-error-summary" role="alert" tabindex="-1" hidden>
+          <h2>Check the information below</h2>
+          <ul></ul>
+        </div>
+
+        <form id="intake-form" novalidate>
+          <input type="hidden" name="startedAt" id="startedAt" />
+          <input type="hidden" name="turnstileToken" id="turnstileToken" value="" />
+          <div class="honeypot" aria-hidden="true">
+            <label for="companyWebsite">Leave this field empty</label>
+            <input id="companyWebsite" name="companyWebsite" type="text" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <section class="intake-screen" data-screen="1" data-stage="1" data-sai-state="ORIENT">
+            <div class="screen-heading">
+              <div class="eyebrow">Challenge</div>
+              <h2>What are you trying to solve?</h2>
+              <p>Choose the primary problem. You can change a selection carried from the homepage.</p>
+            </div>
+            <div class="sai-guidance"><strong>Guidance:</strong> Start with the operating problem. Do not provide evidence or confidential incident detail here.</div>
+            <fieldset class="choice-fieldset">
+              <legend>Primary challenge</legend>
+              <div class="choice-grid">
+                {CHALLENGES.map(([value, label], index) => (
+                  <label class="choice-card">
+                    <input type="radio" name="challengeKey" value={value} required={index === 0} />
+                    <span class="choice-index">{String(index + 1).padStart(2, '0')}</span>
+                    <span>{label}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+            <label class="field">
+              <span>Problem summary <small>300 characters maximum</small></span>
+              <textarea name="problemSummary" rows="4" minlength="10" maxlength="300" required aria-describedby="problem-help problem-count"></textarea>
+              <small id="problem-help">Describe the problem at a high level. Do not include confidential evidence or identifying incident detail.</small>
+              <small id="problem-count" data-counter-for="problemSummary">0 / 300</small>
+            </label>
+            <div class="intake-actions"><span></span><button class="button button-primary" type="button" data-next>Continue</button></div>
+          </section>
+
+          <section class="intake-screen" data-screen="2" data-stage="2" data-sai-state="COLLECT" hidden>
+            <div class="screen-heading"><div class="eyebrow">Organisation</div><h2>Give us the operating context.</h2><p>Only preliminary business context is required.</p></div>
+            <div class="field-grid">
+              <label class="field"><span>Organisation name</span><input name="organisationName" type="text" minlength="2" maxlength="120" required autocomplete="organization" /></label>
+              <label class="field"><span>Organisation size</span><select name="organisationSize" required><option value="">Select</option>{ORGANISATION_SIZES.map(([value, label]) => <option value={value}>{label}</option>)}</select></label>
+            </div>
+            <label class="field"><span>Broad operating footprint <small>optional · 160 characters maximum</small></span><input name="footprint" type="text" maxlength="160" placeholder="For example: three Australian sites, national projects, regional operations" /></label>
+            <div class="intake-actions"><button class="button button-secondary" type="button" data-back>Back</button><button class="button button-primary" type="button" data-next>Continue</button></div>
+          </section>
+
+          <section class="intake-screen" data-screen="3" data-stage="3" data-sai-state="COLLECT" hidden>
+            <div class="screen-heading"><div class="eyebrow">Operating Context — 1 of 2</div><h2>Industry and activity are separate.</h2><p>These selections provide context only. They do not establish legal or regulatory applicability.</p></div>
+            <div class="sai-guidance"><strong>Specialist validation:</strong> If your sector is unfamiliar or not yet supported in depth, you can continue. A human may need to validate the context later.</div>
+            <fieldset class="choice-fieldset">
+              <legend>Industry</legend>
+              <div class="choice-grid compact">
+                {INDUSTRIES.map(([value, label], index) => (
+                  <label class="choice-card"><input type="radio" name="industryKey" value={value} required={index === 0} /><span>{label}</span></label>
+                ))}
+              </div>
+            </fieldset>
+            <div class="conditional-field" data-show-when="industryKey:OTHER_REGULATED,OTHER_UNSURE" hidden>
+              <label class="field"><span>Other industry / operation <small>100 characters maximum</small></span><input name="otherIndustry" type="text" maxlength="100" /></label>
+            </div>
+            <label class="check-row"><input type="checkbox" name="multiSector" /> <span>This enquiry spans more than one sector.</span></label>
+            <fieldset class="choice-fieldset">
+              <legend>Primary activity</legend>
+              <div class="choice-grid compact">
+                {ACTIVITIES.map(([value, label], index) => (
+                  <label class="choice-card"><input type="radio" name="activityKey" value={value} required={index === 0} /><span>{label}</span></label>
+                ))}
+              </div>
+            </fieldset>
+            <div class="conditional-field" data-show-when="activityKey:OTHER" hidden>
+              <label class="field"><span>Other activity <small>120 characters maximum</small></span><input name="otherActivity" type="text" maxlength="120" /></label>
+            </div>
+            <div class="intake-actions"><button class="button button-secondary" type="button" data-back>Back</button><button class="button button-primary" type="button" data-next>Continue</button></div>
+          </section>
+
+          <section class="intake-screen" data-screen="4" data-stage="3" data-sai-state="COLLECT" hidden>
+            <div class="screen-heading"><div class="eyebrow">Operating Context — 2 of 2</div><h2>Where does the work happen?</h2><p>Operating environment and jurisdiction remain distinct context dimensions.</p></div>
+            <fieldset class="choice-fieldset" data-required-group="operatingEnvironment">
+              <legend>Operating environment <span class="required-note">Choose at least one</span></legend>
+              <div class="choice-grid compact">
+                {OPERATING_ENVIRONMENTS.map(([value, label]) => (
+                  <label class="choice-card"><input type="checkbox" name="operatingEnvironment" value={value} /><span>{label}</span></label>
+                ))}
+              </div>
+            </fieldset>
+            <fieldset class="choice-fieldset">
+              <legend>Jurisdiction scope</legend>
+              <div class="choice-grid compact">
+                {JURISDICTION_SCOPES.map(([value, label], index) => (
+                  <label class="choice-card"><input type="radio" name="jurisdictionScope" value={value} required={index === 0} /><span>{label}</span></label>
+                ))}
+              </div>
+            </fieldset>
+            <div class="field-grid">
+              <label class="field"><span>Country / countries</span><input name="countries" type="text" maxlength="120" placeholder="For example: Australia" /></label>
+              <label class="field"><span>State / province / territory <small>where relevant</small></span><input name="regions" type="text" maxlength="160" placeholder="For example: Western Australia" /></label>
+            </div>
+            <p class="context-rule"><strong>Context selection ≠ applicability determination.</strong> Selecting a jurisdiction does not establish applicable law, requirements or compliance status.</p>
+            <div class="intake-actions"><button class="button button-secondary" type="button" data-back>Back</button><button class="button button-primary" type="button" data-next>Continue</button></div>
+          </section>
+
+          <section class="intake-screen" data-screen="5" data-stage="4" data-sai-state="COLLECT" hidden>
+            <div class="screen-heading"><div class="eyebrow">Outcome</div><h2>What needs to change, and why now?</h2><p>Use broad timing only. Public intake does not establish or promise a service timeline.</p></div>
+            <label class="field">
+              <span>Desired outcome <small>300 characters maximum</small></span>
+              <textarea name="desiredOutcome" rows="4" minlength="10" maxlength="300" required aria-describedby="outcome-count"></textarea>
+              <small id="outcome-count" data-counter-for="desiredOutcome">0 / 300</small>
+            </label>
+            <div class="field-grid">
+              <label class="field"><span>Trigger / reason</span><select name="trigger" required><option value="">Select</option>{TRIGGERS.map(([value, label]) => <option value={value}>{label}</option>)}</select></label>
+              <label class="field"><span>Broad timing</span><select name="timing" required><option value="">Select</option>{TIMING.map(([value, label]) => <option value={value}>{label}</option>)}</select></label>
+            </div>
+            <div class="intake-actions"><button class="button button-secondary" type="button" data-back>Back</button><button class="button button-primary" type="button" data-next>Continue</button></div>
+          </section>
+
+          <section class="intake-screen" data-screen="6" data-stage="5" data-sai-state="COLLECT" hidden>
+            <div class="screen-heading"><div class="eyebrow">Capability</div><h2>What internal capability is available?</h2><p>There is no qualifying score. “No” and “Not sure” are valid answers and do not disqualify an enquiry.</p></div>
+            <div class="capability-questions">
+              {[
+                ['safetyCompliance', 'Internal safety / compliance capability'],
+                ['aiTechnology', 'Internal AI / technology capability'],
+                ['accountableSponsor', 'Accountable executive or senior sponsor identified'],
+                ['aitlAvailable', 'Internal technical lead / AITL available'],
+                ['externalAdviser', 'External adviser involvement']
+              ].map(([name, label]) => (
+                <label class="field capability-question"><span>{label}</span><select name={name} required><option value="">Select</option>{READINESS.map(([value, optionLabel]) => <option value={value}>{optionLabel}</option>)}</select></label>
+              ))}
+            </div>
+            <div class="intake-actions"><button class="button button-secondary" type="button" data-back>Back</button><button class="button button-primary" type="button" data-next>Continue</button></div>
+          </section>
+
+          <section class="intake-screen" data-screen="7" data-stage="6" data-sai-state="FLAG" hidden>
+            <div class="screen-heading"><div class="eyebrow">Security</div><h2>Start with context, not confidential files.</h2><p>This is the security gate before contact and review.</p></div>
+            <div class="security-warning" id="security-boundary">
+              <strong>Do not provide:</strong>
+              <ul>
+                <li>incident or investigation files;</li><li>personal, medical or payroll information;</li><li>passports or licences;</li>
+                <li>passwords, credentials or API keys;</li><li>network diagrams or detailed cyber architecture;</li>
+                <li>restricted contracts, legal advice or privileged material;</li><li>evidence packs or system exports;</li>
+                <li>safety-critical protected detail.</li>
+              </ul>
+              <p>No file upload is available.</p>
+            </div>
+            <label class="field"><span>Security requirement</span><select name="securityLevel" required aria-describedby="security-boundary"><option value="">Select</option>{SECURITY_LEVELS.map(([value, label]) => <option value={value}>{label}</option>)}</select></label>
+            <label class="field"><span>Security note <small>optional · 200 characters maximum</small></span><textarea name="securityNote" rows="3" maxlength="200" aria-describedby="security-count"></textarea><small id="security-count" data-counter-for="securityNote">0 / 200</small></label>
+            <label class="check-row required-check"><input type="checkbox" name="securityAcknowledged" required /> <span>I understand this public form is for preliminary context only and I will not provide protected or confidential information here.</span></label>
+            <div class="intake-actions"><button class="button button-secondary" type="button" data-back>Back</button><button class="button button-primary" type="button" data-next>Continue</button></div>
+          </section>
+
+          <section class="intake-screen" data-screen="8" data-stage="7" data-sai-state="COLLECT" hidden>
+            <div class="screen-heading"><div class="eyebrow">Contact</div><h2>Who should TechSafeAI follow up with?</h2><p>Only the minimum contact information required for human follow-up.</p></div>
+            <div class="field-grid">
+              <label class="field"><span>Name</span><input name="contactName" type="text" minlength="2" maxlength="100" required autocomplete="name" /></label>
+              <label class="field"><span>Email</span><input name="email" type="email" maxlength="254" required autocomplete="email" /></label>
+            </div>
+            <label class="field"><span>Telephone <small>optional</small></span><input name="telephone" type="tel" maxlength="40" autocomplete="tel" /></label>
+            <p class="context-rule">This is a service enquiry. No marketing consent is requested through this intake.</p>
+            <div class="intake-actions"><button class="button button-secondary" type="button" data-back>Back</button><button class="button button-primary" type="button" data-next>Review</button></div>
+          </section>
+
+          <section class="intake-screen" data-screen="9" data-stage="7" data-sai-state="ORGANISE" hidden>
+            <div class="screen-heading"><div class="eyebrow">Review</div><h2>Review the context you provided.</h2><p><strong>This is the context you provided. It is not an assessment or compliance determination.</strong></p></div>
+            <div id="review-summary" class="review-summary" aria-live="polite"></div>
+            <div class="sai-guidance"><strong>Organised for review:</strong> No findings, risk rating, applicable-requirement conclusion or recommendation has been created.</div>
+            <div class="intake-actions"><button class="button button-secondary" type="button" data-back>Back</button><button class="button button-primary" type="submit" id="submit-enquiry">Submit for human review</button></div>
+            <p id="submit-status" class="submit-status" role="status" aria-live="polite"></p>
+          </section>
+        </form>
+
+        <section id="intake-confirmation" class="intake-confirmation" data-sai-state="HANDOFF" hidden tabindex="-1">
+          <div class="confirmation-copy">
+            <div class="eyebrow">Human handoff</div>
+            <h2>Information organised for human review.</h2>
+            <p>Your preliminary context has been accepted by the server for human review. This is not an AI assessment, compliance determination, risk rating or guaranteed booking.</p>
+            <p class="context-rule"><strong>Workpacket Stub:</strong> preliminary context only. Human validation remains required.</p>
+          </div>
+          <img src="/assets/sai/sai-comp-handoff-upper-website-l-light-fc-v1.0.0.webp" width="420" height="213" alt="" aria-hidden="true" />
+        </section>
+
+        <noscript><p class="notice warning">JavaScript is required for this progressive intake. No information has been submitted.</p></noscript>
+      </div>
+    </div>
+  </section>
+
+  <script src="../../scripts/intake.ts"></script>
 </BaseLayout>
