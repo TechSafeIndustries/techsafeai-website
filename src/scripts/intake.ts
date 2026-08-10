@@ -1,4 +1,4 @@
-const form = document.querySelector<HTMLFormElement>('#intake-form');
+const form = document.querySelector<HTMLFormElement>('#intake-form') as HTMLFormElement;
 if (!form) throw new Error('Intake form not found.');
 
 const screens = [...form.querySelectorAll<HTMLElement>('[data-screen]')];
