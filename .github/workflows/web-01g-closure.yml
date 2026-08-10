@@ -1,0 +1,106 @@
+name: WEB-01G closure validation
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout WEB-01G branch
+        uses: actions/checkout@v4
+        with:
+          ref: web/WEB-01G-structured-intake
+          fetch-depth: 0
+
+      - name: Use Node 22.16.0
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+
+      - name: Record runtime
+        run: |
+          node --version
+          npm --version
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Confirm lockfile unchanged
+        run: git diff --exit-code -- package-lock.json
+
+      - name: Astro check
+        run: npm run check
+
+      - name: Tests
+        run: npm test
+
+      - name: Production build
+        run: npm run build
+
+      - name: Verify source invariants
+        run: |
+          node <<'EOF'
+          const fs=require('fs');
+          const path=require('path');
+          const walk=(dir)=>fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(dir,e.name)):[path.join(dir,e.name)]);
+          const files=walk('src').filter(f=>/\.(astro|ts|mjs|css)$/.test(f));
+          const source=files.map(f=>fs.readFileSync(f,'utf8')).join('\n');
+          const intake=fs.readFileSync('src/pages/start-with-your-challenge/index.astro','utf8');
+          const client=fs.readFileSync('src/scripts/intake.ts','utf8');
+          const legacy=/Enquiry Submitted Successfully|Your Reference Number|logged in CRM|automated acknowledgement/i;
+          if(legacy.test(source)) throw new Error('Legacy false-success language found in src.');
+          if(/type=["']file["']/i.test(intake)) throw new Error('Public file upload found.');
+          if(/localStorage|sessionStorage/.test(client)) throw new Error('Cross-session client persistence found.');
+          if(/data-sai-state=["'](?:ANALYSE|ADVISE)["']/.test(intake)) throw new Error('Prohibited public SAI state found.');
+          if(!/result\?\.accepted !== true/.test(client)) throw new Error('Client success is not gated by accepted server response.');
+          console.log('Source invariants PASS');
+          EOF
+
+      - name: Start test transport server
+        env:
+          ENQUIRY_TRANSPORT_MODE: test
+          ALLOW_TEST_ENQUIRY_TRANSPORT: "1"
+          HOST: 127.0.0.1
+          PORT: "4321"
+        run: |
+          node dist/server/entry.mjs >/tmp/web01g-test.log 2>&1 &
+          echo $! >/tmp/web01g-test.pid
+          for i in {1..30}; do
+            curl -fsS http://127.0.0.1:4321/start-with-your-challenge >/dev/null && break
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:4321/start-with-your-challenge >/dev/null
+
+      - name: Verify accepted test path
+        run: |
+          node <<'EOF'
+          const now=Date.now();
+          const payload={startedAt:now-5000,companyWebsite:'',turnstileToken:'',challenge:{key:'CONTROL_VERIFICATION',problemSummary:'We need a clearer view of control verification across operating sites.'},organisation:{name:'Example Operations',sizeBand:'250_999',footprint:'Three sites'},industry:{key:'MINING_RESOURCES',other:'',multiSector:false},activity:{key:'SITE_FIELD',other:''},operatingEnvironment:['SITE_FIELD'],jurisdiction:{scope:'SINGLE_JURISDICTION',countries:'Australia',regions:'Western Australia'},outcome:{desiredOutcome:'Create a clearer evidence-backed basis for human review and prioritisation.',trigger:'AUDIT_REVIEW',timing:'ONE_TO_THREE_MONTHS'},internalCapability:{safetyCompliance:'YES',aiTechnology:'UNSURE',accountableSponsor:'YES',aitlAvailable:'NO',externalAdviser:'UNSURE'},security:{level:'STANDARD',note:'',acknowledged:true},contact:{name:'Test User',email:'test@example.com',telephone:''}};
+          const response=await fetch('http://127.0.0.1:4321/api/enquiry',{method:'POST',headers:{'content-type':'application/json',origin:'http://127.0.0.1:4321'},body:JSON.stringify(payload)});
+          const body=await response.json();
+          if(response.status!==202||body.accepted!==true||body.humanReview!==true) throw new Error(JSON.stringify({status:response.status,body}));
+          console.log('Accepted test path PASS');
+          EOF
+
+      - name: Verify unconfigured production path fails closed
+        run: |
+          kill "$(cat /tmp/web01g-test.pid)" || true
+          ENQUIRY_TRANSPORT_MODE=unconfigured HOST=127.0.0.1 PORT=4322 node dist/server/entry.mjs >/tmp/web01g-closed.log 2>&1 &
+          for i in {1..30}; do
+            curl -fsS http://127.0.0.1:4322/start-with-your-challenge >/dev/null && break
+            sleep 1
+          done
+          node <<'EOF'
+          const now=Date.now();
+          const payload={startedAt:now-5000,companyWebsite:'',turnstileToken:'',challenge:{key:'CONTROL_VERIFICATION',problemSummary:'We need a clearer view of control verification across operating sites.'},organisation:{name:'Example Operations',sizeBand:'250_999',footprint:'Three sites'},industry:{key:'MINING_RESOURCES',other:'',multiSector:false},activity:{key:'SITE_FIELD',other:''},operatingEnvironment:['SITE_FIELD'],jurisdiction:{scope:'SINGLE_JURISDICTION',countries:'Australia',regions:'Western Australia'},outcome:{desiredOutcome:'Create a clearer evidence-backed basis for human review and prioritisation.',trigger:'AUDIT_REVIEW',timing:'ONE_TO_THREE_MONTHS'},internalCapability:{safetyCompliance:'YES',aiTechnology:'UNSURE',accountableSponsor:'YES',aitlAvailable:'NO',externalAdviser:'UNSURE'},security:{level:'STANDARD',note:'',acknowledged:true},contact:{name:'Test User',email:'test@example.com',telephone:''}};
+          const response=await fetch('http://127.0.0.1:4322/api/enquiry',{method:'POST',headers:{'content-type':'application/json',origin:'http://127.0.0.1:4322'},body:JSON.stringify(payload)});
+          const body=await response.json();
+          if(response.status!==503||body.accepted!==false||body.code!=='TRANSPORT_NOT_CONFIGURED') throw new Error(JSON.stringify({status:response.status,body}));
+          console.log('Fail-closed production path PASS');
+          EOF
