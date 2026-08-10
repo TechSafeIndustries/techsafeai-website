@@ -59,6 +59,7 @@
 .review-edit{align-self:center;background:transparent;border:0;text-decoration:underline;color:#176f98;font-weight:700;cursor:pointer;min-height:36px}
 .submit-status{min-height:24px;color:var(--error);font-weight:700;font-size:13px}
 .honeypot{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important}
+.intake-confirmation[hidden]{display:none!important}
 .intake-confirmation{display:grid;grid-template-columns:1fr minmax(240px,420px);gap:36px;align-items:end;background:var(--navy-800);color:#fff;padding:38px;border:1px solid #355365}
 .intake-confirmation h2{font-size:36px;margin:10px 0 14px}
 .intake-confirmation p{color:#c0ced5}
