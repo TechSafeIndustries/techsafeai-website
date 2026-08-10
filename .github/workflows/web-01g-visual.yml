@@ -1,0 +1,55 @@
+name: WEB-01G visual proof
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  visual:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout WEB-01G branch
+        uses: actions/checkout@v4
+        with:
+          ref: web/WEB-01G-structured-intake
+          fetch-depth: 0
+
+      - name: Use Node 22.16.0
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Start test transport server
+        env:
+          ENQUIRY_TRANSPORT_MODE: test
+          ALLOW_TEST_ENQUIRY_TRANSPORT: "1"
+          HOST: 127.0.0.1
+          PORT: "4321"
+        run: |
+          node dist/server/entry.mjs >/tmp/web01g-visual.log 2>&1 &
+          for i in {1..30}; do
+            curl -fsS http://127.0.0.1:4321/start-with-your-challenge >/dev/null && break
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:4321/start-with-your-challenge >/dev/null
+
+      - name: Run responsive visual proof
+        run: node .github/scripts/web01g-visual.mjs
+
+      - name: Upload visual proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-01g-final-visual-proof
+          path: validation-artifacts/
+          if-no-files-found: error
+          retention-days: 7
