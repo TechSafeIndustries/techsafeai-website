@@ -16,8 +16,22 @@ test('legacy false-success handler is removed from the WEB-01F tree', () => {
   assert.equal(fs.existsSync(path.join(root, 'script.js')), false);
   assert.equal(fs.existsSync(path.join(root, 'contact.html')), false);
   const start = read('src/pages/start-with-your-challenge/index.astro');
-  assert.match(start, /NO ENQUIRY IS TRANSMITTED/);
+  assert.match(start, /Online enquiry submission is not yet available/i);
   assert.doesNotMatch(start, /Enquiry Submitted Successfully|You will receive an automated acknowledgement|Your Reference Number|communications are logged in the customer relationship management system/i);
+});
+
+test('public UI does not expose internal build or control-tower language', () => {
+  const publicFiles = [
+    'src/pages/index.astro',
+    'src/pages/start-with-your-challenge/index.astro',
+    'src/pages/contact/index.astro',
+    'src/pages/privacy/index.astro',
+    'src/pages/accessibility/index.astro',
+    'src/pages/terms/index.astro',
+    'src/components/Footer.astro'
+  ];
+  const publicSource = publicFiles.map(read).join('\n');
+  assert.doesNotMatch(publicSource, /WEB-01F|WEB-01G|CANONICAL DOMAIN TARGET|SAI-VIS-10|production DNS|deployment status|CRM claim|front-end build/i);
 });
 
 test('homepage preserves pain-first and security language', () => {
