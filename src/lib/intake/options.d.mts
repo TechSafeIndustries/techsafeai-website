@@ -1,0 +1,13 @@
+export type IntakeOption = readonly [string, string];
+export const CHALLENGES: readonly IntakeOption[];
+export const INDUSTRIES: readonly IntakeOption[];
+export const ACTIVITIES: readonly IntakeOption[];
+export const OPERATING_ENVIRONMENTS: readonly IntakeOption[];
+export const ORGANISATION_SIZES: readonly IntakeOption[];
+export const JURISDICTION_SCOPES: readonly IntakeOption[];
+export const TRIGGERS: readonly IntakeOption[];
+export const TIMING: readonly IntakeOption[];
+export const READINESS: readonly IntakeOption[];
+export const SECURITY_LEVELS: readonly IntakeOption[];
+export function optionValues(options: readonly IntakeOption[]): Set<string>;
+export function optionLabel(options: readonly IntakeOption[], value: string): string;
