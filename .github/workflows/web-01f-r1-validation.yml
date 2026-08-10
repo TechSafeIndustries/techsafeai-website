@@ -1,0 +1,123 @@
+name: WEB-01F-R1 validation
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v4
+
+      - name: Use Node 22.16.0
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+
+      - name: Record runtime
+        run: |
+          node --version | tee node-version.txt
+          npm --version | tee npm-version.txt
+
+      - name: Install dependencies and generate lockfile
+        run: npm install
+
+      - name: Astro check
+        run: npm run check
+
+      - name: Tests
+        run: npm test
+
+      - name: Production build
+        run: npm run build
+
+      - name: Serve built output
+        run: |
+          python3 -m http.server 4321 --directory dist >/tmp/techsafeai-http.log 2>&1 &
+          echo $! > /tmp/techsafeai-http.pid
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4321/ >/dev/null && break
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:4321/ >/dev/null
+
+      - name: Responsive checks and actual-build screenshots
+        shell: bash
+        run: |
+          cat > /tmp/responsive-check.mjs <<'EOF'
+          import { spawn } from 'node:child_process';
+          import fs from 'node:fs';
+          import http from 'node:http';
+
+          const chrome = process.env.CHROME_BIN || '/usr/bin/google-chrome';
+          const port = 9222;
+          const browser = spawn(chrome, [
+            '--headless=new','--no-sandbox','--disable-gpu',`--remote-debugging-port=${port}`,
+            '--remote-debugging-address=127.0.0.1','--user-data-dir=/tmp/web01f-chrome','about:blank'
+          ], { stdio: 'ignore' });
+
+          const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+          const requestJson = (method, path) => new Promise((resolve,reject) => {
+            const req = http.request({host:'127.0.0.1',port,path,method}, res => {
+              let body=''; res.on('data',d=>body+=d); res.on('end',()=>{try{resolve(JSON.parse(body))}catch(e){reject(new Error(body))}});
+            }); req.on('error',reject); req.end();
+          });
+          for(let i=0;i<30;i++){try{await requestJson('GET','/json/version');break}catch{await sleep(300)}}
+
+          const widths=[1440,1024,768,390,320];
+          const results=[];
+          fs.mkdirSync('validation-artifacts',{recursive:true});
+          for(const width of widths){
+            const target=await requestJson('PUT','/json/new?http://127.0.0.1:4321/');
+            const ws=new WebSocket(target.webSocketDebuggerUrl);
+            await new Promise((r,j)=>{ws.addEventListener('open',r,{once:true});ws.addEventListener('error',j,{once:true})});
+            let id=0; const pending=new Map();
+            ws.addEventListener('message',ev=>{const msg=JSON.parse(ev.data);if(msg.id&&pending.has(msg.id)){const {resolve,reject}=pending.get(msg.id);pending.delete(msg.id);msg.error?reject(new Error(JSON.stringify(msg.error))):resolve(msg.result)}});
+            const send=(method,params={})=>new Promise((resolve,reject)=>{const mid=++id;pending.set(mid,{resolve,reject});ws.send(JSON.stringify({id:mid,method,params}))});
+            await send('Page.enable');
+            await send('Runtime.enable');
+            await send('Emulation.setDeviceMetricsOverride',{width,height:1000,deviceScaleFactor:1,mobile:width<=768});
+            await send('Page.navigate',{url:'http://127.0.0.1:4321/'}); await sleep(1100);
+            const evaluation=await send('Runtime.evaluate',{expression:`JSON.stringify({scrollWidth:document.documentElement.scrollWidth,clientWidth:document.documentElement.clientWidth,bodyScrollWidth:document.body.scrollWidth,hasLegacySuccess:/Enquiry Submitted Successfully|automated acknowledgement|Reference Number|logged in CRM/i.test(document.body.innerText),hasInternalGate:/WEB-01F|WEB-01G|CANONICAL DOMAIN TARGET/i.test(document.body.innerText),hasPublicUpload:!!document.querySelector('input[type=file]'),capabilities:[...document.querySelectorAll('.capability')].map(x=>({w:x.getBoundingClientRect().width,h:x.getBoundingClientRect().height})),broader:[...document.querySelectorAll('.operating-card')].map(x=>({x:x.getBoundingClientRect().x,w:x.getBoundingClientRect().width}))})`,returnByValue:true});
+            const data=JSON.parse(evaluation.result.value);
+            const overflow=Math.max(data.scrollWidth,data.bodyScrollWidth)>data.clientWidth+1;
+            if(overflow||data.hasLegacySuccess||data.hasInternalGate||data.hasPublicUpload) throw new Error(`Responsive/truth regression at ${width}px: ${JSON.stringify(data)}`);
+            if(width<=767 && data.broader.length===4){const uniqueX=new Set(data.broader.map(x=>Math.round(x.x)));if(uniqueX.size!==1) throw new Error(`Broader route cards not single-column at ${width}px`)}
+            const metrics=await send('Page.getLayoutMetrics');
+            const content=metrics.cssContentSize;
+            const shot=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:true,fromSurface:true,clip:{x:0,y:0,width:width,height:content.height,scale:1}});
+            fs.writeFileSync(`validation-artifacts/home-${width}.png`,Buffer.from(shot.data,'base64'));
+            results.push({width,overflow,data});
+            ws.close();
+          }
+          fs.writeFileSync('validation-artifacts/responsive-results.json',JSON.stringify(results,null,2));
+          browser.kill('SIGTERM');
+          EOF
+          node /tmp/responsive-check.mjs
+          cp validation-artifacts/home-1440.png validation-artifacts/WEB-01F-R1_home_desktop.png
+          cp validation-artifacts/home-390.png validation-artifacts/WEB-01F-R1_home_mobile.png
+
+      - name: Inspect lockfile
+        run: |
+          test -s package-lock.json
+          ! grep -E '/Users/|[A-Za-z]:\\\\Users\\\\|file:' package-lock.json
+          ! grep -Ei 'password|secret|token' package-lock.json
+
+      - name: Upload validation artefacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-01f-r1-validation
+          path: |
+            package-lock.json
+            node-version.txt
+            npm-version.txt
+            validation-artifacts/
+            dist/
+          if-no-files-found: error
+          retention-days: 7
