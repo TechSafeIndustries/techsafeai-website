@@ -1,0 +1,7 @@
+---
+import ContentPage from '../../components/ContentPage.astro';
+import { broaderContexts, featuredSectors } from '../../data/site';
+---
+<ContentPage title="Industries" eyebrow="Featured depth + broader route" intro="TechSafeAI works with risk-intensive and regulated organisations, with initial sector depth in Mining & Resources and Construction & Infrastructure.">
+<section class="content-section"><div class="shell"><div class="section-title"><div><div class="eyebrow">Featured initial sector depth</div><h2>Two sectors lead the initial content depth.</h2></div><p>Other regulated organisations are not excluded. They enter through a problem-led route and are assessed for fit without unsupported specialist claims.</p></div><div class="route-grid" style="margin-top:42px">{featuredSectors.map((sector,index)=><a class="route-card" href={`/industries/${sector.slug}`}><div class="eyebrow">Featured 0{index+1}</div><h3>{sector.title}</h3><p>{sector.summary}</p><span class="route-link">View sector depth →</span></a>)}<a class="route-card" href="/industries/other-regulated-operations"><div class="eyebrow">Broader pathway</div><h3>Other Risk-Intensive & Regulated Operations</h3><p>{broaderContexts.join(' · ')}</p><span class="route-link">Check fit from the problem →</span></a></div></div></section>
+</ContentPage>

@@ -1,0 +1,22 @@
+---
+import { navigation } from '../data/navigation';
+---
+<header class="site-header">
+  <div class="shell header-inner">
+    <a class="brand" href="/" aria-label="TechSafeAI home">
+      <span class="brand-glyph" aria-hidden="true"></span>
+      <span>TechSafeAI</span>
+    </a>
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      {navigation.map((item) => <a href={item.href}>{item.label}</a>)}
+      <a class="button button-small button-outline-light" href="/start-with-your-challenge">Start with your challenge</a>
+    </nav>
+    <details class="mobile-nav">
+      <summary aria-label="Open navigation">Menu</summary>
+      <nav aria-label="Mobile navigation">
+        {navigation.map((item) => <a href={item.href}>{item.label}</a>)}
+        <a class="button button-primary" href="/start-with-your-challenge">Start with your challenge</a>
+      </nav>
+    </details>
+  </div>
+</header>

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Canonical production target: https://techsafe.ai
+# Sitemap generation is intentionally deferred to WEB-01H SEO implementation.

@@ -1,0 +1,27 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  intro: string;
+  backHref?: string;
+  backLabel?: string;
+}
+const { eyebrow, title, intro, backHref, backLabel } = Astro.props;
+---
+<section class="page-hero section-dark">
+  <div class="shell page-hero-grid">
+    <div>
+      {backHref && <a class="back-link" href={backHref}>← {backLabel ?? 'Back'}</a>}
+      <div class="eyebrow">{eyebrow}</div>
+      <h1>{title}</h1>
+      <p class="lead">{intro}</p>
+    </div>
+    <div class="technical-panel" aria-hidden="true">
+      <span class="technical-label">Industrial Authority</span>
+      <div class="technical-lines"></div>
+      <div class="technical-node node-a"></div>
+      <div class="technical-node node-b"></div>
+      <div class="technical-node node-c"></div>
+    </div>
+  </div>
+</section>

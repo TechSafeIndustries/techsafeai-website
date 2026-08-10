@@ -1,0 +1,7 @@
+---
+import ContentPage from '../../components/ContentPage.astro';
+import { capabilities } from '../../data/site';
+---
+<ContentPage title="Solutions" eyebrow="Client problem → relevant capability" intro="TechSafeAI routes consulting capability from the problem and operating context. It does not ask you to choose a software module.">
+  <section class="content-section"><div class="shell"><div class="section-title"><div><div class="eyebrow">Five capability families</div><h2>Consulting routes with clear boundaries.</h2></div><p>Security & Trust remains a first-class trust architecture rather than a generic sixth service card.</p></div><div class="route-grid" style="margin-top:42px">{capabilities.map((capability,index)=><a class="route-card" href={`/solutions/${capability.slug}`}><div class="eyebrow">0{index+1}</div><h3>{capability.title}</h3><p>{capability.summary}</p><span class="route-link">View capability →</span></a>)}</div></div></section>
+</ContentPage>

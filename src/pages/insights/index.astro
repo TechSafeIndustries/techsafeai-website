@@ -1,0 +1,7 @@
+---
+import ContentPage from '../../components/ContentPage.astro';
+const topics=['Proving critical controls work','Audit readiness and evidence traceability','Contractor assurance','AI readiness and governance','AI information protection','Operational AI and human accountability','Verified value and DRIVER-6','Internal AI capability'];
+---
+<ContentPage title="Insights" eyebrow="Evidence-led thinking" intro="TechSafeAI insights will explain practical safety, assurance, evidence and governed-AI problems without turning the site into a content farm.">
+<section class="content-section"><div class="shell content-grid"><div><div class="eyebrow">Publishing standard</div><h2>Substance before volume.</h2><p>Articles must support client understanding, thought leadership or a real search need. No mass-generated sector pages and no invented case evidence.</p></div><div class="indexed-list">{topics.map((topic,i)=><div class="indexed-item"><span class="index">0{i+1}</span><div><h3>{topic}</h3><p>Planned insight theme. Publication requires a governed source, useful point of view and evidence appropriate to the claim.</p></div></div>)}</div></div></section>
+</ContentPage>

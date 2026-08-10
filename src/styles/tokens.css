@@ -1,0 +1,40 @@
+
+:root {
+  --navy-900:#061722;
+  --navy-800:#0b2737;
+  --navy-700:#103448;
+  --surface-0:#fbfaf6;
+  --surface-50:#f0eee7;
+  --surface-100:#e8e5dd;
+  --text-primary:#102531;
+  --text-secondary:#4f6571;
+  --accent:#27b6f6;
+  --accent-soft:#73d2f8;
+  --border:#c9d2d6;
+  --border-strong:#8fa2ad;
+  --focus-light:#0b6e9a;
+  --focus-dark:#73d2f8;
+  --error:#9f2e2e;
+  --warning:#7a5312;
+  --success:#246b4b;
+  --max:1220px;
+  --shadow:0 28px 90px rgba(5,20,31,.16);
+  --space-1:4px;
+  --space-2:8px;
+  --space-3:12px;
+  --space-4:16px;
+  --space-5:24px;
+  --space-6:32px;
+  --space-7:48px;
+  --space-8:64px;
+  --space-9:80px;
+  --space-10:104px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--surface-50);color:var(--text-primary);font-family:Inter,Arial,system-ui,sans-serif;line-height:1.6}
+a{color:inherit;text-decoration-thickness:.08em;text-underline-offset:.18em}
+button,input,select,textarea{font:inherit}
+button,a{touch-action:manipulation}
+img,svg{max-width:100%;height:auto}
+:focus-visible{outline:3px solid var(--focus-light);outline-offset:3px}

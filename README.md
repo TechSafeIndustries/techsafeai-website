@@ -1,145 +1,81 @@
-# TechSafeAI Marketing Website
+# TechSafeAI Website — WEB-01F Core Front-End
 
-Production-ready marketing website for TechSafeAI platform, built strictly from the Standard Operating Procedure (SOP.md).
+This branch rebuilds the TechSafeAI public website as a pain-point-first consultancy front door using Astro + TypeScript.
 
-## Overview
+## Governed domain target
 
-This website presents TechSafeAI's industry-specific compliance and incident management platform. All content is derived directly from the approved SOP v1.0 with no invented features, pricing, or capabilities.
+`CANONICAL DOMAIN TARGET = techsafe.ai`
 
-## Website Structure
+- Primary intended public domain: `https://techsafe.ai`
+- Future canonical hostname: `techsafe.ai`
+- Future `www.techsafe.ai` → `techsafe.ai` redirect: deployment gate only
+- `techsafe.industries`: retained secondary/corporate domain; no DNS or redirect change in WEB-01F
+- historical 10Web/Squarespace infrastructure: not an implementation target
 
-### Pages
+No production DNS, nameserver, SSL/TLS, redirect, email-domain or hosting changes are made in WEB-01F.
 
-1. **index.html** - Homepage
-   - Hero section with platform value proposition
-   - Platform capabilities overview
-   - Industry-specific modules showcase
-   - Pilot program introduction
-   - Compliance mapping overview
-   - Call-to-action sections
+## Stack
 
-2. **modules.html** - Module Catalogue & Product Presentation
-   - Available modules (Construction, Mining, Manufacturing, Oil & Gas)
-   - Module status indicators (Active, Trial, Pending)
-   - Module documentation information
-   - Module request process
-   - Export module summary functionality
+- Astro 7
+- TypeScript
+- Static output
+- Minimal client JavaScript limited to homepage pain selection
+- No framework UI runtime
 
-3. **pilots.html** - Pilots & Implementation
-   - Pilot program overview
-   - Volume-gated scope (50 incident limit)
-   - Risk control measures
-   - Governance structure
-   - Onboarding flow (6-step process)
-   - Pilot completion requirements
+Astro's `site` configuration is set to `https://techsafe.ai` so canonical URL and future sitemap generation share the governed base URL.
 
-4. **compliance.html** - Compliance Mapping
-   - Jurisdiction-specific compliance mapping
-   - Automated framework identification
-   - Real-time alignment status
-   - Audit readiness features
-   - Multi-jurisdiction logic
-   - Quarterly update schedule
-   - Legal disclaimers
+## Core routes
 
-5. **contact.html** - Contact & Enquiry Handling
-   - Contact form with enquiry types
-   - Response timeline commitments
-   - Pilot qualification criteria
-   - Enquiry tracking information
+- `/`
+- `/solutions` and five capability routes
+- `/industries` with Mining & Resources, Construction & Infrastructure, and broader regulated-operations route
+- `/how-we-work`
+- `/security-trust`
+- `/insights`
+- `/about`
+- `/start-with-your-challenge`
+- utility pre-production routes for privacy, terms, accessibility and contact
 
-### Supporting Files
+## WEB-01F boundaries
 
-- **styles.css** - Complete styling with modern design system
-- **script.js** - Interactive functionality and form handling
-- **SOP.md** - Source document for all website content
+This branch does **not** implement:
 
-## Design Features
+- live enquiry transport
+- CRM
+- analytics
+- production deployment
+- public document upload
+- SAI runtime
+- unrestricted chatbot
+- public assessment findings or recommendations
+- production DNS/redirects
 
-### Visual Design
-- Dark theme with gradient accents
-- Modern glassmorphism effects
-- Premium color palette (purple, pink, blue gradients)
-- Responsive grid layouts
-- Smooth animations and transitions
+The `Start with your challenge` page is a non-submitting front-end preview. No browser-generated success, reference number, CRM claim or acknowledgement claim exists.
 
-### Typography
-- Inter font family for clean, professional appearance
-- Clear hierarchy with proper heading structure
-- Optimized line heights for readability
+## SAI
 
-### Interactive Elements
-- Hover effects on cards and buttons
-- Smooth scroll animations
-- Form validation and submission handling
-- Module documentation modals
-- Active navigation state
+Use only SAI-VIS-10 released assets. If those binaries are not present in the implementation workspace, the site must use the approved character-absent text fallback rather than redraw, approximate or regenerate SAI.
 
-## Content Alignment with SOP
+Public Stage-1 states remain limited to ORIENT, COLLECT, ORGANISE, FLAG and HANDOFF. No public ANALYSE or ADVISE.
 
-All website content is sourced from SOP.md sections:
+## Local commands
 
-- **Section 1**: Authentication procedures (referenced in platform capabilities)
-- **Section 2**: Navigation structure (implemented in platform dashboard description)
-- **Section 3**: Module catalogue (modules.html)
-- **Section 4**: Pilots & implementation (pilots.html)
-- **Section 5**: Compliance mapping (compliance.html)
-- **Section 6**: Contact & enquiry handling (contact.html)
-- **Section 7**: Future expansion notes (footer across all pages)
+```bash
+npm install
+npm run check
+npm test
+npm run build
+npm run dev
+```
 
-## Key Constraints Observed
+## Production blockers carried forward
 
-✓ No pricing information included
-✓ No specific legislation names mentioned
-✓ Legal disclaimers prominently displayed
-✓ Future offerings presented as concepts only (no commitments)
-✓ Pilot scope clearly limited to 50 incidents
-✓ Response timelines accurately stated
-✓ All module statuses properly indicated
+- production-cleared TechSafeAI logo/lockup
+- production-cleared operational photography
+- live form transport and downstream receipt
+- CRM mapping/integration
+- analytics and consent/privacy controls
+- deployment architecture and security headers
+- full WEB-01H accessibility/security/SEO validation
 
-## SEO Implementation
-
-- Descriptive title tags on all pages
-- Meta descriptions for search engines
-- Semantic HTML5 structure
-- Proper heading hierarchy (single H1 per page)
-- Unique IDs for interactive elements
-- Fast-loading optimized CSS
-
-## Browser Compatibility
-
-- Modern browsers (Chrome, Firefox, Safari, Edge)
-- Responsive design for mobile, tablet, desktop
-- Graceful degradation for older browsers
-
-## Deployment
-
-This is a static website requiring no backend infrastructure:
-
-1. Upload all HTML, CSS, and JS files to web server
-2. Ensure SOP.md is accessible for reference
-3. Configure domain and SSL certificate
-4. No database or server-side processing required
-
-## Future Enhancements
-
-As per SOP Section 7, future TechSafe Industries offerings may include:
-- AI-powered risk assessment tools
-- Smart safety equipment integration platforms
-- Digital safety management boards
-
-**Note**: These remain conceptual with no availability timelines or commitments.
-
-## Legal Compliance
-
-All compliance mapping functionality is presented as decision support only. Legal disclaimers are prominently displayed on compliance.html and throughout the site where regulatory information is discussed.
-
-## Contact Information
-
-Enquiries handled through contact form on contact.html with automated acknowledgment and unique reference number generation.
-
----
-
-**Built**: January 2026  
-**Version**: 1.0  
-**Source**: SOP.md v1.0
+WEB-01F is a feature-branch implementation gate. Do not merge or deploy without a later Control Tower release.

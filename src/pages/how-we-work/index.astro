@@ -1,0 +1,17 @@
+---
+import ContentPage from '../../components/ContentPage.astro';
+const stages = [
+['UNDERSTAND','Clarify pain, workflow, actors, information, cost/risk and desired outcome.'],
+['PROTECT','Set the public-versus-controlled information boundary.'],
+['ESTABLISH AUTHORITY','Resolve what governs before declaring a requirement.'],
+['ASSESS EVIDENCE','Review evidence only inside an authorised scope and controlled intake.'],
+['IDENTIFY GAPS','Separate current-state findings from future actions.'],
+['TRANSFORM','Use DRIVER-6 to structure remediation and operating change.'],
+['VERIFY','Check control effectiveness and measured results.'],
+['PROVE VALUE','Make value claims only where baseline, method and evidence exist.']
+];
+---
+<ContentPage title="How TechSafeAI Works" eyebrow="Governed consulting method" intro="TechSafeAI connects problem discovery, security, authority, evidence, transformation, verification and value without collapsing them into one automated score.">
+<section class="content-section"><div class="shell content-grid"><div><div class="eyebrow">Client-facing flow</div><h2>A clear route through complex work.</h2><p>The method is deliberately staged because public context, formal assessment, remediation and verified value are different activities with different authority.</p></div><div class="indexed-list">{stages.map(([title,copy],i)=><div class="indexed-item"><span class="index">0{i+1}</span><div><h3>{title}</h3><p>{copy}</p></div></div>)}</div></div></section>
+<section class="content-section" style="background:#e8e5dd"><div class="shell content-grid"><div><div class="eyebrow">DRIVER-6</div><h2>Transformation is organised, not assumed.</h2></div><div class="content-copy"><ol><li>Define value</li><li>Resolve authority</li><li>Integrate workflow</li><li>Validate value and controls</li><li>Embed ownership</li><li>Repeat and scale</li></ol><p class="notice">DRIVER-6 organises remediation. It does not close findings, verify controls or prove value by itself.</p></div></div></section>
+</ContentPage>

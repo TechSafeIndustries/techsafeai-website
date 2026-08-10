@@ -1,0 +1,33 @@
+---
+import { navigation } from '../data/navigation';
+---
+<footer class="site-footer">
+  <div class="shell footer-grid">
+    <div>
+      <a class="brand footer-brand" href="/" aria-label="TechSafeAI home">
+        <span class="brand-glyph" aria-hidden="true"></span><span>TechSafeAI</span>
+      </a>
+      <p>AI-enabled safety, compliance, risk and operational transformation consultancy.</p>
+      <p class="footer-domain">Canonical domain target: techsafe.ai</p>
+    </div>
+    <div>
+      <h2 class="footer-heading">Website</h2>
+      <ul>
+        {navigation.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+      </ul>
+    </div>
+    <div>
+      <h2 class="footer-heading">Information</h2>
+      <ul>
+        <li><a href="/privacy">Privacy</a></li>
+        <li><a href="/terms">Website terms</a></li>
+        <li><a href="/accessibility">Accessibility</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="shell footer-bottom">
+    <span>TechSafeAI</span>
+    <span>TechSafe Industries group brand architecture retained.</span>
+  </div>
+</footer>
