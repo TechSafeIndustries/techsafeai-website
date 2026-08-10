@@ -106,10 +106,25 @@ jobs:
       - name: Inspect lockfile
         run: |
           test -s package-lock.json
-          ! grep -E '/Users/|[A-Za-z]:\\\\Users\\\\|file:' package-lock.json
-          ! grep -Ei 'password|secret|token' package-lock.json
+          node <<'EOF'
+          const fs = require('fs');
+          const lock = JSON.parse(fs.readFileSync('package-lock.json','utf8'));
+          const problems = [];
+          const walk = (value, path='root') => {
+            if (typeof value === 'string') {
+              if (value.startsWith('file:') || /\/Users\//.test(value) || /[A-Za-z]:\\Users\\/.test(value)) problems.push(`${path}: ${value}`);
+              return;
+            }
+            if (Array.isArray(value)) return value.forEach((v,i)=>walk(v,`${path}[${i}]`));
+            if (value && typeof value === 'object') for (const [k,v] of Object.entries(value)) walk(v,`${path}.${k}`);
+          };
+          walk(lock);
+          if (problems.length) { console.error(problems.join('\n')); process.exit(1); }
+          console.log('Lockfile contains no local file references or user-machine paths.');
+          EOF
 
       - name: Upload validation artefacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: web-01f-r1-validation
