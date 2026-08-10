@@ -1,0 +1,314 @@
+name: WEB-SAI-01 bounded integration
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout governed feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: web/WEB-01F-core-front-end
+          fetch-depth: 0
+
+      - name: Apply bounded SAI integration
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from pathlib import Path
+
+          home = Path('src/pages/index.astro')
+          text = home.read_text()
+
+          old = '<div class="section-title" style="display:block"><div class="eyebrow">TechSafeAI approach</div><h2>Move from problem to evidence-backed change.</h2><p>Technology sits inside a governed consulting process. It does not replace scope, authority, evidence or accountable human judgement.</p></div>'
+          new = '<div class="section-title" style="display:block"><div class="eyebrow">TechSafeAI approach</div><h2>Move from problem to evidence-backed change.</h2><p>Technology sits inside a governed consulting process. It does not replace scope, authority, evidence or accountable human judgement.</p><div class="sai-mark-placement" aria-hidden="true"><img src="/assets/sai/sai-mark-na-na-website-xs64-dark-fc-v1.0.0.png" width="42" height="42" alt="" /></div></div>'
+          assert text.count(old) == 1, 'Approach insertion anchor mismatch'
+          text = text.replace(old, new)
+
+          old = '<div class="human-note"><strong>Human accountability:</strong> governed technology may orient, collect, organise, flag or assist with handoff. Consequential assessment and decision-making remain subject to authorised human review.</div></div>'
+          new = '<div class="human-note"><strong>Human accountability:</strong> governed technology may orient, collect, organise, flag or assist with handoff. Consequential assessment and decision-making remain subject to authorised human review.</div><div class="sai-handoff-placement" aria-hidden="true"><img src="/assets/sai/sai-comp-handoff-upper-website-l-light-fc-v1.0.0.webp" width="420" height="213" alt="" /></div></div>'
+          assert text.count(old) == 1, 'HANDOFF insertion anchor mismatch'
+          text = text.replace(old, new)
+
+          old = '<section class="cta-band section-dark"><div class="shell cta-band-grid"><div><div class="eyebrow">Start with the problem</div><h2>Tell us what is getting in the way.</h2></div><div><p>Your sector does not need to be one of the two featured sectors to start the conversation. Online enquiry submission is not yet available.</p><a class="button button-primary" href="/start-with-your-challenge">Start with your challenge <span aria-hidden="true">→</span></a></div></div></section>'
+          new = '<section class="cta-band section-dark"><div class="shell cta-band-grid"><div><div class="eyebrow">Start with the problem</div><h2>Tell us what is getting in the way.</h2></div><div class="cta-action-with-sai"><div class="cta-action-copy"><p>Your sector does not need to be one of the two featured sectors to start the conversation. Online enquiry submission is not yet available.</p><a class="button button-primary" href="/start-with-your-challenge">Start with your challenge <span aria-hidden="true">→</span></a></div><div class="sai-orient-placement" aria-hidden="true"><img src="/assets/sai/sai-state-orient-upper-website-m-light-fc-v1.0.0.webp" width="285" height="213" alt="" /></div></div></div></section>'
+          assert text.count(old) == 1, 'ORIENT insertion anchor mismatch'
+          text = text.replace(old, new)
+          home.write_text(text)
+
+          layout = Path('src/layouts/BaseLayout.astro')
+          text = layout.read_text()
+          anchor = "import '../styles/web01f-r1.css';"
+          assert text.count(anchor) == 1, 'Layout style anchor mismatch'
+          text = text.replace(anchor, anchor + "\nimport '../styles/web-sai-01.css';")
+          layout.write_text(text)
+
+          Path('src/styles/web-sai-01.css').write_text('''/* WEB-SAI-01: governed approved SAI asset placements only. */
+.sai-mark-placement {
+  margin-top: 24px;
+  width: 42px;
+  height: 42px;
+}
+.sai-mark-placement img {
+  display: block;
+  width: 42px;
+  height: 42px;
+  max-width: 42px;
+}
+.sai-handoff-placement {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+.sai-handoff-placement img {
+  display: block;
+  width: min(100%, 420px);
+  max-width: 420px;
+  height: auto;
+}
+.cta-action-with-sai {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 285px);
+  gap: 28px;
+  align-items: end;
+}
+.cta-action-copy {
+  align-self: center;
+}
+.sai-orient-placement {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  max-width: 285px;
+}
+.sai-orient-placement img {
+  display: block;
+  width: min(100%, 285px);
+  max-width: 285px;
+  height: auto;
+  max-height: 213px;
+}
+@media (max-width: 767px) {
+  .sai-handoff-placement {
+    justify-content: flex-start;
+  }
+  .sai-handoff-placement img {
+    width: min(100%, 320px);
+  }
+  .cta-action-with-sai {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .sai-orient-placement {
+    justify-content: flex-start;
+    max-width: 220px;
+  }
+  .sai-orient-placement img {
+    width: min(100%, 220px);
+  }
+}
+@media (max-width: 390px) {
+  .sai-handoff-placement img {
+    width: min(100%, 260px);
+  }
+  .sai-orient-placement {
+    max-width: 200px;
+  }
+  .sai-orient-placement img {
+    width: min(100%, 200px);
+  }
+}
+''')
+
+          tests = Path('tests/site.test.mjs')
+          text = tests.read_text()
+          marker = "test('approved SAI website assets are exact and bounded'"
+          assert marker not in text, 'SAI tests already present'
+          text += r'''
+
+test('approved SAI website assets are exact and bounded', async () => {
+  const crypto = await import('node:crypto');
+  const assets = [
+    ['public/assets/sai/sai-mark-na-na-website-xs64-dark-fc-v1.0.0.png', '5ba0a021414c40e9ae65796a83138f1f8f1cd4f622a85cdabd35e1209bdb9d48'],
+    ['public/assets/sai/sai-comp-handoff-upper-website-l-light-fc-v1.0.0.webp', '4938b9e3026ed6c2658ce4c62c007376a568e19811d5dbcd156ae8b16d372105'],
+    ['public/assets/sai/sai-state-orient-upper-website-m-light-fc-v1.0.0.webp', '3d0ec2a20b642405d3e536201f85fbf2c5aa56e04c6b680989e538bd169864cb']
+  ];
+  for (const [file, expected] of assets) {
+    assert.ok(fs.existsSync(path.join(root, file)), `${file} missing`);
+    const actual = crypto.createHash('sha256').update(fs.readFileSync(path.join(root, file))).digest('hex');
+    assert.equal(actual, expected, `${file} hash mismatch`);
+  }
+});
+
+test('homepage uses only the three governed SAI placements', () => {
+  const home = read('src/pages/index.astro');
+  const paths = [
+    '/assets/sai/sai-mark-na-na-website-xs64-dark-fc-v1.0.0.png',
+    '/assets/sai/sai-comp-handoff-upper-website-l-light-fc-v1.0.0.webp',
+    '/assets/sai/sai-state-orient-upper-website-m-light-fc-v1.0.0.webp'
+  ];
+  for (const asset of paths) assert.equal(home.split(asset).length - 1, 1, `${asset} must appear once`);
+  const hero = home.slice(home.indexOf('<section class="hero'), home.indexOf('<div class="shell pain-wrap'));
+  const pain = home.slice(home.indexOf('<div class="shell pain-wrap'), home.indexOf('<section class="section section-light">'));
+  const solutions = home.slice(home.indexOf('<section class="section section-muted" id="solutions">'), home.indexOf('<section class="operating-context'));
+  const industries = home.slice(home.indexOf('<section class="section section-light" id="industries">'), home.indexOf('<section class="section section-light" id="security">'));
+  const proof = home.slice(home.indexOf('<div class="shell proof-grid'), home.indexOf('<section class="cta-band'));
+  for (const region of [hero, pain, solutions, industries, proof]) assert.doesNotMatch(region, /\/assets\/sai\//);
+  assert.match(home.slice(home.indexOf('id="approach"'), home.indexOf('id="solutions"')), /sai-mark-na-na-website-xs64-dark-fc-v1\.0\.0\.png/);
+  assert.match(home.slice(home.indexOf('id="security"'), home.indexOf('proof-grid')), /sai-comp-handoff-upper-website-l-light-fc-v1\.0\.0\.webp/);
+  assert.match(home.slice(home.indexOf('<section class="cta-band')), /sai-state-orient-upper-website-m-light-fc-v1\.0\.0\.webp/);
+  assert.doesNotMatch(home, /data-sai-state=["'](?:ANALYSE|ADVISE)/);
+});
+
+test('SAI CSS does not permit asset upscaling', () => {
+  const css = read('src/styles/web-sai-01.css');
+  assert.match(css, /\.sai-mark-placement img[\s\S]*max-width:\s*42px/);
+  assert.match(css, /\.sai-handoff-placement img[\s\S]*max-width:\s*420px/);
+  assert.match(css, /\.sai-orient-placement img[\s\S]*max-width:\s*285px[\s\S]*max-height:\s*213px/);
+});
+'''
+          tests.write_text(text)
+
+          Path('.github/workflows/web-sai-01-validation.yml').write_text(r'''name: WEB-SAI-01 validation
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout governed feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: web/WEB-01F-core-front-end
+          fetch-depth: 0
+
+      - name: Use Node 22.16.0
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+
+      - name: Record runtime
+        run: |
+          node --version | tee node-version.txt
+          npm --version | tee npm-version.txt
+
+      - name: Verify approved SAI asset hashes
+        run: |
+          printf '%s  %s\n' \
+            '5ba0a021414c40e9ae65796a83138f1f8f1cd4f622a85cdabd35e1209bdb9d48' 'public/assets/sai/sai-mark-na-na-website-xs64-dark-fc-v1.0.0.png' \
+            '4938b9e3026ed6c2658ce4c62c007376a568e19811d5dbcd156ae8b16d372105' 'public/assets/sai/sai-comp-handoff-upper-website-l-light-fc-v1.0.0.webp' \
+            '3d0ec2a20b642405d3e536201f85fbf2c5aa56e04c6b680989e538bd169864cb' 'public/assets/sai/sai-state-orient-upper-website-m-light-fc-v1.0.0.webp' \
+            | sha256sum --check --strict
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Confirm lockfile unchanged
+        run: git diff --exit-code -- package-lock.json
+
+      - name: Astro check
+        run: npm run check
+
+      - name: Tests
+        run: npm test
+
+      - name: Production build
+        run: npm run build
+
+      - name: Serve built output
+        run: |
+          python3 -m http.server 4321 --directory dist >/tmp/techsafeai-http.log 2>&1 &
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4321/ >/dev/null && break
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:4321/ >/dev/null
+
+      - name: Responsive, accessibility and SAI placement checks
+        shell: bash
+        run: |
+          cat > /tmp/web-sai-check.mjs <<'EOF'
+          import { spawn } from 'node:child_process';
+          import fs from 'node:fs';
+          import http from 'node:http';
+          const chrome = process.env.CHROME_BIN || '/usr/bin/google-chrome';
+          const port = 9222;
+          const browser = spawn(chrome,['--headless=new','--no-sandbox','--disable-gpu',`--remote-debugging-port=${port}`,'--remote-debugging-address=127.0.0.1','--user-data-dir=/tmp/web-sai-chrome','about:blank'],{stdio:'ignore'});
+          const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+          const requestJson=(method,path)=>new Promise((resolve,reject)=>{const req=http.request({host:'127.0.0.1',port,path,method},res=>{let body='';res.on('data',d=>body+=d);res.on('end',()=>{try{resolve(JSON.parse(body))}catch(e){reject(e)}})});req.on('error',reject);req.end()});
+          for(let i=0;i<30;i++){try{await requestJson('GET','/json/version');break}catch{await sleep(300)}}
+          const widths=[1440,1024,768,390,320];
+          const results=[];
+          fs.mkdirSync('validation-artifacts',{recursive:true});
+          for(const width of widths){
+            const target=await requestJson('PUT','/json/new?http://127.0.0.1:4321/');
+            const ws=new WebSocket(target.webSocketDebuggerUrl); await new Promise((r,j)=>{ws.addEventListener('open',r,{once:true});ws.addEventListener('error',j,{once:true})});
+            let id=0;const pending=new Map();ws.addEventListener('message',ev=>{const m=JSON.parse(ev.data);if(m.id&&pending.has(m.id)){const p=pending.get(m.id);pending.delete(m.id);m.error?p.reject(new Error(JSON.stringify(m.error))):p.resolve(m.result)}});const send=(method,params={})=>new Promise((resolve,reject)=>{const mid=++id;pending.set(mid,{resolve,reject});ws.send(JSON.stringify({id:mid,method,params}))});
+            await send('Page.enable'); await send('Runtime.enable'); await send('Emulation.setDeviceMetricsOverride',{width,height:1000,deviceScaleFactor:1,mobile:width<=768}); await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]}); await send('Page.navigate',{url:'http://127.0.0.1:4321/'}); await sleep(1000);
+            const ev=await send('Runtime.evaluate',{expression:`JSON.stringify((()=>{const q=s=>document.querySelector(s);const rect=e=>e?({x:e.getBoundingClientRect().x,y:e.getBoundingClientRect().y,w:e.getBoundingClientRect().width,h:e.getBoundingClientRect().height,nw:e.naturalWidth||0,nh:e.naturalHeight||0,complete:e.complete}):null;const sai=[...document.querySelectorAll('img[src*="/assets/sai/"]')];return{scrollWidth:document.documentElement.scrollWidth,clientWidth:document.documentElement.clientWidth,bodyScrollWidth:document.body.scrollWidth,mark:rect(q('#approach img[src*="sai-mark-na-na"]')),handoff:rect(q('#security img[src*="sai-comp-handoff"]')),orient:rect(q('.cta-band img[src*="sai-state-orient"]')),saiCount:sai.length,prohibited:[...document.querySelectorAll('.hero img[src*="/assets/sai/"],.site-header img[src*="/assets/sai/"],.pain-selector img[src*="/assets/sai/"],#solutions img[src*="/assets/sai/"],#industries img[src*="/assets/sai/"],.proof-grid img[src*="/assets/sai/"]')].length,hasLegacy:/Enquiry Submitted Successfully|automated acknowledgement|Reference Number|logged in CRM/i.test(document.body.innerText),hasUpload:!!q('input[type=file]'),hasAnalyseAdvise:/\b(?:ANALYSE|ADVISE)\b/.test(document.body.innerText),reduced:getComputedStyle(document.documentElement).scrollBehavior}})())`,returnByValue:true});
+            const d=JSON.parse(ev.result.value);const overflow=Math.max(d.scrollWidth,d.bodyScrollWidth)>d.clientWidth+1;
+            if(overflow||d.saiCount!==3||d.prohibited||d.hasLegacy||d.hasUpload||d.hasAnalyseAdvise) throw new Error(`Regression at ${width}px ${JSON.stringify(d)}`);
+            if(!d.mark||!d.handoff||!d.orient||!d.mark.complete||!d.handoff.complete||!d.orient.complete) throw new Error(`Missing SAI image at ${width}px`);
+            if(d.mark.w>42.1||d.mark.h>42.1||d.mark.nw!==64||d.mark.nh!==64) throw new Error(`Mark size violation ${JSON.stringify(d.mark)}`);
+            if(d.handoff.w>420.1||d.handoff.nw!==420||d.handoff.nh!==213) throw new Error(`HANDOFF size violation ${JSON.stringify(d.handoff)}`);
+            if(d.orient.w>285.1||d.orient.h>213.1||d.orient.nw!==285||d.orient.nh!==213) throw new Error(`ORIENT size violation ${JSON.stringify(d.orient)}`);
+            if(width<=390&&(d.handoff.w>260.1||d.orient.w>200.1)) throw new Error(`Mobile SAI dominance guard failed ${width}px`);
+            if(d.reduced!=='auto') throw new Error('Reduced-motion treatment not active');
+            await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Tab',code:'Tab',windowsVirtualKeyCode:9}); await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Tab',code:'Tab',windowsVirtualKeyCode:9});
+            const focus=await send('Runtime.evaluate',{expression:`JSON.stringify((()=>{const e=document.activeElement,s=getComputedStyle(e);return{tag:e?.tagName,outline:s.outlineStyle,width:parseFloat(s.outlineWidth)||0}})())`,returnByValue:true});const f=JSON.parse(focus.result.value);if(!f.tag||f.outline==='none'||f.width<1) throw new Error(`Visible focus failed ${JSON.stringify(f)}`);
+            await send('Emulation.setPageScaleFactor',{pageScaleFactor:2});const zoom=await send('Runtime.evaluate',{expression:`Math.max(document.documentElement.scrollWidth,document.body.scrollWidth)<=document.documentElement.clientWidth+1`,returnByValue:true});if(!zoom.result.value) throw new Error(`200% zoom overflow at ${width}px`);await send('Emulation.setPageScaleFactor',{pageScaleFactor:1});
+            const metrics=await send('Page.getLayoutMetrics');const content=metrics.cssContentSize;const shot=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:true,fromSurface:true,clip:{x:0,y:0,width,height:content.height,scale:1}});fs.writeFileSync(`validation-artifacts/home-${width}.png`,Buffer.from(shot.data,'base64'));
+            results.push({width,overflow,mark:d.mark,handoff:d.handoff,orient:d.orient,focus:f});ws.close();
+          }
+          fs.writeFileSync('validation-artifacts/responsive-results.json',JSON.stringify(results,null,2));browser.kill('SIGTERM');
+          EOF
+          node /tmp/web-sai-check.mjs
+          cp validation-artifacts/home-1440.png validation-artifacts/WEB-SAI-01_home_desktop.png
+          cp validation-artifacts/home-390.png validation-artifacts/WEB-SAI-01_home_mobile.png
+
+      - name: Upload validation artefacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-sai-01-validation
+          path: |
+            node-version.txt
+            npm-version.txt
+            validation-artifacts/
+            dist/
+          if-no-files-found: error
+          retention-days: 7
+''')
+          PY
+
+      - name: Review and commit bounded files
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          git status --short
+          git config user.name 'TechSafeAI WEB-SAI-01'
+          git config user.email 'actions@users.noreply.github.com'
+          git add src/pages/index.astro
+          git add src/layouts/BaseLayout.astro
+          git add src/styles/web-sai-01.css
+          git add tests/site.test.mjs
+          git add .github/workflows/web-sai-01-validation.yml
+          git rm .github/workflows/web-sai-01-integrate.yml
+          git diff --cached --check
+          git commit -m 'feat(web-sai-01): integrate approved SAI website assets'
+          git push origin HEAD:web/WEB-01F-core-front-end
