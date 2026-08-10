@@ -111,14 +111,14 @@ jobs:
             const key = async (keyName, code, vk) => {
               await send('Input.dispatchKeyEvent', { type: 'keyDown', key: keyName, code, windowsVirtualKeyCode: vk });
               await send('Input.dispatchKeyEvent', { type: 'keyUp', key: keyName, code, windowsVirtualKeyCode: vk });
-              await sleep(90);
+              await sleep(120);
             };
-            const enter = async (selector) => {
+            const activate = async (selector) => {
               await evaluate(`(()=>{const e=document.querySelector(${JSON.stringify(selector)});if(!e)throw new Error('missing ${selector}');e.focus();return document.activeElement===e})()`);
-              await key('Enter', 'Enter', 13);
+              await key(' ', 'Space', 32);
             };
             const click = async (selector) => evaluate(`(()=>{const e=document.querySelector(${JSON.stringify(selector)});if(!e)throw new Error('missing ${selector}');e.click();return true})()`);
-            const value = async (selector, value) => evaluate(`(()=>{const e=document.querySelector(${JSON.stringify(selector)});if(!e)throw new Error('missing ${selector}');e.value=${JSON.stringify(value)};e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));return e.value})()`);
+            const value = async (selector, newValue) => evaluate(`(()=>{const e=document.querySelector(${JSON.stringify(selector)});if(!e)throw new Error('missing ${selector}');e.value=${JSON.stringify(newValue)};e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));return e.value})()`);
             const currentScreen = () => evaluate(`document.querySelector('[data-screen]:not([hidden])')?.dataset.screen || ''`);
             const noOverflow = async (label) => {
               const data = await evaluate(`({scroll:Math.max(document.documentElement.scrollWidth,document.body.scrollWidth),client:document.documentElement.clientWidth})`);
@@ -143,36 +143,38 @@ jobs:
             if (width === 1440) await capture('WEB-01G_challenge_desktop.png');
             if (width === 390) await capture('WEB-01G_challenge_mobile.png');
 
-            for (let i=0;i<20;i++) {
+            let focusChecked = false;
+            for (let i=0;i<24;i++) {
               await key('Tab','Tab',9);
               const focus = await evaluate(`(()=>{const e=document.activeElement;if(!e?.closest('#intake-form'))return null;const own=getComputedStyle(e);const label=e.closest('.choice-card');const ls=label?getComputedStyle(label):null;return{tag:e.tagName,outline:own.outlineStyle,width:parseFloat(own.outlineWidth)||0,labelOutline:ls?.outlineStyle||'',labelWidth:ls?parseFloat(ls.outlineWidth)||0:0}})()`);
               if (focus) {
                 if ((focus.outline === 'none' || focus.width < 1) && (focus.labelOutline === 'none' || focus.labelWidth < 1)) throw new Error(`visible focus missing ${width}: ${JSON.stringify(focus)}`);
-                break;
+                focusChecked = true; break;
               }
             }
+            if (!focusChecked) throw new Error(`keyboard focus did not reach intake ${width}`);
 
-            await enter('[data-screen="1"] [data-next]');
+            await activate('[data-screen="1"] [data-next]');
             if (await currentScreen() !== '1' || !(await evaluate(`!document.querySelector('#intake-errors').hidden`))) throw new Error(`invalid progression not blocked at ${width}`);
             await value('textarea[name="problemSummary"]', 'We need a clearer view of control verification across operating sites.');
-            await enter('[data-screen="1"] [data-next]');
+            await activate('[data-screen="1"] [data-next]');
             if (await currentScreen() !== '2') throw new Error(`screen 2 not reached ${width}`);
 
             await value('input[name="organisationName"]', 'Example Operations');
             await value('select[name="organisationSize"]', '250_999');
             await value('input[name="footprint"]', 'Three Australian operating sites');
-            await enter('[data-screen="2"] [data-back]');
+            await activate('[data-screen="2"] [data-back]');
             if (await currentScreen() !== '1') throw new Error(`back failed ${width}`);
-            await enter('[data-screen="1"] [data-next]');
+            await activate('[data-screen="1"] [data-next]');
             if (await currentScreen() !== '2') throw new Error(`back/forward state failed ${width}`);
-            await enter('[data-screen="2"] [data-next]');
+            await activate('[data-screen="2"] [data-next]');
 
             await click('input[name="industryKey"][value="OTHER_REGULATED"]');
             await value('input[name="otherIndustry"]', 'Regulated processing operation');
             await click('input[name="multiSector"]');
             await click('input[name="activityKey"][value="OTHER"]');
             await value('input[name="otherActivity"]', 'Critical operational assurance');
-            await enter('[data-screen="3"] [data-next]');
+            await activate('[data-screen="3"] [data-next]');
 
             await click('input[name="operatingEnvironment"][value="PLANT_PROCESSING"]');
             await click('input[name="operatingEnvironment"][value="SITE_FIELD"]');
@@ -182,19 +184,19 @@ jobs:
             await noOverflow('operating-context');
             if (width === 1440) await capture('WEB-01G_operating-context_desktop.png');
             if (width === 390) await capture('WEB-01G_operating-context_mobile.png');
-            await enter('[data-screen="4"] [data-next]');
+            await activate('[data-screen="4"] [data-next]');
 
             await value('textarea[name="desiredOutcome"]', 'Create a clearer evidence-backed basis for human review and prioritisation.');
             await value('select[name="trigger"]', 'AUDIT_REVIEW');
             await value('select[name="timing"]', 'ONE_TO_THREE_MONTHS');
-            await enter('[data-screen="5"] [data-next]');
+            await activate('[data-screen="5"] [data-next]');
 
             await value('select[name="safetyCompliance"]', 'YES');
             await value('select[name="aiTechnology"]', 'UNSURE');
             await value('select[name="accountableSponsor"]', 'YES');
             await value('select[name="aitlAvailable"]', 'NO');
             await value('select[name="externalAdviser"]', 'UNSURE');
-            await enter('[data-screen="6"] [data-next]');
+            await activate('[data-screen="6"] [data-next]');
 
             await value('select[name="securityLevel"]', 'HEIGHTENED');
             await value('textarea[name="securityNote"]', 'Formal security review may be required before protected information is requested.');
@@ -202,20 +204,20 @@ jobs:
             await noOverflow('security');
             if (width === 1440) await capture('WEB-01G_security_desktop.png');
             if (width === 390) await capture('WEB-01G_security_mobile.png');
-            await enter('[data-screen="7"] [data-next]');
+            await activate('[data-screen="7"] [data-next]');
 
             await value('input[name="contactName"]', 'Test User');
             await value('input[name="email"]', 'test@example.com');
-            await enter('[data-screen="8"] [data-next]');
+            await activate('[data-screen="8"] [data-next]');
             if (await currentScreen() !== '9') throw new Error(`review not reached ${width}`);
             const reviewTruth = await evaluate(`document.querySelector('[data-screen="9"]')?.innerText.includes('It is not an assessment or compliance determination.')`);
             if (!reviewTruth) throw new Error(`review boundary missing ${width}`);
 
-            await enter('.review-edit');
+            await activate('.review-edit');
             if (await currentScreen() !== '1') throw new Error(`review edit failed ${width}`);
             const preserved = await evaluate(`document.querySelector('textarea[name="problemSummary"]')?.value.includes('control verification')`);
             if (!preserved) throw new Error(`edit did not preserve state ${width}`);
-            for (let screen=1;screen<=8;screen++) await enter(`[data-screen="${screen}"] [data-next]`);
+            for (let screen=1;screen<=8;screen++) await activate(`[data-screen="${screen}"] [data-next]`);
             if (await currentScreen() !== '9') throw new Error(`keyboard replay failed ${width}`);
             await noOverflow('review');
             if (width === 1440) await capture('WEB-01G_review_desktop.png');
@@ -226,7 +228,7 @@ jobs:
             if (zoomOverflow) throw new Error(`200% zoom horizontal overflow ${width}`);
             await send('Emulation.setPageScaleFactor', { pageScaleFactor: 1 });
 
-            await enter('#submit-enquiry');
+            await activate('#submit-enquiry');
             for (let i=0;i<30;i++) { if (await evaluate(`!document.querySelector('#intake-confirmation').hidden`)) break; await sleep(100); }
             const handoff = await evaluate(`(()=>{const e=document.querySelector('#intake-confirmation');const img=e?.querySelector('img');const r=img?.getBoundingClientRect();return{visible:!!e&&!e.hidden,text:e?.innerText||'',imageWidth:r?.width||0}})()`);
             if (!handoff.visible || !handoff.text.includes('human review') || handoff.text.includes('AI assessment complete') || handoff.imageWidth > 420.1 || (width <= 390 && handoff.imageWidth > 260.1)) throw new Error(`handoff regression ${width}: ${JSON.stringify(handoff)}`);
