@@ -1,0 +1,91 @@
+name: WEB-01G validation
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout WEB-01G branch
+        uses: actions/checkout@v4
+        with:
+          ref: web/WEB-01G-structured-intake
+          fetch-depth: 0
+
+      - name: Use Node 22.16.0
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+
+      - name: Record runtime
+        run: |
+          node --version
+          npm --version
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Persist legitimate lockfile change
+        run: |
+          if [ -n "$(git status --porcelain -- package-lock.json)" ]; then
+            git config user.name "TechSafeAI validation"
+            git config user.email "actions@users.noreply.github.com"
+            git add package-lock.json
+            git commit -m "chore(web-01g): lock Node server adapter dependency"
+            git push origin HEAD:web/WEB-01G-structured-intake
+          fi
+
+      - name: Astro check
+        run: npm run check
+
+      - name: Tests
+        run: npm test
+
+      - name: Production build
+        run: npm run build
+
+      - name: Start built server with explicit test transport
+        env:
+          ENQUIRY_TRANSPORT_MODE: test
+          ALLOW_TEST_ENQUIRY_TRANSPORT: "1"
+          HOST: 127.0.0.1
+          PORT: "4321"
+        run: |
+          node dist/server/entry.mjs >/tmp/web01g-server.log 2>&1 &
+          echo $! >/tmp/web01g-server.pid
+          for i in {1..30}; do
+            curl -fsS http://127.0.0.1:4321/start-with-your-challenge >/dev/null && break
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:4321/start-with-your-challenge >/dev/null
+
+      - name: Accepted transport smoke test
+        run: |
+          sleep 1
+          node <<'EOF'
+          const now=Date.now();
+          const payload={startedAt:now-5000,companyWebsite:'',turnstileToken:'',challenge:{key:'CONTROL_VERIFICATION',problemSummary:'We need a clearer view of control verification across operating sites.'},organisation:{name:'Example Operations',sizeBand:'250_999',footprint:'Three sites'},industry:{key:'MINING_RESOURCES',other:'',multiSector:false},activity:{key:'SITE_FIELD',other:''},operatingEnvironment:['SITE_FIELD'],jurisdiction:{scope:'SINGLE_JURISDICTION',countries:'Australia',regions:'Western Australia'},outcome:{desiredOutcome:'Create a clearer evidence-backed basis for human review and prioritisation.',trigger:'AUDIT_REVIEW',timing:'ONE_TO_THREE_MONTHS'},internalCapability:{safetyCompliance:'YES',aiTechnology:'UNSURE',accountableSponsor:'YES',aitlAvailable:'NO',externalAdviser:'UNSURE'},security:{level:'STANDARD',note:'',acknowledged:true},contact:{name:'Test User',email:'test@example.com',telephone:''}};
+          const response=await fetch('http://127.0.0.1:4321/api/enquiry',{method:'POST',headers:{'content-type':'application/json',origin:'http://127.0.0.1:4321'},body:JSON.stringify(payload)});
+          const body=await response.json();
+          if(response.status!==202||body.accepted!==true||body.humanReview!==true) throw new Error(JSON.stringify({status:response.status,body}));
+          EOF
+
+      - name: Fail-closed transport smoke test
+        run: |
+          kill "$(cat /tmp/web01g-server.pid)" || true
+          ENQUIRY_TRANSPORT_MODE=unconfigured HOST=127.0.0.1 PORT=4322 node dist/server/entry.mjs >/tmp/web01g-closed.log 2>&1 &
+          echo $! >/tmp/web01g-closed.pid
+          sleep 1
+          node <<'EOF'
+          const now=Date.now();
+          const payload={startedAt:now-5000,companyWebsite:'',turnstileToken:'',challenge:{key:'CONTROL_VERIFICATION',problemSummary:'We need a clearer view of control verification across operating sites.'},organisation:{name:'Example Operations',sizeBand:'250_999',footprint:'Three sites'},industry:{key:'MINING_RESOURCES',other:'',multiSector:false},activity:{key:'SITE_FIELD',other:''},operatingEnvironment:['SITE_FIELD'],jurisdiction:{scope:'SINGLE_JURISDICTION',countries:'Australia',regions:'Western Australia'},outcome:{desiredOutcome:'Create a clearer evidence-backed basis for human review and prioritisation.',trigger:'AUDIT_REVIEW',timing:'ONE_TO_THREE_MONTHS'},internalCapability:{safetyCompliance:'YES',aiTechnology:'UNSURE',accountableSponsor:'YES',aitlAvailable:'NO',externalAdviser:'UNSURE'},security:{level:'STANDARD',note:'',acknowledged:true},contact:{name:'Test User',email:'test@example.com',telephone:''}};
+          const response=await fetch('http://127.0.0.1:4322/api/enquiry',{method:'POST',headers:{'content-type':'application/json',origin:'http://127.0.0.1:4322'},body:JSON.stringify(payload)});
+          const body=await response.json();
+          if(response.status!==503||body.accepted!==false||body.code!=='TRANSPORT_NOT_CONFIGURED') throw new Error(JSON.stringify({status:response.status,body}));
+          EOF
