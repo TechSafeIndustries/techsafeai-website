@@ -13,12 +13,15 @@ test('canonical domain is techsafe.ai', () => {
   assert.doesNotMatch(config, /techsafe\.industries/);
 });
 
-test('legacy false-success handler is removed from the WEB-01F tree', () => {
+test('legacy false-success handler remains absent', () => {
   assert.equal(fs.existsSync(path.join(root, 'script.js')), false);
   assert.equal(fs.existsSync(path.join(root, 'contact.html')), false);
-  const start = read('src/pages/start-with-your-challenge/index.astro');
-  assert.match(start, /Online enquiry submission is not yet available/i);
-  assert.doesNotMatch(start, /Enquiry Submitted Successfully|You will receive an automated acknowledgement|Your Reference Number|communications are logged in the customer relationship management system/i);
+  const publicSource = [
+    read('src/pages/start-with-your-challenge/index.astro'),
+    read('src/scripts/intake.ts')
+  ].join('\n');
+  assert.doesNotMatch(publicSource, /Enquiry Submitted Successfully|You will receive an automated acknowledgement|Your Reference Number|communications are logged in the customer relationship management system/i);
+  assert.match(publicSource, /accepted !== true/);
 });
 
 test('public UI does not expose internal build or control-tower language', () => {
