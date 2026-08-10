@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   validate:
@@ -25,21 +25,14 @@ jobs:
 
       - name: Record runtime
         run: |
-          node --version
-          npm --version
+          node --version | tee node-version.txt
+          npm --version | tee npm-version.txt
 
       - name: Install dependencies
         run: npm install
 
-      - name: Persist legitimate lockfile change
-        run: |
-          if [ -n "$(git status --porcelain -- package-lock.json)" ]; then
-            git config user.name "TechSafeAI validation"
-            git config user.email "actions@users.noreply.github.com"
-            git add package-lock.json
-            git commit -m "chore(web-01g): lock Node server adapter dependency"
-            git push origin HEAD:web/WEB-01G-structured-intake
-          fi
+      - name: Confirm lockfile unchanged
+        run: git diff --exit-code -- package-lock.json
 
       - name: Astro check
         run: npm run check
@@ -65,23 +58,199 @@ jobs:
           done
           curl -fsS http://127.0.0.1:4321/start-with-your-challenge >/dev/null
 
-      - name: Accepted transport smoke test
+      - name: Browser flow, accessibility, responsive and visual proof
+        shell: bash
         run: |
-          sleep 1
-          node <<'EOF'
-          const now=Date.now();
-          const payload={startedAt:now-5000,companyWebsite:'',turnstileToken:'',challenge:{key:'CONTROL_VERIFICATION',problemSummary:'We need a clearer view of control verification across operating sites.'},organisation:{name:'Example Operations',sizeBand:'250_999',footprint:'Three sites'},industry:{key:'MINING_RESOURCES',other:'',multiSector:false},activity:{key:'SITE_FIELD',other:''},operatingEnvironment:['SITE_FIELD'],jurisdiction:{scope:'SINGLE_JURISDICTION',countries:'Australia',regions:'Western Australia'},outcome:{desiredOutcome:'Create a clearer evidence-backed basis for human review and prioritisation.',trigger:'AUDIT_REVIEW',timing:'ONE_TO_THREE_MONTHS'},internalCapability:{safetyCompliance:'YES',aiTechnology:'UNSURE',accountableSponsor:'YES',aitlAvailable:'NO',externalAdviser:'UNSURE'},security:{level:'STANDARD',note:'',acknowledged:true},contact:{name:'Test User',email:'test@example.com',telephone:''}};
-          const response=await fetch('http://127.0.0.1:4321/api/enquiry',{method:'POST',headers:{'content-type':'application/json',origin:'http://127.0.0.1:4321'},body:JSON.stringify(payload)});
-          const body=await response.json();
-          if(response.status!==202||body.accepted!==true||body.humanReview!==true) throw new Error(JSON.stringify({status:response.status,body}));
-          EOF
+          cat > /tmp/web01g-browser.mjs <<'EOF'
+          import { spawn } from 'node:child_process';
+          import fs from 'node:fs';
+          import http from 'node:http';
 
-      - name: Fail-closed transport smoke test
+          const chrome = process.env.CHROME_BIN || '/usr/bin/google-chrome';
+          const port = 9222;
+          const browser = spawn(chrome, [
+            '--headless=new', '--no-sandbox', '--disable-gpu', `--remote-debugging-port=${port}`,
+            '--remote-debugging-address=127.0.0.1', '--user-data-dir=/tmp/web01g-chrome', 'about:blank'
+          ], { stdio: 'ignore' });
+          const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+          const requestJson = (method, path) => new Promise((resolve, reject) => {
+            const request = http.request({ host: '127.0.0.1', port, path, method }, (response) => {
+              let body = '';
+              response.on('data', (chunk) => body += chunk);
+              response.on('end', () => { try { resolve(JSON.parse(body)); } catch (error) { reject(error); } });
+            });
+            request.on('error', reject); request.end();
+          });
+          for (let i = 0; i < 30; i++) { try { await requestJson('GET', '/json/version'); break; } catch { await sleep(300); } }
+
+          fs.mkdirSync('validation-artifacts', { recursive: true });
+          const widths = [1440, 1024, 768, 390, 320];
+          const results = [];
+
+          for (const width of widths) {
+            const target = await requestJson('PUT', '/json/new?http://127.0.0.1:4321/start-with-your-challenge?challenge=CONTROL_VERIFICATION');
+            const ws = new WebSocket(target.webSocketDebuggerUrl);
+            await new Promise((resolve, reject) => { ws.addEventListener('open', resolve, { once: true }); ws.addEventListener('error', reject, { once: true }); });
+            let messageId = 0;
+            const pending = new Map();
+            ws.addEventListener('message', (event) => {
+              const message = JSON.parse(event.data);
+              if (message.id && pending.has(message.id)) {
+                const handlers = pending.get(message.id); pending.delete(message.id);
+                message.error ? handlers.reject(new Error(JSON.stringify(message.error))) : handlers.resolve(message.result);
+              }
+            });
+            const send = (method, params = {}) => new Promise((resolve, reject) => {
+              const id = ++messageId; pending.set(id, { resolve, reject }); ws.send(JSON.stringify({ id, method, params }));
+            });
+            const evaluate = async (expression) => {
+              const result = await send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true });
+              if (result.exceptionDetails) throw new Error(JSON.stringify(result.exceptionDetails));
+              return result.result.value;
+            };
+            const key = async (keyName, code, vk) => {
+              await send('Input.dispatchKeyEvent', { type: 'keyDown', key: keyName, code, windowsVirtualKeyCode: vk });
+              await send('Input.dispatchKeyEvent', { type: 'keyUp', key: keyName, code, windowsVirtualKeyCode: vk });
+              await sleep(90);
+            };
+            const enter = async (selector) => {
+              await evaluate(`(()=>{const e=document.querySelector(${JSON.stringify(selector)});if(!e)throw new Error('missing ${selector}');e.focus();return document.activeElement===e})()`);
+              await key('Enter', 'Enter', 13);
+            };
+            const click = async (selector) => evaluate(`(()=>{const e=document.querySelector(${JSON.stringify(selector)});if(!e)throw new Error('missing ${selector}');e.click();return true})()`);
+            const value = async (selector, value) => evaluate(`(()=>{const e=document.querySelector(${JSON.stringify(selector)});if(!e)throw new Error('missing ${selector}');e.value=${JSON.stringify(value)};e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));return e.value})()`);
+            const currentScreen = () => evaluate(`document.querySelector('[data-screen]:not([hidden])')?.dataset.screen || ''`);
+            const noOverflow = async (label) => {
+              const data = await evaluate(`({scroll:Math.max(document.documentElement.scrollWidth,document.body.scrollWidth),client:document.documentElement.clientWidth})`);
+              if (data.scroll > data.client + 1) throw new Error(`horizontal overflow ${width}px ${label}: ${JSON.stringify(data)}`);
+            };
+            const capture = async (name) => {
+              await evaluate(`document.querySelector('.intake-layout')?.scrollIntoView({block:'start'})`); await sleep(100);
+              const rect = await evaluate(`(()=>{const e=document.querySelector('.intake-layout');const r=e.getBoundingClientRect();return{x:Math.max(0,r.x+scrollX),y:Math.max(0,r.y+scrollY),w:r.width,h:r.height}})()`);
+              const shot = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true, fromSurface: true, clip: { x: rect.x, y: rect.y, width: rect.w, height: rect.h, scale: 1 } });
+              fs.writeFileSync(`validation-artifacts/${name}`, Buffer.from(shot.data, 'base64'));
+            };
+
+            await send('Page.enable'); await send('Runtime.enable');
+            await send('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: width <= 768 });
+            await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
+            await send('Page.navigate', { url: 'http://127.0.0.1:4321/start-with-your-challenge?challenge=CONTROL_VERIFICATION' });
+            await sleep(900);
+
+            const initial = await evaluate(`(()=>({carried:document.querySelector('input[name="challengeKey"]:checked')?.value,stages:document.querySelectorAll('[data-progress-stage]').length,current:document.querySelector('[aria-current="step"]')?.textContent?.trim(),upload:!!document.querySelector('input[type="file"]'),errors:document.querySelector('#intake-errors')?.getAttribute('role'),reduced:getComputedStyle(document.documentElement).scrollBehavior,focusables:[...document.querySelectorAll('#intake-form input:not([type="hidden"]):not(.honeypot input),#intake-form select,#intake-form textarea,#intake-form button')].every(e=>e.tabIndex>=0)}))()`);
+            if (initial.carried !== 'CONTROL_VERIFICATION' || initial.stages !== 7 || initial.current?.includes('Challenge') !== true || initial.upload || initial.errors !== 'alert' || initial.reduced !== 'auto' || !initial.focusables) throw new Error(`initial UX/accessibility regression ${width}: ${JSON.stringify(initial)}`);
+            await noOverflow('challenge');
+            if (width === 1440) await capture('WEB-01G_challenge_desktop.png');
+            if (width === 390) await capture('WEB-01G_challenge_mobile.png');
+
+            for (let i=0;i<20;i++) {
+              await key('Tab','Tab',9);
+              const focus = await evaluate(`(()=>{const e=document.activeElement;if(!e?.closest('#intake-form'))return null;const own=getComputedStyle(e);const label=e.closest('.choice-card');const ls=label?getComputedStyle(label):null;return{tag:e.tagName,outline:own.outlineStyle,width:parseFloat(own.outlineWidth)||0,labelOutline:ls?.outlineStyle||'',labelWidth:ls?parseFloat(ls.outlineWidth)||0:0}})()`);
+              if (focus) {
+                if ((focus.outline === 'none' || focus.width < 1) && (focus.labelOutline === 'none' || focus.labelWidth < 1)) throw new Error(`visible focus missing ${width}: ${JSON.stringify(focus)}`);
+                break;
+              }
+            }
+
+            await enter('[data-screen="1"] [data-next]');
+            if (await currentScreen() !== '1' || !(await evaluate(`!document.querySelector('#intake-errors').hidden`))) throw new Error(`invalid progression not blocked at ${width}`);
+            await value('textarea[name="problemSummary"]', 'We need a clearer view of control verification across operating sites.');
+            await enter('[data-screen="1"] [data-next]');
+            if (await currentScreen() !== '2') throw new Error(`screen 2 not reached ${width}`);
+
+            await value('input[name="organisationName"]', 'Example Operations');
+            await value('select[name="organisationSize"]', '250_999');
+            await value('input[name="footprint"]', 'Three Australian operating sites');
+            await enter('[data-screen="2"] [data-back]');
+            if (await currentScreen() !== '1') throw new Error(`back failed ${width}`);
+            await enter('[data-screen="1"] [data-next]');
+            if (await currentScreen() !== '2') throw new Error(`back/forward state failed ${width}`);
+            await enter('[data-screen="2"] [data-next]');
+
+            await click('input[name="industryKey"][value="OTHER_REGULATED"]');
+            await value('input[name="otherIndustry"]', 'Regulated processing operation');
+            await click('input[name="multiSector"]');
+            await click('input[name="activityKey"][value="OTHER"]');
+            await value('input[name="otherActivity"]', 'Critical operational assurance');
+            await enter('[data-screen="3"] [data-next]');
+
+            await click('input[name="operatingEnvironment"][value="PLANT_PROCESSING"]');
+            await click('input[name="operatingEnvironment"][value="SITE_FIELD"]');
+            await click('input[name="jurisdictionScope"][value="MULTI_JURISDICTION"]');
+            await value('input[name="countries"]', 'Australia, New Zealand');
+            await value('input[name="regions"]', 'Western Australia, Queensland');
+            await noOverflow('operating-context');
+            if (width === 1440) await capture('WEB-01G_operating-context_desktop.png');
+            if (width === 390) await capture('WEB-01G_operating-context_mobile.png');
+            await enter('[data-screen="4"] [data-next]');
+
+            await value('textarea[name="desiredOutcome"]', 'Create a clearer evidence-backed basis for human review and prioritisation.');
+            await value('select[name="trigger"]', 'AUDIT_REVIEW');
+            await value('select[name="timing"]', 'ONE_TO_THREE_MONTHS');
+            await enter('[data-screen="5"] [data-next]');
+
+            await value('select[name="safetyCompliance"]', 'YES');
+            await value('select[name="aiTechnology"]', 'UNSURE');
+            await value('select[name="accountableSponsor"]', 'YES');
+            await value('select[name="aitlAvailable"]', 'NO');
+            await value('select[name="externalAdviser"]', 'UNSURE');
+            await enter('[data-screen="6"] [data-next]');
+
+            await value('select[name="securityLevel"]', 'HEIGHTENED');
+            await value('textarea[name="securityNote"]', 'Formal security review may be required before protected information is requested.');
+            await click('input[name="securityAcknowledged"]');
+            await noOverflow('security');
+            if (width === 1440) await capture('WEB-01G_security_desktop.png');
+            if (width === 390) await capture('WEB-01G_security_mobile.png');
+            await enter('[data-screen="7"] [data-next]');
+
+            await value('input[name="contactName"]', 'Test User');
+            await value('input[name="email"]', 'test@example.com');
+            await enter('[data-screen="8"] [data-next]');
+            if (await currentScreen() !== '9') throw new Error(`review not reached ${width}`);
+            const reviewTruth = await evaluate(`document.querySelector('[data-screen="9"]')?.innerText.includes('It is not an assessment or compliance determination.')`);
+            if (!reviewTruth) throw new Error(`review boundary missing ${width}`);
+
+            await enter('.review-edit');
+            if (await currentScreen() !== '1') throw new Error(`review edit failed ${width}`);
+            const preserved = await evaluate(`document.querySelector('textarea[name="problemSummary"]')?.value.includes('control verification')`);
+            if (!preserved) throw new Error(`edit did not preserve state ${width}`);
+            for (let screen=1;screen<=8;screen++) await enter(`[data-screen="${screen}"] [data-next]`);
+            if (await currentScreen() !== '9') throw new Error(`keyboard replay failed ${width}`);
+            await noOverflow('review');
+            if (width === 1440) await capture('WEB-01G_review_desktop.png');
+            if (width === 390) await capture('WEB-01G_review_mobile.png');
+
+            await send('Emulation.setPageScaleFactor', { pageScaleFactor: 2 });
+            const zoomOverflow = await evaluate(`Math.max(document.documentElement.scrollWidth,document.body.scrollWidth)>document.documentElement.clientWidth+1`);
+            if (zoomOverflow) throw new Error(`200% zoom horizontal overflow ${width}`);
+            await send('Emulation.setPageScaleFactor', { pageScaleFactor: 1 });
+
+            await enter('#submit-enquiry');
+            for (let i=0;i<30;i++) { if (await evaluate(`!document.querySelector('#intake-confirmation').hidden`)) break; await sleep(100); }
+            const handoff = await evaluate(`(()=>{const e=document.querySelector('#intake-confirmation');const img=e?.querySelector('img');const r=img?.getBoundingClientRect();return{visible:!!e&&!e.hidden,text:e?.innerText||'',imageWidth:r?.width||0}})()`);
+            if (!handoff.visible || !handoff.text.includes('human review') || handoff.text.includes('AI assessment complete') || handoff.imageWidth > 420.1 || (width <= 390 && handoff.imageWidth > 260.1)) throw new Error(`handoff regression ${width}: ${JSON.stringify(handoff)}`);
+            await noOverflow('handoff');
+            if (width === 1440) await capture('WEB-01G_handoff_desktop.png');
+            if (width === 390) await capture('WEB-01G_handoff_mobile.png');
+
+            results.push({ width, carriedChallenge: initial.carried, stages: initial.stages, backEdit: true, keyboardProgression: true, noHorizontalOverflow: true, handoffImageWidth: handoff.imageWidth });
+            ws.close();
+          }
+
+          fs.writeFileSync('validation-artifacts/responsive-results.json', JSON.stringify(results, null, 2));
+          browser.kill('SIGTERM');
+          EOF
+          node /tmp/web01g-browser.mjs
+
+      - name: Fail-closed built-server smoke test
         run: |
-          kill "$(cat /tmp/web01g-server.pid)" || true
           ENQUIRY_TRANSPORT_MODE=unconfigured HOST=127.0.0.1 PORT=4322 node dist/server/entry.mjs >/tmp/web01g-closed.log 2>&1 &
           echo $! >/tmp/web01g-closed.pid
-          sleep 1
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:4322/start-with-your-challenge >/dev/null && break
+            sleep 1
+          done
           node <<'EOF'
           const now=Date.now();
           const payload={startedAt:now-5000,companyWebsite:'',turnstileToken:'',challenge:{key:'CONTROL_VERIFICATION',problemSummary:'We need a clearer view of control verification across operating sites.'},organisation:{name:'Example Operations',sizeBand:'250_999',footprint:'Three sites'},industry:{key:'MINING_RESOURCES',other:'',multiSector:false},activity:{key:'SITE_FIELD',other:''},operatingEnvironment:['SITE_FIELD'],jurisdiction:{scope:'SINGLE_JURISDICTION',countries:'Australia',regions:'Western Australia'},outcome:{desiredOutcome:'Create a clearer evidence-backed basis for human review and prioritisation.',trigger:'AUDIT_REVIEW',timing:'ONE_TO_THREE_MONTHS'},internalCapability:{safetyCompliance:'YES',aiTechnology:'UNSURE',accountableSponsor:'YES',aitlAvailable:'NO',externalAdviser:'UNSURE'},security:{level:'STANDARD',note:'',acknowledged:true},contact:{name:'Test User',email:'test@example.com',telephone:''}};
@@ -89,3 +258,26 @@ jobs:
           const body=await response.json();
           if(response.status!==503||body.accepted!==false||body.code!=='TRANSPORT_NOT_CONFIGURED') throw new Error(JSON.stringify({status:response.status,body}));
           EOF
+
+      - name: Inspect final source state
+        run: |
+          test -s package-lock.json
+          git diff --exit-code -- package-lock.json
+          test ! -e script.js
+          test ! -e contact.html
+          ! grep -R -E 'Enquiry Submitted Successfully|Your Reference Number|logged in CRM|automated acknowledgement' src tests --exclude-dir=node_modules
+          ! grep -R -E 'type=["'"']file["'"']' src/pages/start-with-your-challenge src/scripts
+          ! grep -R -E 'localStorage|sessionStorage' src/scripts/intake.ts
+
+      - name: Upload WEB-01G validation artefacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-01g-validation
+          path: |
+            node-version.txt
+            npm-version.txt
+            validation-artifacts/
+            dist/
+          if-no-files-found: error
+          retention-days: 7
