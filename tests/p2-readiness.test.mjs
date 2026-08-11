@@ -28,6 +28,30 @@ test('isolated provider runner is pinned to approved DEVELOPER_TEST account befo
   assert.match(script, /P2 SYNTHETIC/);
 });
 
+test('isolated provider runner validates pipeline/stage via CRM Pipelines API before writes', () => {
+  const script = read('.github/scripts/web01g-p2-hubspot-isolated-proof.mjs');
+  const accountGuard = script.indexOf("assert.equal(String(account.portalId), APPROVED_P2_TEST_PORTAL_ID");
+  const pipelineDiscovery = script.indexOf('/crm/pipelines/2026-03/deals');
+  const writePath = script.indexOf('propertyDefinitions');
+
+  // CRM Pipelines API is the authoritative source.
+  assert.match(script, /\/crm\/pipelines\/2026-03\/deals/);
+  // Account guard occurs before pipeline discovery.
+  assert.ok(accountGuard !== -1 && pipelineDiscovery !== -1 && accountGuard < pipelineDiscovery);
+  // Pipeline/stage validation occurs before the property/write path.
+  assert.ok(pipelineDiscovery < writePath);
+  // Old Deal property-option validation paths are absent.
+  assert.doesNotMatch(script, /\/crm\/properties\/2026-03\/deals\/pipeline/);
+  assert.doesNotMatch(script, /\/crm\/properties\/2026-03\/deals\/dealstage/);
+  // No automatic default pipeline/stage fallback remains.
+  assert.doesNotMatch(script, /\|\|\s*'default'/);
+  assert.doesNotMatch(script, /appointmentscheduled/);
+  // Unset configuration fails closed with a clear message.
+  assert.match(script, /CONFIGURATION_REQUIRED/);
+  // Configured stage must belong to the configured pipeline.
+  assert.match(script, /does not belong to pipeline/);
+});
+
 test('isolated app install spec contains exactly the governed six HubSpot scopes', () => {
   const spec = read('docs/WEB-01G-P2-hubspot-test-app-install-spec.md');
   const scopes = [

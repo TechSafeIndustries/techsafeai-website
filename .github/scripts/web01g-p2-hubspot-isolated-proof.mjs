@@ -29,6 +29,47 @@ const account = await request('/account-info/2026-03/details');
 assert.equal(String(account.portalId), APPROVED_P2_TEST_PORTAL_ID, 'Connected token does not belong to approved P2 test Account 247013551.');
 assert.equal(account.accountType, 'DEVELOPER_TEST', `P2 writes require DEVELOPER_TEST, received ${account.accountType}.`);
 
+// Pipeline/stage authority is the HubSpot CRM Pipelines API (2026-03), NOT Deal property option metadata.
+// This discovery/validation runs immediately after the account guard and before any property/contact/deal write.
+const pipelinesResponse = await request('/crm/pipelines/2026-03/deals');
+const availablePipelines = pipelinesResponse.results || [];
+
+const requestedPipelineId = process.env.HUBSPOT_P2_TEST_PIPELINE_ID?.trim();
+const requestedStageId = process.env.HUBSPOT_P2_TEST_STAGE_ID?.trim();
+
+if (!requestedPipelineId || !requestedStageId) {
+  // SAFE discovery output only. No token, headers, contact data or secret material is printed.
+  const pipelineDiscovery = availablePipelines.map((pipeline) => ({
+    pipelineId: pipeline.id,
+    label: pipeline.label,
+    stages: (pipeline.stages || [])
+      .slice()
+      .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+      .map((stage) => {
+        const entry = { stageId: stage.id, label: stage.label, displayOrder: stage.displayOrder };
+        if (stage.metadata && stage.metadata.isClosed !== undefined) entry.isClosed = stage.metadata.isClosed;
+        if (stage.metadata && stage.metadata.probability !== undefined) entry.probability = stage.metadata.probability;
+        return entry;
+      })
+  }));
+  console.log(JSON.stringify({
+    proof: 'WEB-01G-P2-HUBSPOT-ISOLATED',
+    status: 'CONFIGURATION_REQUIRED',
+    portalId: account.portalId,
+    accountType: account.accountType,
+    availablePipelines: pipelineDiscovery,
+    syntheticRecordsRetainedForEvidence: false
+  }, null, 2));
+  throw new Error('CONFIGURATION_REQUIRED: set HUBSPOT_P2_TEST_PIPELINE_ID and HUBSPOT_P2_TEST_STAGE_ID to an existing pipeline/stage from the discovery output above. No pipeline or stage is auto-selected; zero writes were performed.');
+}
+
+const selectedPipeline = availablePipelines.find((pipeline) => pipeline.id === requestedPipelineId);
+assert.ok(selectedPipeline, `Configured pipeline ${requestedPipelineId} does not exist in approved P2 test Account 247013551.`);
+const selectedStage = (selectedPipeline.stages || []).find((stage) => stage.id === requestedStageId);
+assert.ok(selectedStage, `Configured stage ${requestedStageId} does not belong to pipeline ${requestedPipelineId}.`);
+const pipelineId = requestedPipelineId;
+const stageId = requestedStageId;
+
 const propertyDefinitions = [
   { name: 'website_enquiry_id', label: 'Website enquiry ID', type: 'string', fieldType: 'text', hasUniqueValue: true },
   { name: 'website_received_at', label: 'Website received at', type: 'datetime', fieldType: 'date' },
@@ -62,13 +103,6 @@ for (const definition of propertyDefinitions) {
     }
   });
 }
-
-const pipelineProperty = await request('/crm/properties/2026-03/deals/pipeline');
-const stageProperty = await request('/crm/properties/2026-03/deals/dealstage');
-const pipelineId = process.env.HUBSPOT_P2_TEST_PIPELINE_ID || 'default';
-const stageId = process.env.HUBSPOT_P2_TEST_STAGE_ID || 'appointmentscheduled';
-assert.ok(pipelineProperty.options?.some((option) => option.value === pipelineId), `Test pipeline ${pipelineId} not available.`);
-assert.ok(stageProperty.options?.some((option) => option.value === stageId), `Test stage ${stageId} not available.`);
 
 const suffix = new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14);
 const syntheticEmail = `techsafeai.p2.synthetic.${suffix}@example.com`;

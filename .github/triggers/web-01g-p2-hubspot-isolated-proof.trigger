@@ -1,1 +1,1 @@
-WEB-01G-P2 isolated HubSpot proof trigger — authorised 2026-08-11
+WEB-01G-P2 HubSpot pipeline discovery — authorised 2026-08-11

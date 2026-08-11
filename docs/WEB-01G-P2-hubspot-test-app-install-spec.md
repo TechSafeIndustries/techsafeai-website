@@ -119,7 +119,7 @@ No production portal properties are authorised.
 
 Do not clone the real Sales Pipeline merely because it exists.
 
-The isolated proof may use an existing test-account pipeline/stage or a separately approved dedicated test pipeline/stage. The proof runner reads available `pipeline` and `dealstage` options and fails if configured IDs do not exist.
+The isolated proof may use an existing test-account pipeline/stage or a separately approved dedicated test pipeline/stage. HubSpot CRM Pipelines API is authoritative for available Deal pipeline and stage IDs. The proof runner fails closed if the configured IDs do not exist or the configured stage does not belong to the configured pipeline.
 
 ## Stop conditions
 
