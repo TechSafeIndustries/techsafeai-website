@@ -1,5 +1,6 @@
 import { validateEnquiryPayload, buildWorkpacketStub } from './core.mjs';
 import { getConfiguredTransport } from './transport.mjs';
+import { contextFingerprint, createEnquiryId, isValidEnquiryId } from './submission.mjs';
 import {
   checkRateLimit,
   validateHoneypotAndAge,
@@ -12,7 +13,7 @@ const headers = {
   'cache-control': 'no-store'
 };
 
-const json = (status, body) => new Response(JSON.stringify(body), { status, headers });
+const json = (status, body, extraHeaders = {}) => new Response(JSON.stringify(body), { status, headers: { ...headers, ...extraHeaders } });
 
 export async function handleEnquiryRequest(request, {
   clientAddress = 'unknown',
@@ -58,18 +59,31 @@ export async function handleEnquiryRequest(request, {
     });
   }
 
+  const selectedTransport = transport ?? getConfiguredTransport(env, { fetchImpl });
+  const suppliedEnquiryId = typeof payload?.enquiryId === 'string' ? payload.enquiryId.trim() : '';
+  if (selectedTransport.requiresStableEnquiryId && !isValidEnquiryId(suppliedEnquiryId)) {
+    return json(400, {
+      accepted: false,
+      code: 'ENQUIRY_SESSION_REQUIRED',
+      message: 'The secure enquiry session could not be confirmed. Please reload the page and try again.'
+    });
+  }
+
+  const enquiryId = isValidEnquiryId(suppliedEnquiryId) ? suppliedEnquiryId : createEnquiryId();
+  const fingerprint = contextFingerprint(validated.data);
   const workpacketStub = buildWorkpacketStub(validated.data, new Date(nowMs));
-  const selectedTransport = transport ?? getConfiguredTransport(env);
 
   let result;
   try {
-    result = await selectedTransport.submit(workpacketStub);
-  } catch {
+    result = await selectedTransport.submit(workpacketStub, { enquiryId, fingerprint });
+  } catch (error) {
+    const retryAfterMs = Number(error?.retryAfterMs || 0);
+    const extraHeaders = retryAfterMs > 0 ? { 'retry-after': String(Math.max(1, Math.ceil(retryAfterMs / 1000))) } : {};
     return json(503, {
       accepted: false,
-      code: 'TRANSPORT_UNAVAILABLE',
+      code: error?.code === 'RATE_LIMITED' ? 'TRANSPORT_RATE_LIMITED' : 'TRANSPORT_UNAVAILABLE',
       message: 'Online enquiry submission is temporarily unavailable. Your information has not been confirmed as received.'
-    });
+    }, extraHeaders);
   }
 
   if (!result?.accepted) {
