@@ -1,0 +1,116 @@
+name: WEB-01G-P2 validation
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout P2 branch
+        uses: actions/checkout@v4
+        with:
+          ref: web/WEB-01G-P2-nonprod-integration
+          fetch-depth: 0
+
+      - name: Use Node 22.16.0
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+
+      - name: Runtime
+        run: |
+          node --version
+          npm --version
+
+      - name: Install
+        run: npm install
+
+      - name: Lockfile unchanged
+        run: git diff --exit-code -- package-lock.json
+
+      - name: Astro check
+        run: npm run check
+
+      - name: Tests
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Measure representative Workpacket Stub
+        run: |
+          node --input-type=module <<'EOF'
+          import { validateEnquiryPayload, buildWorkpacketStub } from './src/server/enquiry/core.mjs';
+          import { serialiseWorkpacketStub } from './src/server/enquiry/submission.mjs';
+          const x=(n,c='x')=>c.repeat(n);
+          const raw={challenge:{key:'OTHER_UNSURE',problemSummary:x(300)},organisation:{name:x(120),sizeBand:'5000_PLUS',footprint:x(160)},industry:{key:'OTHER_REGULATED',other:x(100),multiSector:true},activity:{key:'OTHER',other:x(120)},operatingEnvironment:['SITE_FIELD','PLANT_PROCESSING','CONSTRUCTION_PROJECT','TRANSPORT_LOGISTICS','WAREHOUSING','INFRASTRUCTURE_UTILITIES','CONTROLLED_OFFICE','MIXED'],jurisdiction:{scope:'MULTI_JURISDICTION',countries:x(120),regions:x(160)},outcome:{desiredOutcome:x(300),trigger:'OTHER',timing:'SIX_PLUS_MONTHS'},internalCapability:{safetyCompliance:'UNSURE',aiTechnology:'UNSURE',accountableSponsor:'UNSURE',aitlAvailable:'UNSURE',externalAdviser:'UNSURE'},security:{level:'FORMAL_REVIEW',note:x(200),acknowledged:true},contact:{name:x(100),email:'synthetic@example.test',telephone:x(40)}};
+          const validated=validateEnquiryPayload(raw); if(!validated.ok) throw new Error(JSON.stringify(validated.errors));
+          const text=serialiseWorkpacketStub(buildWorkpacketStub(validated.data,new Date('2026-08-11T00:00:00Z')));
+          console.log(`MAX_REPRESENTATIVE_WORKPACKET_CHARS=${text.length}`);
+          if(text.length>=65536) throw new Error('Workpacket exceeds HubSpot string property capacity');
+          EOF
+
+      - name: Start server with official Turnstile passing test secret
+        env:
+          DEPLOYMENT_ENVIRONMENT: test
+          ENQUIRY_TRANSPORT_MODE: test
+          ALLOW_TEST_ENQUIRY_TRANSPORT: "1"
+          TURNSTILE_REQUIRED: "1"
+          TURNSTILE_SECRET_KEY: 1x0000000000000000000000000000000AA
+          HOST: 127.0.0.1
+          PORT: "4321"
+        run: |
+          node dist/server/entry.mjs >/tmp/web01g-p2-turnstile-pass.log 2>&1 &
+          echo $! >/tmp/web01g-p2-pass.pid
+          for i in {1..30}; do curl -fsS http://127.0.0.1:4321/start-with-your-challenge >/dev/null && break; sleep 1; done
+
+      - name: Turnstile official pass-key end-to-end proof
+        run: |
+          node --input-type=module <<'EOF'
+          const now=Date.now();
+          const payload={startedAt:now-5000,companyWebsite:'',turnstileToken:'XXXX.DUMMY.TOKEN.XXXX',challenge:{key:'CONTROL_VERIFICATION',problemSummary:'Synthetic control verification context for non-production provider proof.'},organisation:{name:'Synthetic Operations',sizeBand:'250_999',footprint:'Synthetic sites'},industry:{key:'MINING_RESOURCES',other:'',multiSector:false},activity:{key:'SITE_FIELD',other:''},operatingEnvironment:['SITE_FIELD'],jurisdiction:{scope:'UNKNOWN',countries:'',regions:''},outcome:{desiredOutcome:'Prepare synthetic context for controlled human review and provider testing.',trigger:'AI_INITIATIVE',timing:'ONE_TO_THREE_MONTHS'},internalCapability:{safetyCompliance:'UNSURE',aiTechnology:'UNSURE',accountableSponsor:'UNSURE',aitlAvailable:'UNSURE',externalAdviser:'UNSURE'},security:{level:'STANDARD',note:'',acknowledged:true},contact:{name:'Synthetic Test User',email:'synthetic@example.test',telephone:''}};
+          const r=await fetch('http://127.0.0.1:4321/api/enquiry',{method:'POST',headers:{'content-type':'application/json',origin:'http://127.0.0.1:4321'},body:JSON.stringify(payload)}); const b=await r.json();
+          if(r.status!==202||b.accepted!==true) throw new Error(JSON.stringify({status:r.status,body:b}));
+          console.log('TURNSTILE_OFFICIAL_PASS=PASS');
+          EOF
+
+      - name: Restart server with official Turnstile failing test secret
+        env:
+          DEPLOYMENT_ENVIRONMENT: test
+          ENQUIRY_TRANSPORT_MODE: test
+          ALLOW_TEST_ENQUIRY_TRANSPORT: "1"
+          TURNSTILE_REQUIRED: "1"
+          TURNSTILE_SECRET_KEY: 2x0000000000000000000000000000000AA
+          HOST: 127.0.0.1
+          PORT: "4322"
+        run: |
+          kill "$(cat /tmp/web01g-p2-pass.pid)" || true
+          node dist/server/entry.mjs >/tmp/web01g-p2-turnstile-fail.log 2>&1 &
+          echo $! >/tmp/web01g-p2-fail.pid
+          for i in {1..30}; do curl -fsS http://127.0.0.1:4322/start-with-your-challenge >/dev/null && break; sleep 1; done
+
+      - name: Turnstile fail and missing-token proof
+        run: |
+          node --input-type=module <<'EOF'
+          const base=()=>({startedAt:Date.now()-5000,companyWebsite:'',turnstileToken:'XXXX.DUMMY.TOKEN.XXXX',challenge:{key:'CONTROL_VERIFICATION',problemSummary:'Synthetic control verification context for non-production provider proof.'},organisation:{name:'Synthetic Operations',sizeBand:'250_999',footprint:'Synthetic sites'},industry:{key:'MINING_RESOURCES',other:'',multiSector:false},activity:{key:'SITE_FIELD',other:''},operatingEnvironment:['SITE_FIELD'],jurisdiction:{scope:'UNKNOWN',countries:'',regions:''},outcome:{desiredOutcome:'Prepare synthetic context for controlled human review and provider testing.',trigger:'AI_INITIATIVE',timing:'ONE_TO_THREE_MONTHS'},internalCapability:{safetyCompliance:'UNSURE',aiTechnology:'UNSURE',accountableSponsor:'UNSURE',aitlAvailable:'UNSURE',externalAdviser:'UNSURE'},security:{level:'STANDARD',note:'',acknowledged:true},contact:{name:'Synthetic Test User',email:'synthetic@example.test',telephone:''}});
+          for(const mode of ['invalid','missing']){const p=base(); if(mode==='missing')p.turnstileToken=''; const r=await fetch('http://127.0.0.1:4322/api/enquiry',{method:'POST',headers:{'content-type':'application/json',origin:'http://127.0.0.1:4322'},body:JSON.stringify(p)}); const b=await r.json(); if(r.status!==400||b.accepted!==false)throw new Error(JSON.stringify({mode,status:r.status,body:b})); console.log(`TURNSTILE_${mode.toUpperCase()}=PASS`);}
+          EOF
+
+      - name: Source boundary scan
+        run: |
+          node <<'EOF'
+          const fs=require('fs'); const path=require('path');
+          const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(d,e.name)):[path.join(d,e.name)]);
+          const files=walk('src').filter(f=>/\.(astro|ts|mjs|css)$/.test(f)); const source=files.map(f=>fs.readFileSync(f,'utf8')).join('\n');
+          if(source.includes('247013136')) throw new Error('Real HubSpot portal ID must not be hard-coded');
+          if(/Enquiry Submitted Successfully|Your Reference Number|logged in CRM|automated acknowledgement/i.test(source)) throw new Error('False-success language found');
+          if(/data-sai-state=["'](?:ANALYSE|ADVISE)["']/.test(source)) throw new Error('Prohibited SAI state found');
+          if(/type=["']file["']/i.test(source)) throw new Error('Public file upload found');
+          console.log('P2_SOURCE_BOUNDARIES=PASS');
+          EOF
