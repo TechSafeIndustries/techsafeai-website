@@ -31,8 +31,9 @@ export class RejectedTestTransport {
 }
 
 export class UnconfiguredProductionTransport {
-  constructor() {
+  constructor(reason = 'NOT_CONFIGURED') {
     this.kind = 'unconfigured-production';
+    this.reason = reason;
   }
 
   async submit() {
@@ -41,7 +42,7 @@ export class UnconfiguredProductionTransport {
       transportReference: null,
       timestamp: new Date().toISOString(),
       transportKind: this.kind,
-      reason: 'NOT_CONFIGURED'
+      reason: this.reason
     };
   }
 }
@@ -49,6 +50,11 @@ export class UnconfiguredProductionTransport {
 export function getConfiguredTransport(env = process.env) {
   const mode = env.ENQUIRY_TRANSPORT_MODE ?? 'unconfigured';
   const allowTest = env.ALLOW_TEST_ENQUIRY_TRANSPORT === '1';
+  const deploymentEnvironment = (env.DEPLOYMENT_ENVIRONMENT ?? 'development').toLowerCase();
+
+  if (deploymentEnvironment === 'production' && (mode === 'test' || allowTest)) {
+    return new UnconfiguredProductionTransport('TEST_TRANSPORT_FORBIDDEN');
+  }
 
   if (mode === 'test' && allowTest) return new DevelopmentTestTransport();
 
