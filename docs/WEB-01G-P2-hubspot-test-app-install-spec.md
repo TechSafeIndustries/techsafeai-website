@@ -36,9 +36,7 @@ Configure only these required scopes:
 5. `crm.schemas.deals.read`
 6. `crm.schemas.deals.write`
 
-No optional scopes.
-
-No conditionally required scopes.
+Static-auth apps support required scopes only. Do not add optional or conditionally required scopes.
 
 ### Why each scope exists
 
