@@ -27,7 +27,6 @@ jobs:
       - name: Run isolated HubSpot provider proof
         env:
           HUBSPOT_P2_TEST_ACCESS_TOKEN: ${{ secrets.HUBSPOT_P2_TEST_ACCESS_TOKEN }}
-          HUBSPOT_P2_TEST_PORTAL_ID: ${{ secrets.HUBSPOT_P2_TEST_PORTAL_ID }}
           HUBSPOT_P2_TEST_PIPELINE_ID: ${{ vars.HUBSPOT_P2_TEST_PIPELINE_ID }}
           HUBSPOT_P2_TEST_STAGE_ID: ${{ vars.HUBSPOT_P2_TEST_STAGE_ID }}
         run: node .github/scripts/web01g-p2-hubspot-isolated-proof.mjs
