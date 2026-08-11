@@ -1,0 +1,124 @@
+name: WEB-01G-P1 validation
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout P1 branch
+        uses: actions/checkout@v4
+        with:
+          ref: web/WEB-01G-P1-production-preflight
+          fetch-depth: 0
+
+      - name: Use Node 22.16.0
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+
+      - name: Record runtime
+        run: |
+          node --version
+          npm --version
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Confirm lockfile unchanged
+        run: git diff --exit-code -- package-lock.json
+
+      - name: Astro check
+        run: npm run check
+
+      - name: Tests
+        run: npm test
+
+      - name: Production build
+        run: npm run build
+
+      - name: Start explicit test transport server
+        env:
+          DEPLOYMENT_ENVIRONMENT: test
+          ENQUIRY_TRANSPORT_MODE: test
+          ALLOW_TEST_ENQUIRY_TRANSPORT: "1"
+          HOST: 127.0.0.1
+          PORT: "4321"
+        run: |
+          node dist/server/entry.mjs >/tmp/web01g-p1-test.log 2>&1 &
+          echo $! >/tmp/web01g-p1-test.pid
+          for i in {1..30}; do
+            curl -fsS http://127.0.0.1:4321/start-with-your-challenge >/dev/null && break
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:4321/start-with-your-challenge >/dev/null
+
+      - name: Browser regression for all eleven challenge labels
+        run: node .github/scripts/web01g-p1-review-labels.mjs
+
+      - name: Accepted test transport smoke
+        run: |
+          node <<'EOF'
+          const now=Date.now();
+          const payload={startedAt:now-5000,companyWebsite:'',turnstileToken:'',challenge:{key:'CONTROL_VERIFICATION',problemSummary:'We need a clearer view of control verification across operating sites.'},organisation:{name:'Example Operations',sizeBand:'250_999',footprint:'Three sites'},industry:{key:'MINING_RESOURCES',other:'',multiSector:false},activity:{key:'SITE_FIELD',other:''},operatingEnvironment:['SITE_FIELD'],jurisdiction:{scope:'UNKNOWN',countries:'',regions:''},outcome:{desiredOutcome:'Create a clearer evidence-backed basis for human review and prioritisation.',trigger:'AUDIT_REVIEW',timing:'ONE_TO_THREE_MONTHS'},internalCapability:{safetyCompliance:'YES',aiTechnology:'UNSURE',accountableSponsor:'YES',aitlAvailable:'NO',externalAdviser:'UNSURE'},security:{level:'STANDARD',note:'',acknowledged:true},contact:{name:'Test User',email:'test@example.com',telephone:''}};
+          const response=await fetch('http://127.0.0.1:4321/api/enquiry',{method:'POST',headers:{'content-type':'application/json',origin:'http://127.0.0.1:4321'},body:JSON.stringify(payload)});
+          const body=await response.json();
+          if(response.status!==202||body.accepted!==true||body.humanReview!==true) throw new Error(JSON.stringify({status:response.status,body}));
+          console.log('Accepted test transport PASS');
+          EOF
+
+      - name: Production mode rejects test transport flags
+        run: |
+          kill "$(cat /tmp/web01g-p1-test.pid)" || true
+          DEPLOYMENT_ENVIRONMENT=production ENQUIRY_TRANSPORT_MODE=test ALLOW_TEST_ENQUIRY_TRANSPORT=1 HOST=127.0.0.1 PORT=4322 node dist/server/entry.mjs >/tmp/web01g-p1-prod-test-forbidden.log 2>&1 &
+          echo $! >/tmp/web01g-p1-prod-test-forbidden.pid
+          for i in {1..30}; do
+            curl -fsS http://127.0.0.1:4322/start-with-your-challenge >/dev/null && break
+            sleep 1
+          done
+          node <<'EOF'
+          const now=Date.now();
+          const payload={startedAt:now-5000,companyWebsite:'',turnstileToken:'',challenge:{key:'CONTROL_VERIFICATION',problemSummary:'We need a clearer view of control verification across operating sites.'},organisation:{name:'Example Operations',sizeBand:'250_999',footprint:'Three sites'},industry:{key:'MINING_RESOURCES',other:'',multiSector:false},activity:{key:'SITE_FIELD',other:''},operatingEnvironment:['SITE_FIELD'],jurisdiction:{scope:'UNKNOWN',countries:'',regions:''},outcome:{desiredOutcome:'Create a clearer evidence-backed basis for human review and prioritisation.',trigger:'AUDIT_REVIEW',timing:'ONE_TO_THREE_MONTHS'},internalCapability:{safetyCompliance:'YES',aiTechnology:'UNSURE',accountableSponsor:'YES',aitlAvailable:'NO',externalAdviser:'UNSURE'},security:{level:'STANDARD',note:'',acknowledged:true},contact:{name:'Test User',email:'test@example.com',telephone:''}};
+          const response=await fetch('http://127.0.0.1:4322/api/enquiry',{method:'POST',headers:{'content-type':'application/json',origin:'http://127.0.0.1:4322'},body:JSON.stringify(payload)});
+          const body=await response.json();
+          if(response.status!==503||body.accepted!==false) throw new Error(JSON.stringify({status:response.status,body}));
+          console.log('Production test-transport invariant PASS', body.code);
+          EOF
+
+      - name: Unconfigured production transport remains fail-closed
+        run: |
+          kill "$(cat /tmp/web01g-p1-prod-test-forbidden.pid)" || true
+          DEPLOYMENT_ENVIRONMENT=production ENQUIRY_TRANSPORT_MODE=unconfigured ALLOW_TEST_ENQUIRY_TRANSPORT=0 HOST=127.0.0.1 PORT=4323 node dist/server/entry.mjs >/tmp/web01g-p1-prod-closed.log 2>&1 &
+          for i in {1..30}; do
+            curl -fsS http://127.0.0.1:4323/start-with-your-challenge >/dev/null && break
+            sleep 1
+          done
+          node <<'EOF'
+          const now=Date.now();
+          const payload={startedAt:now-5000,companyWebsite:'',turnstileToken:'',challenge:{key:'CONTROL_VERIFICATION',problemSummary:'We need a clearer view of control verification across operating sites.'},organisation:{name:'Example Operations',sizeBand:'250_999',footprint:'Three sites'},industry:{key:'MINING_RESOURCES',other:'',multiSector:false},activity:{key:'SITE_FIELD',other:''},operatingEnvironment:['SITE_FIELD'],jurisdiction:{scope:'UNKNOWN',countries:'',regions:''},outcome:{desiredOutcome:'Create a clearer evidence-backed basis for human review and prioritisation.',trigger:'AUDIT_REVIEW',timing:'ONE_TO_THREE_MONTHS'},internalCapability:{safetyCompliance:'YES',aiTechnology:'UNSURE',accountableSponsor:'YES',aitlAvailable:'NO',externalAdviser:'UNSURE'},security:{level:'STANDARD',note:'',acknowledged:true},contact:{name:'Test User',email:'test@example.com',telephone:''}};
+          const response=await fetch('http://127.0.0.1:4323/api/enquiry',{method:'POST',headers:{'content-type':'application/json',origin:'http://127.0.0.1:4323'},body:JSON.stringify(payload)});
+          const body=await response.json();
+          if(response.status!==503||body.accepted!==false||body.code!=='TRANSPORT_NOT_CONFIGURED') throw new Error(JSON.stringify({status:response.status,body}));
+          console.log('Unconfigured production fail-closed PASS');
+          EOF
+
+      - name: Source boundary invariants
+        run: |
+          node <<'EOF'
+          const fs=require('fs');
+          const intake=fs.readFileSync('src/pages/start-with-your-challenge/index.astro','utf8');
+          const client=fs.readFileSync('src/scripts/intake.ts','utf8');
+          const transport=fs.readFileSync('src/server/enquiry/transport.mjs','utf8');
+          if(/data-sai-state=["'](?:ANALYSE|ADVISE)["']/.test(intake)) throw new Error('Prohibited public SAI state found');
+          if(/type=["']file["']/i.test(intake)) throw new Error('Public file upload found');
+          if(/Reference Number|automated acknowledgement|logged in CRM|Enquiry Submitted Successfully/i.test(client)) throw new Error('False success copy found');
+          if(!/result\?\.accepted !== true/.test(client)) throw new Error('Client success gate missing');
+          if(!/TEST_TRANSPORT_FORBIDDEN/.test(transport)) throw new Error('Production test transport invariant missing');
+          console.log('Source boundary invariants PASS');
+          EOF
