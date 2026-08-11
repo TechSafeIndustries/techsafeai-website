@@ -59,9 +59,12 @@ export function checkRateLimit(clientKey = 'unknown', nowMs = Date.now()) {
 export async function validateOptionalTurnstile(payload, clientAddress, env = process.env, fetchImpl = fetch) {
   const token = typeof payload?.turnstileToken === 'string' ? payload.turnstileToken.trim() : '';
   const secret = (env.TURNSTILE_SECRET_KEY ?? '').trim();
+  const required = env.TURNSTILE_REQUIRED === '1';
+  const expectedHostname = (env.TURNSTILE_EXPECTED_HOSTNAME ?? '').trim();
+  const expectedAction = (env.TURNSTILE_EXPECTED_ACTION ?? '').trim();
 
-  if (!secret && !token) return { ok: true, configured: false };
-  if (!secret && token) return { ok: false, code: 'BOT_VALIDATION_NOT_CONFIGURED' };
+  if (!secret && !token && !required) return { ok: true, configured: false };
+  if (!secret && (token || required)) return { ok: false, code: 'BOT_VALIDATION_NOT_CONFIGURED' };
   if (secret && !token) return { ok: false, code: 'BOT_VALIDATION_REQUIRED' };
   if (token.length > 2048) return { ok: false, code: 'BOT_TOKEN_INVALID' };
 
@@ -74,12 +77,16 @@ export async function validateOptionalTurnstile(payload, clientAddress, env = pr
       body: JSON.stringify({
         secret,
         response: token,
-        remoteip: clientAddress || undefined
+        remoteip: clientAddress || undefined,
+        idempotency_key: typeof payload?.enquiryId === 'string' ? payload.enquiryId : undefined
       }),
       signal: controller.signal
     });
     const result = await response.json();
-    return result?.success ? { ok: true, configured: true } : { ok: false, code: 'BOT_VALIDATION_FAILED' };
+    if (!result?.success) return { ok: false, code: 'BOT_VALIDATION_FAILED' };
+    if (expectedHostname && result.hostname && result.hostname !== expectedHostname) return { ok: false, code: 'BOT_HOSTNAME_MISMATCH' };
+    if (expectedAction && result.action && result.action !== expectedAction) return { ok: false, code: 'BOT_ACTION_MISMATCH' };
+    return { ok: true, configured: true, hostname: result.hostname || '', action: result.action || '' };
   } catch {
     return { ok: false, code: 'BOT_VALIDATION_UNAVAILABLE' };
   } finally {
