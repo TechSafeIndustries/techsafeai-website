@@ -1,6 +1,6 @@
 import { validateEnquiryPayload, buildWorkpacketStub } from './core.mjs';
 import { getConfiguredTransport } from './transport.mjs';
-import { contextFingerprint, createEnquiryId, isValidEnquiryId } from './submission.mjs';
+import { contextFingerprint, deriveEnquiryId } from './submission.mjs';
 import {
   checkRateLimit,
   validateHoneypotAndAge,
@@ -60,16 +60,7 @@ export async function handleEnquiryRequest(request, {
   }
 
   const selectedTransport = transport ?? getConfiguredTransport(env, { fetchImpl });
-  const suppliedEnquiryId = typeof payload?.enquiryId === 'string' ? payload.enquiryId.trim() : '';
-  if (selectedTransport.requiresStableEnquiryId && !isValidEnquiryId(suppliedEnquiryId)) {
-    return json(400, {
-      accepted: false,
-      code: 'ENQUIRY_SESSION_REQUIRED',
-      message: 'The secure enquiry session could not be confirmed. Please reload the page and try again.'
-    });
-  }
-
-  const enquiryId = isValidEnquiryId(suppliedEnquiryId) ? suppliedEnquiryId : createEnquiryId();
+  const enquiryId = deriveEnquiryId(validated.data, payload.startedAt);
   const fingerprint = contextFingerprint(validated.data);
   const workpacketStub = buildWorkpacketStub(validated.data, new Date(nowMs));
 
