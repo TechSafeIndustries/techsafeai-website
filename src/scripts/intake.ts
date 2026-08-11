@@ -13,8 +13,13 @@ let screenIndex = 0;
 if (startedAt) startedAt.value = String(Date.now());
 
 const labelFor = (name: string, value: string) => {
-  const input = form.querySelector<HTMLInputElement | HTMLOptionElement>(`[name="${CSS.escape(name)}"][value="${CSS.escape(value)}"], select[name="${CSS.escape(name)}"] option[value="${CSS.escape(value)}"]`);
-  return input?.textContent?.trim() || input?.closest('label')?.textContent?.trim() || value;
+  const control = form.querySelector<HTMLInputElement | HTMLOptionElement>(`[name="${CSS.escape(name)}"][value="${CSS.escape(value)}"], select[name="${CSS.escape(name)}"] option[value="${CSS.escape(value)}"]`);
+  if (control instanceof HTMLOptionElement) return control.textContent?.trim() || value;
+  if (control instanceof HTMLInputElement) {
+    const userFacingLabel = control.closest('label')?.querySelector<HTMLElement>('span:not(.choice-index)')?.textContent?.trim();
+    return userFacingLabel || control.getAttribute('aria-label')?.trim() || value;
+  }
+  return value;
 };
 
 function setScreen(index: number) {
