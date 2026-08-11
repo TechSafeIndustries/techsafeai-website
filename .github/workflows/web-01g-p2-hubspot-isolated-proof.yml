@@ -2,6 +2,11 @@ name: WEB-01G-P2 HubSpot isolated proof
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - web/WEB-01G-P2-nonprod-integration
+    paths:
+      - '.github/triggers/web-01g-p2-hubspot-isolated-proof.trigger'
 
 permissions:
   contents: read
