@@ -1,6 +1,6 @@
 # WEB-01G-P2 — Non-Production Integration Proof State
 
-Status: independent implementation proof complete; external isolated-provider proof pending.
+Status: independent implementation proof complete; isolated HubSpot account exists; provider installation/write proof and Railway staging remain pending.
 
 Date: 2026-08-11
 
@@ -54,42 +54,59 @@ The following proposed P2 custom Deal properties were checked read-only and do n
 
 No properties or records were created in the real portal.
 
-The actual HubSpot portal data-hosting location is now governed as `United States (West) — CONFIRMED`. The earlier P2 assumption that `app-na2.hubspot.com` was only an architectural indication is retired.
+The actual HubSpot portal data-hosting location is governed as `United States (West) — CONFIRMED`.
 
 The returned `STANDARD` account type remains insufficient evidence of the exact paid/free subscription tier. Do not infer a paid tier from `STANDARD`.
 
-The active owner is now governed as Michael Solomon, owner ID `96985799`. This is provider configuration evidence only; the production owner ID must remain environment/configuration driven rather than hard-coded into the provider-neutral adapter.
+The active owner is governed as Michael Solomon, owner ID `96985799`. This is provider configuration evidence only; the production owner ID must remain environment/configuration driven rather than hard-coded into the provider-neutral adapter.
 
-## HubSpot isolated developer-test account
+## Operating-base architecture input
 
-HubSpot's current official account-type documentation states that a Standard HubSpot account can create up to 10 developer test accounts and that those test accounts do not synchronise data with other accounts.
+Founder intends TechSafeAI operations to be based from Thailand.
 
-Official references:
+Treat only as operational architecture input:
 
-- https://developers.hubspot.com/docs/getting-started/account-types
-- https://developers.hubspot.com/docs/developer-tooling/local-development/configurable-test-accounts
+```text
+TECHSAFEAI OPERATIONS — THAILAND
+  -> WEBSITE HOST — PROPOSED SINGAPORE
+  -> HUBSPOT — UNITED STATES (WEST)
+  -> AUTHORISED HUMAN
+```
 
-No isolated TechSafeAI P2 developer-test account has yet been created or authenticated through the current Control Tower connection.
+This does not establish legal website operator identity, company domicile, tax position, privacy-controller identity or a data-residency requirement. Cross-border privacy/legal analysis remains blocked for later professional/Founder confirmation.
 
-Required manual action:
+No HubSpot data-hosting migration is authorised in P2.
 
-`HubSpot → Development → Testing → Test Accounts → Create developer test account`
+## HubSpot isolated developer-test account — CREATED / ACTIVE
 
-Suggested name:
+Control Tower confirmed:
 
-`TechSafeAI WEB-01G-P2 Test`
+- Account: `TechSafeAI WEB-01G-P2 Test`
+- Test Account ID: `247013551`
+- Status: Active
+- Trial expiry: 8 Nov 2026, 9:28 PM
+- Intended proof classification: `DEVELOPER_TEST`
 
-The real TechSafeAI portal must remain read-only for P2 integration proof.
+Do not renew or delete the test account during P2 without separate authority.
 
-## Least-privilege isolated app scopes
+Do not install the P2 integration into real portal `247013136`.
 
-For the developer-test account only, the planned integration requires the minimum functional scope set needed to:
+Exact least-privilege installation specification:
 
-- read/write Contacts;
-- read/write Deals;
-- read/write Deal property definitions during test-account setup.
+`docs/WEB-01G-P2-hubspot-test-app-install-spec.md`
 
-Current HubSpot scope names:
+## Least-privilege isolated app configuration
+
+Required app:
+
+- name: `TechSafeAI Website Enquiry P2`
+- distribution: `private`
+- authentication: `static`
+- target: developer-test Account `247013551` only
+- OAuth: not required
+- no app cards, webhooks, settings pages, workflow actions or CMS/marketing features
+
+Exact required scopes:
 
 - `crm.objects.contacts.read`
 - `crm.objects.contacts.write`
@@ -98,14 +115,55 @@ Current HubSpot scope names:
 - `crm.schemas.deals.read`
 - `crm.schemas.deals.write`
 
-A single-account static-auth app is appropriate for this isolated proof. No multi-tenant OAuth architecture is required for the website's current single-account use case.
+No optional scopes.
 
-Official references:
+No conditionally required scopes.
 
-- https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/overview
-- https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/scopes
+The scope set maps directly to the isolated proof operations: Contact upsert/read-back, Deal lookup/upsert/read-back, Deal↔Contact association, and creation/read of only the bounded Deal property definitions required for the proof.
 
 Token values must be configured directly in approved non-production secret storage and must never enter chat, Git, browser bundles or logs.
+
+## Manual isolated HubSpot proof — PREPARED / PINNED
+
+Prepared:
+
+- `.github/scripts/web01g-p2-hubspot-isolated-proof.mjs`
+- `.github/workflows/web-01g-p2-hubspot-isolated-proof.yml`
+
+The runner now contains the non-secret approved test portal ID `247013551` and refuses to proceed unless HubSpot itself reports:
+
+- `portalId = 247013551`; and
+- `accountType = DEVELOPER_TEST`.
+
+Both checks occur before any property or CRM record mutation.
+
+Required secret:
+
+- `HUBSPOT_P2_TEST_ACCESS_TOKEN`
+
+Optional non-secret variables:
+
+- `HUBSPOT_P2_TEST_PIPELINE_ID`
+- `HUBSPOT_P2_TEST_STAGE_ID`
+
+The unnecessary `HUBSPOT_P2_TEST_PORTAL_ID` secret has been removed.
+
+The live proof will:
+
+1. verify the connected token belongs to test Account `247013551`;
+2. verify `DEVELOPER_TEST`;
+3. create only the minimum test Deal properties if absent;
+4. verify configured test pipeline/stage options exist;
+5. write one synthetic Contact;
+6. write/upsert one synthetic Deal;
+7. retry the exact same logical submission;
+8. require the same Deal ID on duplicate retry;
+9. read the Deal back by provider ID;
+10. inspect exactly one Contact association;
+11. read the associated Contact back and verify the synthetic email;
+12. retain synthetic records for evidence.
+
+Actual provider write proof remains pending until the app is installed into the isolated account and the test token is available in approved non-production secret storage.
 
 ## CRM property model
 
@@ -131,7 +189,7 @@ Measured serialised length:
 
 `3,803 characters`
 
-HubSpot's current string property limit is 65,536 characters. Therefore the current bounded Stub has a large margin inside one `string` / `textarea` property.
+The current bounded Stub has a large margin inside the governed one-property serialisation strategy.
 
 Decision:
 
@@ -139,10 +197,6 @@ Decision:
 - store the bounded context-only Workpacket Stub once in a textarea property;
 - do not explode the Stub into dozens of speculative CRM fields;
 - fail closed if a future Stub ever reaches the configured storage limit.
-
-Official property reference:
-
-https://developers.hubspot.com/docs/api-reference/latest/crm/properties/guide
 
 ## Stable idempotency
 
@@ -168,7 +222,7 @@ HubSpot adapter sequence:
 
 On timeout/unknown provider state after a write attempt, the adapter looks up the stable enquiry ID before any further create attempt.
 
-## Mock provider proof
+## Mock provider proof — COMPLETE
 
 Automated tests prove:
 
@@ -183,23 +237,19 @@ Automated tests prove:
 - staging HubSpot mode rejects any account not explicitly classified as `developer-test`;
 - production rejects a `developer-test` HubSpot account classification.
 
-These are provider-contract tests. They are not a substitute for the required write proof in an actual isolated HubSpot developer-test account.
+These are provider-contract tests. They are not a substitute for the required write proof in the actual isolated HubSpot developer-test account.
 
-## Turnstile proof
+## Turnstile proof — PASS
 
 Cloudflare's official dummy/test credentials were used in CI against the real Turnstile Siteverify endpoint.
 
 Proven:
 
-- official always-pass test secret + dummy token → server validation accepted;
-- official always-fail test secret + dummy token → rejected;
-- required configuration + missing token → rejected;
+- official always-pass test secret + dummy token -> server validation accepted;
+- official always-fail test secret + dummy token -> rejected;
+- required configuration + missing token -> rejected;
 - server-side Siteverify remains mandatory;
 - test secret never becomes production authority.
-
-Official reference:
-
-https://developers.cloudflare.com/turnstile/troubleshooting/testing/
 
 Cloudflare proxy, WAF and edge rate limiting remain deferred.
 
@@ -219,7 +269,7 @@ It exposes no environment values, provider IDs, secrets or submitted data.
 
 ## Railway staging
 
-Railway Singapore is authorised for non-production proof but no Railway account/environment is connected to Control Tower.
+Railway Singapore remains the approved non-production staging direction, but no TechSafeAI Railway account exists and no billing commitment is authorised.
 
 Current state:
 
@@ -247,22 +297,23 @@ It is confirmed disposable. The current GitHub connector does not expose normal 
 
 ## Remaining P2 external proof blockers
 
-1. Exact HubSpot paid/free subscription tier remains unresolved; `STANDARD` does not answer this.
-2. Create/authenticate an isolated HubSpot developer-test account.
-3. Configure the minimum test-account Deal properties.
-4. Configure a least-privilege static-auth token in non-production secret storage without exposing it to chat.
-5. Execute actual synthetic Contact + Deal write/read-back/duplicate proof.
-6. Inspect the resulting synthetic Deal and Contact association provider-side.
-7. Establish Railway account/billing state.
-8. If no new billing commitment is required, create Singapore staging from the P2 branch.
-9. Configure only test-account HubSpot credentials and Turnstile test credentials in staging.
-10. Execute actual Railway URL E2E and failure-state proof.
-11. Inspect Railway logs for redaction requirements.
-12. Capture staging Review, HANDOFF and representative mobile evidence.
+1. Create/configure the HubSpot app exactly as specified in `WEB-01G-P2-hubspot-test-app-install-spec.md`.
+2. Install it only into `TechSafeAI WEB-01G-P2 Test` / `247013551`.
+3. Place the resulting static test access token directly into approved non-production secret storage.
+4. Execute actual synthetic Contact + Deal write/read-back/duplicate proof.
+5. Inspect the resulting synthetic Deal and Contact association provider-side.
+6. Establish Railway account/billing state.
+7. If no new billing commitment is required, create Singapore staging from the P2 branch.
+8. Configure only test-account HubSpot credentials and Turnstile test credentials in staging.
+9. Execute actual Railway URL E2E and failure-state proof.
+10. Inspect Railway logs for redaction requirements.
+11. Capture staging Review, HANDOFF and representative mobile evidence.
 
 Resolved and removed from the blocker list:
 
 - HubSpot data hosting — `United States (West) — CONFIRMED`;
-- active HubSpot owner — Michael Solomon / `96985799`.
+- active HubSpot owner — Michael Solomon / `96985799`;
+- isolated HubSpot test-account creation — `247013551` ACTIVE;
+- Turnstile official non-production test proof — PASS.
 
 Until the remaining external dependencies are cleared, P2 must not be classified as full provider-proof PASS.
