@@ -10,13 +10,16 @@ P2 branch: `web/WEB-01G-P2-nonprod-integration`
 
 ## Actual TechSafeAI HubSpot portal — read-only verification
 
-Confirmed through the connected read-only HubSpot capability:
+Confirmed through the connected read-only HubSpot capability and Control Tower provider-fact update:
 
 - Account ID: `247013136`
 - Account type returned: `STANDARD`
 - UI domain: `app-na2.hubspot.com`
+- Data hosting: `United States (West)` — CONFIRMED
 - Currency: USD
 - Timezone: US/Eastern
+- Active owner: `Michael Solomon`
+- Owner ID: `96985799`
 - COMPANY read: available
 - CONTACT read: available
 - DEAL read: available
@@ -51,9 +54,11 @@ The following proposed P2 custom Deal properties were checked read-only and do n
 
 No properties or records were created in the real portal.
 
-`app-na2.hubspot.com` remains an architecture indication only. Authoritative data-hosting location remains unresolved until the account Data Hosting screen or account-information API explicitly returns it.
+The actual HubSpot portal data-hosting location is now governed as `United States (West) — CONFIRMED`. The earlier P2 assumption that `app-na2.hubspot.com` was only an architectural indication is retired.
 
-The returned `STANDARD` account type is an account class, not a verified paid subscription tier.
+The returned `STANDARD` account type remains insufficient evidence of the exact paid/free subscription tier. Do not infer a paid tier from `STANDARD`.
+
+The active owner is now governed as Michael Solomon, owner ID `96985799`. This is provider configuration evidence only; the production owner ID must remain environment/configuration driven rather than hard-coded into the provider-neutral adapter.
 
 ## HubSpot isolated developer-test account
 
@@ -242,16 +247,22 @@ It is confirmed disposable. The current GitHub connector does not expose normal 
 
 ## Remaining P2 external proof blockers
 
-1. Create/authenticate an isolated HubSpot developer-test account.
-2. Configure the minimum test-account Deal properties.
-3. Configure a least-privilege static-auth token in non-production secret storage without exposing it to chat.
-4. Execute actual synthetic Contact + Deal write/read-back/duplicate proof.
-5. Inspect the resulting synthetic Deal and Contact association provider-side.
-6. Establish Railway account/billing state.
-7. If no new billing commitment is required, create Singapore staging from the P2 branch.
-8. Configure only test-account HubSpot credentials and Turnstile test credentials in staging.
-9. Execute actual Railway URL E2E and failure-state proof.
-10. Inspect Railway logs for redaction requirements.
-11. Capture staging Review, HANDOFF and representative mobile evidence.
+1. Exact HubSpot paid/free subscription tier remains unresolved; `STANDARD` does not answer this.
+2. Create/authenticate an isolated HubSpot developer-test account.
+3. Configure the minimum test-account Deal properties.
+4. Configure a least-privilege static-auth token in non-production secret storage without exposing it to chat.
+5. Execute actual synthetic Contact + Deal write/read-back/duplicate proof.
+6. Inspect the resulting synthetic Deal and Contact association provider-side.
+7. Establish Railway account/billing state.
+8. If no new billing commitment is required, create Singapore staging from the P2 branch.
+9. Configure only test-account HubSpot credentials and Turnstile test credentials in staging.
+10. Execute actual Railway URL E2E and failure-state proof.
+11. Inspect Railway logs for redaction requirements.
+12. Capture staging Review, HANDOFF and representative mobile evidence.
 
-Until those external dependencies are cleared, P2 must not be classified as full provider-proof PASS.
+Resolved and removed from the blocker list:
+
+- HubSpot data hosting — `United States (West) — CONFIRMED`;
+- active HubSpot owner — Michael Solomon / `96985799`.
+
+Until the remaining external dependencies are cleared, P2 must not be classified as full provider-proof PASS.
