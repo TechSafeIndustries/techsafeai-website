@@ -14,14 +14,37 @@ test('isolated HubSpot proof workflow is manual-only and secret-backed', () => {
   assert.match(workflow, /workflow_dispatch:/);
   assert.doesNotMatch(workflow, /pull_request:/);
   assert.match(workflow, /secrets\.HUBSPOT_P2_TEST_ACCESS_TOKEN/);
-  assert.match(workflow, /secrets\.HUBSPOT_P2_TEST_PORTAL_ID/);
+  assert.doesNotMatch(workflow, /HUBSPOT_P2_TEST_PORTAL_ID/);
   assert.doesNotMatch(workflow, /247013136/);
 });
 
-test('isolated provider runner refuses non-DEVELOPER_TEST account before proof writes', () => {
+test('isolated provider runner is pinned to approved DEVELOPER_TEST account before writes', () => {
   const script = read('.github/scripts/web01g-p2-hubspot-isolated-proof.mjs');
+  assert.match(script, /APPROVED_P2_TEST_PORTAL_ID = '247013551'/);
+  assert.doesNotMatch(script, /247013136/);
+  assert.ok(script.indexOf("assert.equal(String(account.portalId), APPROVED_P2_TEST_PORTAL_ID") < script.indexOf('propertyDefinitions'));
   assert.ok(script.indexOf("assert.equal(account.accountType, 'DEVELOPER_TEST'") < script.indexOf('propertyDefinitions'));
+  assert.match(script, /contactReadBack: true/);
   assert.match(script, /P2 SYNTHETIC/);
+});
+
+test('isolated app install spec contains exactly the governed six HubSpot scopes', () => {
+  const spec = read('docs/WEB-01G-P2-hubspot-test-app-install-spec.md');
+  const scopes = [
+    'crm.objects.contacts.read',
+    'crm.objects.contacts.write',
+    'crm.objects.deals.read',
+    'crm.objects.deals.write',
+    'crm.schemas.deals.read',
+    'crm.schemas.deals.write'
+  ];
+  for (const scope of scopes) assert.match(spec, new RegExp(scope.replaceAll('.', '\\.')));
+  assert.match(spec, /"distribution": "private"/);
+  assert.match(spec, /"type": "static"/);
+  assert.match(spec, /247013551/);
+  assert.match(spec, /247013136.*prohibited|prohibited.*247013136/is);
+  assert.doesNotMatch(spec, /crm\.objects\.(companies|tickets|owners|products|quotes|line_items|invoices|subscriptions)\.(read|write)/);
+  assert.doesNotMatch(spec, /crm\.schemas\.(contacts|companies|custom)\.(read|write)/);
 });
 
 test('health endpoint exposes status only', () => {
