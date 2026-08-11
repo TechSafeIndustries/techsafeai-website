@@ -3,11 +3,7 @@ import type { APIRoute } from 'astro';
 export const prerender = false;
 
 export const GET: APIRoute = async () => {
-  const release = (process.env.RELEASE_SHA ?? '').trim();
-  const body: { status: 'ok'; release?: string } = { status: 'ok' };
-  if (/^[0-9a-f]{7,40}$/i.test(release)) body.release = release;
-
-  return new Response(JSON.stringify(body), {
+  return new Response(JSON.stringify({ status: 'ok' }), {
     status: 200,
     headers: {
       'content-type': 'application/json; charset=utf-8',
