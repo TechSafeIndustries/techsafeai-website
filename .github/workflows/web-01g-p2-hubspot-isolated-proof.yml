@@ -1,0 +1,33 @@
+name: WEB-01G-P2 HubSpot isolated proof
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prove:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout P2 branch
+        uses: actions/checkout@v4
+        with:
+          ref: web/WEB-01G-P2-nonprod-integration
+          fetch-depth: 0
+
+      - name: Use Node 22.16.0
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+
+      - name: Install
+        run: npm install
+
+      - name: Run isolated HubSpot provider proof
+        env:
+          HUBSPOT_P2_TEST_ACCESS_TOKEN: ${{ secrets.HUBSPOT_P2_TEST_ACCESS_TOKEN }}
+          HUBSPOT_P2_TEST_PORTAL_ID: ${{ secrets.HUBSPOT_P2_TEST_PORTAL_ID }}
+          HUBSPOT_P2_TEST_PIPELINE_ID: ${{ vars.HUBSPOT_P2_TEST_PIPELINE_ID }}
+          HUBSPOT_P2_TEST_STAGE_ID: ${{ vars.HUBSPOT_P2_TEST_STAGE_ID }}
+        run: node .github/scripts/web01g-p2-hubspot-isolated-proof.mjs
