@@ -2,8 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import { CHALLENGES } from '../src/lib/intake/options.mjs';
 import { buildWorkpacketStub, validateEnquiryPayload } from '../src/server/enquiry/core.mjs';
-import { DevelopmentTestTransport, RejectedTestTransport } from '../src/server/enquiry/transport.mjs';
+import { DevelopmentTestTransport, RejectedTestTransport, getConfiguredTransport } from '../src/server/enquiry/transport.mjs';
 import { handleEnquiryRequest } from '../src/server/enquiry/service.mjs';
 import { resetAbuseStateForTests } from '../src/server/enquiry/abuse.mjs';
 
@@ -105,6 +106,18 @@ test('rejected transport fails and accepted transport is the only success path',
   assert.equal(acceptedTransport.submissions[0].humanValidationRequired, true);
 });
 
+test('production environment cannot enable the development test transport', async () => {
+  const transport = getConfiguredTransport({
+    DEPLOYMENT_ENVIRONMENT: 'production',
+    ENQUIRY_TRANSPORT_MODE: 'test',
+    ALLOW_TEST_ENQUIRY_TRANSPORT: '1'
+  });
+  const result = await transport.submit({ test: true });
+  assert.equal(result.accepted, false);
+  assert.equal(result.transportKind, 'unconfigured-production');
+  assert.equal(result.reason, 'TEST_TRANSPORT_FORBIDDEN');
+});
+
 test('client cannot display success without an accepted server response', () => {
   const script = read('src/scripts/intake.ts');
   assert.match(script, /fetch\(['"]\/api\/enquiry['"]/);
@@ -112,6 +125,18 @@ test('client cannot display success without an accepted server response', () => 
   assert.ok(script.indexOf("fetch('/api/enquiry'") < script.indexOf('form.hidden = true'));
   assert.doesNotMatch(script, /Reference Number|automated acknowledgement|logged in CRM|Enquiry Submitted Successfully/i);
   assert.doesNotMatch(script, /localStorage|sessionStorage/);
+});
+
+test('review challenge labels exclude decorative choice-card numbering for all governed challenges', () => {
+  const script = read('src/scripts/intake.ts');
+  assert.equal(CHALLENGES.length, 11);
+  assert.match(script, /span:not\(\.choice-index\)/);
+  assert.doesNotMatch(script, /closest\('label'\)\?\.textContent/);
+  for (const [, label] of CHALLENGES) {
+    assert.ok(label.length > 0);
+    assert.doesNotMatch(label, /^\s*\d{1,2}/);
+  }
+  assert.equal(CHALLENGES.find(([key]) => key === 'CONTROL_VERIFICATION')?.[1], 'Prove critical controls actually work');
 });
 
 test('Structured Hybrid exposes seven visible stages and only Stage-1 SAI states', () => {
@@ -135,6 +160,7 @@ test('homepage pain selection remains carry-forward compatible', () => {
 
 test('server-only transport configuration is absent from client source', () => {
   const client = read('src/scripts/intake.ts');
-  assert.doesNotMatch(client, /ENQUIRY_TRANSPORT_MODE|ALLOW_TEST_ENQUIRY_TRANSPORT|TURNSTILE_SECRET_KEY/);
+  assert.doesNotMatch(client, /ENQUIRY_TRANSPORT_MODE|ALLOW_TEST_ENQUIRY_TRANSPORT|TURNSTILE_SECRET_KEY|DEPLOYMENT_ENVIRONMENT/);
   assert.match(read('.env.example'), /ENQUIRY_TRANSPORT_MODE/);
+  assert.match(read('.env.example'), /DEPLOYMENT_ENVIRONMENT/);
 });
