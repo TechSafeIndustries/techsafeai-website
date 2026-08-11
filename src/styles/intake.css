@@ -58,6 +58,12 @@
 .review-row span{font-size:13px;color:var(--text-secondary);overflow-wrap:anywhere}
 .review-edit{align-self:center;background:transparent;border:0;text-decoration:underline;color:#176f98;font-weight:700;cursor:pointer;min-height:36px}
 .submit-status{min-height:24px;color:var(--error);font-weight:700;font-size:13px}
+.turnstile-verify[hidden]{display:none!important}
+.turnstile-verify{margin:0 0 20px;padding:16px 18px;border:1px solid var(--border);border-radius:6px;background:var(--surface,#f7f9fa)}
+.turnstile-label{display:block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:6px}
+.turnstile-note{font-size:13px;color:var(--text-secondary);margin:0 0 12px}
+.turnstile-widget{min-height:65px;max-width:320px}
+.turnstile-status{min-height:20px;margin:8px 0 0;color:var(--error);font-weight:700;font-size:13px}
 .honeypot{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important}
 .intake-confirmation[hidden]{display:none!important}
 .intake-confirmation{display:grid;grid-template-columns:1fr minmax(240px,420px);gap:36px;align-items:end;background:var(--navy-800);color:#fff;padding:38px;border:1px solid #355365}

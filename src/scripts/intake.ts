@@ -12,6 +12,96 @@ const startedAt = form.querySelector<HTMLInputElement>('#startedAt');
 let screenIndex = 0;
 if (startedAt) startedAt.value = String(Date.now());
 
+// Cloudflare Turnstile — browser verification for the progressively revealed Review step.
+// Only the deliberately public sitekey is read client-side. No server secret is referenced here.
+const turnstileSitekey = (import.meta.env.PUBLIC_TURNSTILE_SITEKEY ?? '').trim();
+const turnstileConfigured = turnstileSitekey.length > 0;
+const turnstileTokenField = form.querySelector<HTMLInputElement>('#turnstileToken');
+const turnstileBlock = form.querySelector<HTMLElement>('[data-turnstile-block]');
+const turnstileContainer = form.querySelector<HTMLElement>('#turnstile-widget');
+const turnstileStatus = form.querySelector<HTMLElement>('#turnstile-status');
+
+type TurnstileRenderOptions = {
+  sitekey: string;
+  action?: string;
+  size?: 'normal' | 'flexible' | 'compact';
+  callback?: (token: string) => void;
+  'expired-callback'?: () => void;
+  'error-callback'?: () => void;
+};
+type TurnstileApi = {
+  render: (container: HTMLElement | string, options: TurnstileRenderOptions) => string;
+  reset: (widgetId?: string) => void;
+};
+const getTurnstile = (): TurnstileApi | undefined => (window as unknown as { turnstile?: TurnstileApi }).turnstile;
+
+let turnstileScriptRequested = false;
+let turnstileWidgetId: string | undefined;
+
+function setTurnstileMessage(message: string) {
+  if (turnstileStatus) turnstileStatus.textContent = message;
+}
+function setTurnstileToken(token: string) {
+  if (turnstileTokenField) turnstileTokenField.value = token;
+}
+function clearTurnstileToken() {
+  if (turnstileTokenField) turnstileTokenField.value = '';
+}
+
+function renderTurnstile() {
+  if (!turnstileConfigured || !turnstileContainer) return;
+  const api = getTurnstile();
+  if (!api) { loadTurnstileScript(); return; }
+  if (turnstileWidgetId !== undefined) return; // render once unless reset requires otherwise
+  setTurnstileMessage('');
+  turnstileWidgetId = api.render(turnstileContainer, {
+    sitekey: turnstileSitekey,
+    action: 'website_enquiry',
+    size: 'flexible',
+    callback: (token: string) => {
+      setTurnstileToken(token);
+      setTurnstileMessage('');
+    },
+    'expired-callback': () => {
+      clearTurnstileToken();
+      setTurnstileMessage('Verification expired. Please complete the check again before submitting.');
+    },
+    'error-callback': () => {
+      clearTurnstileToken();
+      setTurnstileMessage('We could not complete verification. Please try the check again.');
+    }
+  });
+}
+
+function loadTurnstileScript() {
+  if (!turnstileConfigured || turnstileScriptRequested) return;
+  turnstileScriptRequested = true;
+  const script = document.createElement('script');
+  script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+  script.async = true;
+  script.defer = true;
+  script.addEventListener('load', () => renderTurnstile());
+  script.addEventListener('error', () => {
+    turnstileScriptRequested = false;
+    setTurnstileMessage('Verification could not load. Please refresh the page before submitting.');
+  });
+  document.head.append(script);
+}
+
+function activateTurnstile() {
+  if (!turnstileConfigured) return;
+  if (turnstileBlock) turnstileBlock.hidden = false;
+  loadTurnstileScript();
+  renderTurnstile();
+}
+
+function resetTurnstile() {
+  if (!turnstileConfigured) return;
+  clearTurnstileToken();
+  const api = getTurnstile();
+  if (api && turnstileWidgetId !== undefined) api.reset(turnstileWidgetId);
+}
+
 const labelFor = (name: string, value: string) => {
   const control = form.querySelector<HTMLInputElement | HTMLOptionElement>(`[name="${CSS.escape(name)}"][value="${CSS.escape(value)}"], select[name="${CSS.escape(name)}"] option[value="${CSS.escape(value)}"]`);
   if (control instanceof HTMLOptionElement) return control.textContent?.trim() || value;
@@ -32,6 +122,7 @@ function setScreen(index: number) {
     item.classList.toggle('is-complete', itemStage < stage);
   });
   clearErrors();
+  if (screens[screenIndex]?.dataset.screen === '9') activateTurnstile();
   screens[screenIndex]?.querySelector<HTMLElement>('input:not([type="hidden"]), select, textarea, button')?.focus({ preventScroll: true });
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   window.scrollTo({ top: Math.max(0, (document.querySelector('.intake-main')?.getBoundingClientRect().top || 0) + window.scrollY - 24), behavior: reducedMotion ? 'auto' : 'smooth' });
@@ -248,6 +339,16 @@ form.addEventListener('submit', async (event) => {
     }
   }
 
+  // When Turnstile is configured, require a browser token before contacting the server.
+  // Server-side Siteverify remains the authority; this only avoids a POST that will fail closed.
+  if (turnstileConfigured && !(turnstileTokenField?.value.trim())) {
+    activateTurnstile();
+    setTurnstileMessage('Please complete the verification check before submitting.');
+    if (submitStatus) submitStatus.textContent = '';
+    turnstileBlock?.scrollIntoView({ block: 'center', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    return;
+  }
+
   const submitButton = form.querySelector<HTMLButtonElement>('#submit-enquiry');
   if (submitButton) submitButton.disabled = true;
   if (submitStatus) submitStatus.textContent = 'Submitting your context securely…';
@@ -263,6 +364,7 @@ form.addEventListener('submit', async (event) => {
     if (!response.ok || result?.accepted !== true) {
       if (submitStatus) submitStatus.textContent = result?.message || 'We could not confirm receipt of your enquiry. Please review your information and try again later.';
       if (result?.fieldErrors) showErrors(Object.values(result.fieldErrors).map((message) => ({ message: String(message) })));
+      resetTurnstile(); // consumed token cannot be reused; issue a fresh one before any retry
       return;
     }
 
@@ -274,6 +376,7 @@ form.addEventListener('submit', async (event) => {
     }
   } catch {
     if (submitStatus) submitStatus.textContent = 'The server is unavailable. Your enquiry has not been confirmed as received.';
+    resetTurnstile(); // network failure after a token was generated; refresh for a clean retry
   } finally {
     if (submitButton) submitButton.disabled = false;
   }

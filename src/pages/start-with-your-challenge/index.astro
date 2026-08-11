@@ -210,6 +210,12 @@ import {
             <div class="screen-heading"><div class="eyebrow">Review</div><h2>Review the context you provided.</h2><p><strong>This is the context you provided. It is not an assessment or compliance determination.</strong></p></div>
             <div id="review-summary" class="review-summary" aria-live="polite"></div>
             <div class="sai-guidance"><strong>Organised for review:</strong> No findings, risk rating, applicable-requirement conclusion or recommendation has been created.</div>
+            <div class="turnstile-verify" data-turnstile-block hidden>
+              <span class="turnstile-label">Verification</span>
+              <p class="turnstile-note">A brief automated check confirms this is a genuine enquiry before it is sent for human review.</p>
+              <div id="turnstile-widget" class="turnstile-widget"></div>
+              <p id="turnstile-status" class="turnstile-status" role="status" aria-live="polite"></p>
+            </div>
             <div class="intake-actions"><button class="button button-secondary" type="button" data-back>Back</button><button class="button button-primary" type="submit" id="submit-enquiry">Submit for human review</button></div>
             <p id="submit-status" class="submit-status" role="status" aria-live="polite"></p>
           </section>
