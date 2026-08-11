@@ -3,11 +3,10 @@ import { HubSpotEnquiryTransport } from '../../src/server/enquiry/hubspot.mjs';
 import { buildWorkpacketStub, validateEnquiryPayload } from '../../src/server/enquiry/core.mjs';
 import { contextFingerprint, deriveEnquiryId } from '../../src/server/enquiry/submission.mjs';
 
+const APPROVED_P2_TEST_PORTAL_ID = '247013551';
 const token = process.env.HUBSPOT_P2_TEST_ACCESS_TOKEN?.trim();
-const expectedPortalId = process.env.HUBSPOT_P2_TEST_PORTAL_ID?.trim();
 const baseUrl = (process.env.HUBSPOT_API_BASE_URL || 'https://api.hubapi.com').replace(/\/$/, '');
 if (!token) throw new Error('HUBSPOT_P2_TEST_ACCESS_TOKEN is required in non-production secret storage.');
-if (!expectedPortalId) throw new Error('HUBSPOT_P2_TEST_PORTAL_ID is required.');
 
 async function request(path, { method = 'GET', body, allow404 = false } = {}) {
   const response = await fetch(`${baseUrl}${path}`, {
@@ -27,7 +26,7 @@ async function request(path, { method = 'GET', body, allow404 = false } = {}) {
 }
 
 const account = await request('/account-info/2026-03/details');
-assert.equal(String(account.portalId), expectedPortalId, 'Connected token does not belong to the approved P2 test portal.');
+assert.equal(String(account.portalId), APPROVED_P2_TEST_PORTAL_ID, 'Connected token does not belong to approved P2 test Account 247013551.');
 assert.equal(account.accountType, 'DEVELOPER_TEST', `P2 writes require DEVELOPER_TEST, received ${account.accountType}.`);
 
 const propertyDefinitions = [
@@ -72,6 +71,7 @@ assert.ok(pipelineProperty.options?.some((option) => option.value === pipelineId
 assert.ok(stageProperty.options?.some((option) => option.value === stageId), `Test stage ${stageId} not available.`);
 
 const suffix = new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14);
+const syntheticEmail = `techsafeai.p2.synthetic.${suffix}@example.com`;
 const raw = {
   challenge: { key: 'CONTROL_VERIFICATION', problemSummary: 'P2 SYNTHETIC — control verification context for isolated provider proof.' },
   organisation: { name: `[P2 SYNTHETIC ${suffix}] Operations`, sizeBand: '250_999', footprint: 'Synthetic test operating context only' },
@@ -82,7 +82,7 @@ const raw = {
   outcome: { desiredOutcome: 'P2 SYNTHETIC — prove one authoritative Deal, Contact association and duplicate safety.', trigger: 'AI_INITIATIVE', timing: 'ONE_TO_THREE_MONTHS' },
   internalCapability: { safetyCompliance: 'UNSURE', aiTechnology: 'UNSURE', accountableSponsor: 'UNSURE', aitlAvailable: 'UNSURE', externalAdviser: 'UNSURE' },
   security: { level: 'STANDARD', note: '', acknowledged: true },
-  contact: { name: 'P2 Synthetic User', email: `techsafeai.p2.synthetic.${suffix}@example.com`, telephone: '' }
+  contact: { name: 'P2 Synthetic User', email: syntheticEmail, telephone: '' }
 };
 
 const validated = validateEnquiryPayload(raw);
@@ -108,6 +108,10 @@ assert.equal(deal.properties.website_enquiry_fingerprint, context.fingerprint);
 const contacts = deal.associations?.contacts?.results || [];
 assert.equal(contacts.length, 1, 'Expected exactly one Contact association on the synthetic Deal.');
 
+const contactId = String(contacts[0].id);
+const contact = await request(`/crm/objects/2026-03/contacts/${encodeURIComponent(contactId)}?properties=email,firstname,lastname,phone`);
+assert.equal(contact.properties.email, syntheticEmail, 'Synthetic Contact read-back did not match the submitted email.');
+
 console.log(JSON.stringify({
   proof: 'WEB-01G-P2-HUBSPOT-ISOLATED',
   accountType: account.accountType,
@@ -116,6 +120,8 @@ console.log(JSON.stringify({
   pipelineId,
   stageId,
   dealId: first.transportReference,
+  contactId,
+  contactReadBack: true,
   enquiryId: context.enquiryId,
   duplicateRetrySameDeal: true,
   contactAssociationCount: contacts.length,
