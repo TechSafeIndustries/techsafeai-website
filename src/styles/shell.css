@@ -3,6 +3,7 @@
 .skip-link:focus{transform:none}
 .shell{width:min(var(--max),calc(100% - 56px));margin-inline:auto}
 .eyebrow{font:700 11px/1.3 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.15em;text-transform:uppercase;color:var(--accent)}
+.section-light .eyebrow,.section-muted .eyebrow,.content-section .eyebrow{color:var(--navy-900)}
 .section{padding:var(--space-10) 0}
 .section-dark{background:var(--navy-900);color:#fff}
 .section-light{background:var(--surface-0)}
@@ -28,6 +29,7 @@ p{max-width:72ch}
 .site-header{position:absolute;top:0;left:0;right:0;z-index:20;color:#fff;border-bottom:1px solid rgba(255,255,255,.14)}
 .header-inner{height:78px;display:flex;align-items:center;justify-content:space-between;gap:24px}
 .brand{display:inline-flex;align-items:center;gap:12px;font-weight:800;font-size:21px;letter-spacing:-.03em;text-decoration:none}
+.brand-logo{height:40px;width:auto;display:block}
 .brand-glyph{width:28px;height:28px;border:1px solid rgba(255,255,255,.55);position:relative;display:inline-block;flex:0 0 auto}
 .brand-glyph:before,.brand-glyph:after{content:"";position:absolute;background:var(--accent)}
 .brand-glyph:before{width:20px;height:1px;left:3px;top:13px;transform:rotate(-34deg)}
