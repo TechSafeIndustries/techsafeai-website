@@ -15,6 +15,18 @@ import { productTiers } from '../../data/site';
           <div class="indexed-item"><span class="index">0{i+1}</span><div><h3>{item.title}</h3><p>{item.summary}</p></div></div>
         ))}
       </div>
+      <figure class="asset-figure">
+        <div class="asset-crop">
+          <img
+            src="/assets/sai/website-handoff/sai-ui-016/HERO-COCKPIT-37a6918.png"
+            width="1506"
+            height="692"
+            alt="TechSafeAI Operational Intelligence cockpit shown with synthetic demonstration data."
+            loading="lazy"
+          />
+        </div>
+        <figcaption class="notice">Product interface shown with synthetic demonstration data.</figcaption>
+      </figure>
     </div>
   </section>
 
@@ -51,3 +63,10 @@ import { productTiers } from '../../data/site';
     </div>
   </section>
 </ContentPage>
+
+<style>
+  .asset-figure{margin:32px 0 0;max-width:1506px}
+  .asset-crop{overflow:hidden;aspect-ratio:1506/580;border:1px solid var(--border);background:var(--surface-0)}
+  .asset-crop img{display:block;width:100%;height:auto}
+  .asset-figure figcaption{margin-top:12px}
+</style>
