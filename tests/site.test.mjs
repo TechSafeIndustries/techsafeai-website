@@ -97,28 +97,27 @@ test('approved SAI website assets match the governed SHA-256 hashes', () => {
   }
 });
 
-test('SAI website assets are limited to the three governed homepage placements', () => {
+test('legacy SAI-WEB-001/002/003 assets are held and not wired into Website runtime (SAI-WEB-RUNTIME-DISENGAGE-01)', () => {
+  // SAI-WEB-001/002/003 remain HELD / NOT AUTHORISED FOR PRODUCTION USE
+  // (Founder disposition, SAI-WEB-PROV-DISP-01, 30 Aug 2026): provenance
+  // remains Classification C (possible match, incomplete), and SAI-WEB-002/003
+  // are additionally flagged for replacement from a governed source. The
+  // binaries stay in place unmodified as held, non-runtime legacy artefacts
+  // (see the hash test above); this test confirms none of the three is wired
+  // into any Website CSS or page output.
   const css = read('src/styles/web-sai-01.css');
-  const exactPaths = [
+  const legacyPaths = [
     '/assets/sai/sai-mark-na-na-website-xs64-dark-fc-v1.0.0.png',
     '/assets/sai/sai-comp-handoff-upper-website-l-light-fc-v1.0.0.webp',
     '/assets/sai/sai-state-orient-upper-website-m-light-fc-v1.0.0.webp'
   ];
-  for (const asset of exactPaths) assert.equal(css.split(asset).length - 1, 1, `${asset} must appear once`);
-  assert.match(css, /#approach \.section-title::after[\s\S]*sai-mark-na-na-website-xs64-dark-fc-v1\.0\.0\.png/);
-  assert.match(css, /#security \.security-detail::after[\s\S]*sai-comp-handoff-upper-website-l-light-fc-v1\.0\.0\.webp/);
-  assert.match(css, /\.cta-band \.cta-band-grid > div:last-child::after[\s\S]*sai-state-orient-upper-website-m-light-fc-v1\.0\.0\.webp/);
-  assert.doesNotMatch(css, /\.hero[^\n{]*::(?:before|after)[\s\S]*\/assets\/sai\//);
-  assert.doesNotMatch(css, /\.site-header[^\n{]*::(?:before|after)[\s\S]*\/assets\/sai\//);
-  assert.doesNotMatch(css, /\.pain-selector[^\n{]*::(?:before|after)[\s\S]*\/assets\/sai\//);
-  assert.doesNotMatch(css, /#solutions[^\n{]*::(?:before|after)[\s\S]*\/assets\/sai\//);
-  assert.doesNotMatch(css, /#industries[^\n{]*::(?:before|after)[\s\S]*\/assets\/sai\//);
-  assert.doesNotMatch(css, /\.proof[^\n{]*::(?:before|after)[\s\S]*\/assets\/sai\//);
-});
+  for (const asset of legacyPaths) {
+    assert.equal(css.includes(asset), false, `${asset} must not be referenced in web-sai-01.css — asset is HELD, not authorised for production use`);
+  }
+  assert.doesNotMatch(css, /#approach \.section-title::after/);
+  assert.doesNotMatch(css, /#security \.security-detail::after/);
+  assert.doesNotMatch(css, /\.cta-band \.cta-band-grid > div:last-child::after/);
 
-test('SAI CSS prevents upscaling beyond governed dimensions', () => {
-  const css = read('src/styles/web-sai-01.css');
-  assert.match(css, /#approach \.section-title::after[\s\S]*width:\s*42px;[\s\S]*height:\s*42px;[\s\S]*max-width:\s*42px;/);
-  assert.match(css, /#security \.security-detail::after[\s\S]*max-width:\s*420px;[\s\S]*aspect-ratio:\s*420 \/ 213;/);
-  assert.match(css, /\.cta-band \.cta-band-grid > div:last-child::after[\s\S]*max-width:\s*285px;[\s\S]*max-height:\s*213px;[\s\S]*aspect-ratio:\s*285 \/ 213;/);
+  const challenge = read('src/pages/start-with-your-challenge/index.astro');
+  assert.doesNotMatch(challenge, /sai-comp-handoff-upper-website-l-light-fc-v1\.0\.0\.webp/);
 });

@@ -66,15 +66,13 @@
 .turnstile-status{min-height:20px;margin:8px 0 0;color:var(--error);font-weight:700;font-size:13px}
 .honeypot{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important}
 .intake-confirmation[hidden]{display:none!important}
-.intake-confirmation{display:grid;grid-template-columns:1fr minmax(240px,420px);gap:36px;align-items:end;background:var(--navy-800);color:#fff;padding:38px;border:1px solid #355365}
+.intake-confirmation{display:grid;grid-template-columns:1fr;gap:36px;align-items:end;background:var(--navy-800);color:#fff;padding:38px;border:1px solid #355365}
 .intake-confirmation h2{font-size:36px;margin:10px 0 14px}
 .intake-confirmation p{color:#c0ced5}
-.intake-confirmation img{display:block;width:min(100%,420px);max-width:420px;height:auto;justify-self:end}
 @media(max-width:1023px){
   .intake-layout{grid-template-columns:1fr;gap:36px}
   .intake-aside{position:static}
   .intake-progress{grid-template-columns:repeat(4,minmax(0,1fr))}
-  .intake-confirmation{grid-template-columns:1fr minmax(220px,360px)}
 }
 @media(max-width:767px){
   .intake-shell{padding:48px 0 72px}
@@ -88,11 +86,9 @@
   .capability-question{grid-template-columns:1fr}
   .intake-actions{flex-direction:column-reverse;align-items:stretch}
   .intake-actions .button{width:100%}
-  .intake-confirmation{grid-template-columns:1fr;padding:26px 20px}
-  .intake-confirmation img{width:min(100%,320px);justify-self:start}
+  .intake-confirmation{padding:26px 20px}
 }
 @media(max-width:390px){
   .intake-progress{margin-inline:-16px;padding-inline:16px}
-  .intake-confirmation img{width:min(100%,260px)}
 }
 @media(prefers-reduced-motion:reduce){.intake-shell *{scroll-behavior:auto!important}}
