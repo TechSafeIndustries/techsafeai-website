@@ -2,9 +2,48 @@ export const site = {
   name: 'TechSafeAI',
   canonicalBase: 'https://techsafe.ai',
   description:
-    'AI-enabled safety, compliance, risk and operational transformation consultancy for risk-intensive and regulated organisations.',
+    'TechSafeAI is a governed Operational Intelligence platform for high-risk industries, delivered through Product Services and Consultancy Services.',
   proposition:
     'TechSafeAI works with risk-intensive and regulated organisations, with initial sector depth in Mining & Resources and Construction & Infrastructure.'
+} as const;
+
+// Phase 9 (Mission 10, 2026-08-28): service areas for the /consulting route.
+export const consultingServices = [
+  { title: 'Operational Risk & Assurance', summary: 'Structured review of operational risk exposure, controls and assurance activity.' },
+  { title: 'HSSE Advisory', summary: 'Health, safety, security and environmental advisory grounded in operating context, not templates.' },
+  { title: 'Operational Reviews', summary: 'Independent review of workflow, ownership and operating effectiveness.' },
+  { title: 'Control Verification', summary: 'Check whether critical controls actually work, with evidence, not assumption.' },
+  { title: 'Incident Investigation & Learning', summary: 'Investigate incidents and turn findings into learning, not just closed actions.' },
+  { title: 'Governance & Management Systems', summary: 'Design and strengthen the management systems that govern operational decisions.' },
+  { title: 'Digital & AI Transformation', summary: 'Move stalled digital or AI initiatives into governed, accountable operating change.' },
+  { title: 'AI & Operational Intelligence Advisory', summary: 'Advise on where AI and Operational Intelligence genuinely add value, and where they do not.' },
+  { title: 'TechSafeAI Implementation', summary: 'Human-led support to implement TechSafeAI Product Services inside your operating environment.' },
+  { title: 'Custom Engagements', summary: 'Founder-approved specialist consultancy scoped to a specific operating problem.' }
+] as const;
+
+// Phase 9 (Mission 10, 2026-08-28): capability tiers for the /product route.
+export const productTiers = {
+  core: [
+    { title: 'Operational Intelligence Cockpit', summary: 'A governed view of operational context drawn from the systems you already run.' },
+    { title: 'SAI', summary: 'Systems Assistant Intelligence. SAI assists the human — it explains and helps, it does not decide.' },
+    { title: 'Evidence Intelligence', summary: 'Surfaces what evidence exists, what is missing, and where a claim is not yet supported.' },
+    { title: 'Human Review', summary: 'Consequential judgement stays with accountable people. TechSafeAI supports the review, not the decision.' },
+    { title: '3P Structure & Coverage', summary: 'People, Property and Planet as connected operational-domain coverage beneath the platform.' }
+  ],
+  assurance: [
+    { title: 'Risk & Activity Intelligence', summary: 'Connects activities to the risks and controls that govern them.' },
+    { title: 'Control Assurance', summary: 'Structures evidence requirements and verification against defined controls.' },
+    { title: 'Trend & Change Intelligence', summary: 'Shows pattern and change over time, so attention goes where it is needed.' }
+  ],
+  enterprise: [
+    { title: 'Multi-Site / Portfolio Intelligence', summary: 'Governed visibility across sites and portfolios, not just a single operation.' },
+    { title: 'Organisational Context', summary: 'Reflects how your organisation is actually structured and accountable.' },
+    { title: 'Advanced Integrations', summary: 'Connects to existing operational systems without becoming a new system of record.' },
+    { title: 'Configurable Industry Libraries', summary: 'Industry-configurable models that reflect the operating context of your sector.' }
+  ],
+  future: [
+    { title: 'Work Preparation Intelligence', summary: 'FUTURE — planned capability, not currently delivered. Shown here for transparency about direction, not as a live feature.' }
+  ]
 } as const;
 
 export const painPoints = [

@@ -38,10 +38,25 @@ test('public UI does not expose internal build or control-tower language', () =>
   assert.doesNotMatch(publicSource, /WEB-01F|WEB-01G|CANONICAL DOMAIN TARGET|SAI-VIS-10|production DNS|deployment status|CRM claim|front-end build/i);
 });
 
-test('homepage preserves pain-first and security language', () => {
+test('homepage carries the Phase 9 governed Operational Intelligence narrative', () => {
+  // Superseded by Mission 10 / Phase 9 (2026-08-28): the homepage moved from a
+  // consultancy-first, pain-selector-led narrative to the approved governed
+  // Operational Intelligence narrative (hero -> problem/differentiation ->
+  // product story -> 3Ps -> SAI -> ways to engage -> trust/CTA). The old
+  // pain-first ordering and upfront "Start with context, not confidential
+  // files." security line no longer live on the homepage; the security
+  // boundary statement remains live on /security-trust and inside the
+  // Start with your challenge intake itself.
   const home = read('src/pages/index.astro');
-  assert.ok(home.indexOf('What are you trying to solve?') < home.indexOf('TechSafeAI approach'));
-  assert.match(home, /Start with context, not confidential files\./);
+  assert.match(home, /Operational information is everywhere\./);
+  assert.match(home, /Operational understanding isn't\./);
+  assert.match(home, /Your existing systems.*remain authoritative/s);
+  assert.match(home, /Evidence and provenance.*stay visible/s);
+  assert.match(home, /Human decisions.*remain human/s);
+  assert.match(home, /Operational Intelligence without replacing the systems that own your data\./);
+  assert.match(home, /One operation\. Three connected perspectives\./);
+  assert.match(home, /SAI assists the human\./);
+  assert.match(home, /Operational Intelligence backed by operational expertise\./);
   assert.match(home, /Mining & Resources/);
   assert.match(home, /Construction & Infrastructure/);
   assert.match(home, /Other Risk-Intensive & Regulated Operations/);

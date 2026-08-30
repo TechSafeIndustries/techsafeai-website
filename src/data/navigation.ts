@@ -1,8 +1,8 @@
 export const navigation = [
-  { label: 'Solutions', href: '/solutions' },
+  { label: 'Product', href: '/product' },
+  { label: 'Consulting', href: '/consulting' },
   { label: 'Industries', href: '/industries' },
-  { label: 'How we work', href: '/how-we-work' },
-  { label: 'Security & Trust', href: '/security-trust' },
+  { label: 'Why TechSafeAI', href: '/why-techsafeai' },
   { label: 'Insights', href: '/insights' },
   { label: 'About', href: '/about' }
 ] as const;

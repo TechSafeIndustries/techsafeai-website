@@ -1,130 +1,165 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { broaderContexts, capabilities, featuredSectors, painPoints, site } from '../data/site';
+import CtaBand from '../components/CtaBand.astro';
+import { site } from '../data/site';
 
-const method = [
-  ['UNDERSTAND', 'Clarify the problem', 'Start with the operating problem, trigger, workflow, ownership and desired outcome.'],
-  ['PROTECT', 'Set the information boundary', 'Identify what can remain public and what belongs behind a controlled security decision.'],
-  ['AUTHORITY', 'Establish what governs', 'Resolve the applicable authority before treating information as an assessment requirement.'],
-  ['EVIDENCE', 'Assess what can be demonstrated', 'Connect records, observations, systems and control evidence to the defined scope.'],
-  ['GAPS', 'Identify what is missing', 'Separate current-state deficiencies from assumptions, actions and future claims.'],
-  ['TRANSFORM', 'Change the workflow', 'Use DRIVER-6 to organise remediation, ownership, integration and repeatable change.'],
-  ['VERIFY', 'Check the result', 'Completion is not verification. Controls and outcomes require evidence.'],
-  ['VALUE', 'Prove what changed', 'No verified value claim without a baseline, method and evidence.']
+const productCards = [
+  {
+    title: 'Operational Intelligence',
+    summary: 'Connects activities, risks, controls and evidence from your existing systems into governed operational context.'
+  },
+  {
+    title: 'Control & Evidence Intelligence',
+    summary: 'Surfaces what evidence exists, what is missing and where a control claim is not yet supported.'
+  },
+  {
+    title: 'SAI',
+    summary: 'Helps people ask better questions of governed operational information. SAI assists the human — it does not decide for them.'
+  },
+  {
+    title: 'Portfolio & Trend Intelligence',
+    summary: 'Shows change and pattern across sites and time, so attention goes where it is actually needed.'
+  }
+] as const;
+
+const threePs = [
+  { title: 'People', summary: 'Capability, readiness and human performance.' },
+  { title: 'Property', summary: 'Assets, infrastructure and operational capability.' },
+  { title: 'Planet', summary: 'Environmental conditions, obligations and constraints.' }
+] as const;
+
+const engagementPaths = [
+  {
+    title: 'Product Services',
+    summary: 'Governed Operational Intelligence delivered through the TechSafeAI platform — Cockpit, SAI, Evidence Intelligence and Human Review.',
+    href: '/product'
+  },
+  {
+    title: 'Consultancy Services',
+    summary: 'Human-led expertise: assurance, risk and operational reviews, control verification, incident investigation and implementation support.',
+    href: '/consulting'
+  }
+] as const;
+
+const industryLinks = [
+  { slug: 'mining-resources', title: 'Mining & Resources' },
+  { slug: 'construction-infrastructure', title: 'Construction & Infrastructure' },
+  { slug: 'other-regulated-operations', title: 'Other Risk-Intensive & Regulated Operations' }
 ] as const;
 ---
-<BaseLayout title="TechSafeAI" description={site.description}>
+<BaseLayout title={site.name} description="TechSafeAI brings governed operational information into context, helping leaders see what needs attention, understand the evidence behind it and make better-informed decisions.">
+
   <section class="hero section-dark">
     <div class="shell hero-grid">
       <div class="hero-copy">
-        <div class="eyebrow">AI-enabled consultancy for risk-intensive operations</div>
-        <h1>Complex operations.<span>Clearer evidence. Better decisions.</span></h1>
-        <p class="lead">{site.proposition}</p>
+        <div class="eyebrow">Governed Operational Intelligence</div>
+        <h1>Operational information is everywhere.<span>Operational understanding isn't.</span></h1>
+        <p class="lead">TechSafeAI brings governed operational information into context, helping leaders see what needs attention, understand the evidence behind it and make better-informed decisions.</p>
         <div class="hero-actions">
           <a class="button button-primary" href="/start-with-your-challenge">Start with your challenge <span aria-hidden="true">→</span></a>
-          <a class="button button-outline-light" href="/how-we-work">See how TechSafeAI works</a>
+          <a class="button button-outline-light" href="#operational-intelligence">See how it works</a>
         </div>
         <div class="trustline">
-          <span><strong>Pain first</strong> — not product first</span>
-          <span><strong>Human accountable</strong> — technology supports</span>
-          <span><strong>Security before evidence</strong></span>
+          <span><strong>Your existing systems</strong> remain authoritative</span>
+          <span><strong>Evidence and provenance</strong> stay visible</span>
+          <span><strong>Human decisions</strong> remain human</span>
         </div>
       </div>
       <div class="hero-art" aria-hidden="true">
         <div class="hero-art-grid"></div>
         <span class="art-node a"></span><span class="art-node b"></span><span class="art-node c"></span>
-        <span class="art-label a">Field operations</span>
-        <span class="art-label b">Systems / authority</span>
-        <span class="art-label c">Evidence / verification</span>
-        <div class="art-caption"><div><strong>Operational context</strong>Risk-intensive work</div><div><strong>Consulting logic</strong>Authority → evidence → action</div></div>
+        <span class="art-label a">Activities</span>
+        <span class="art-label b">Risks / controls</span>
+        <span class="art-label c">Evidence</span>
+        <div class="art-caption"><div><strong>Operational context</strong>High-risk industries</div><div><strong>Governed intelligence</strong>Context → evidence → decision</div></div>
       </div>
     </div>
   </section>
 
-  <div class="shell pain-wrap" id="challenges">
-    <section class="pain-selector" aria-labelledby="pain-heading">
-      <div class="pain-head"><div><div class="eyebrow">Client problem</div><h2 id="pain-heading">What are you trying to solve?</h2></div><p class="pain-note">Choose the primary challenge. This routes context only; it does not create an assessment or recommendation.</p></div>
-      <div class="pain-grid">
-        {painPoints.map((pain, index) => (
-          <button class="pain-card" type="button" data-pain-key={pain.key} aria-pressed="false">
-            <span class="pain-num">{String(index + 1).padStart(2, '0')}</span><strong>{pain.label}</strong><span class="arrow" aria-hidden="true">↗</span>
-          </button>
+  <section class="section section-light">
+    <div class="shell problem-grid">
+      <div class="section-title" style="display:block"><div class="eyebrow">The problem isn't another dashboard</div><h2>Existing systems can show what they contain.</h2><p>Dashboards can visualise it. Generic AI can summarise it. None of that is the same as understanding how it fits together.</p></div>
+      <div class="problem-list">
+        <div class="problem-row"><span class="code">01</span><div><h3>Existing systems</h3><p>Can show what they contain — inside their own boundary, in their own format.</p></div><span class="cause">Shows its own data</span></div>
+        <div class="problem-row"><span class="code">02</span><div><h3>Dashboards</h3><p>Can visualise it — a clearer picture of the same disconnected information.</p></div><span class="cause">Visualises, doesn't connect</span></div>
+        <div class="problem-row"><span class="code">03</span><div><h3>Generic AI</h3><p>Can summarise it — without knowing what is governed, evidenced or still uncertain.</p></div><span class="cause">Summarises, doesn't govern</span></div>
+      </div>
+      <p class="notice" style="grid-column:1/-1;margin-top:8px">TechSafeAI is being built to understand governed operational relationships across activities, risks, controls, evidence and organisational context — not to add another view of the same fragmented information.</p>
+    </div>
+  </section>
+
+  <section class="section section-muted" id="operational-intelligence">
+    <div class="shell">
+      <div class="section-title" style="display:block"><div class="eyebrow">Product story</div><h2>Operational Intelligence without replacing the systems that own your data.</h2><p>TechSafeAI connects, structures and explains governed information from the systems you already run. It does not become a new system of record.</p></div>
+      <div class="capability-grid" style="margin-top:42px">
+        {productCards.map((card,index)=>(
+          <div class="capability">
+            <span class="capability-index">0{index+1}</span>
+            <h3>{card.title}</h3>
+            <p>{card.summary}</p>
+          </div>
         ))}
       </div>
-      <div class="pain-action"><span class="pain-status" id="pain-status" aria-live="polite">No challenge selected.</span><a id="pain-continue" class="button button-secondary" href="/start-with-your-challenge">Continue with high-level context</a></div>
-    </section>
-  </div>
+    </div>
+  </section>
 
-  <section class="section section-light">
-    <div class="shell problem-grid">
-      <div class="section-title" style="display:block"><div class="eyebrow">Why problems persist</div><h2>Most failures are connected.</h2><p>High-risk operating problems rarely sit inside one document or one system. Authority, evidence, workflow, ownership and verification often break at different points.</p></div>
-      <div class="problem-list">
-        <div class="problem-row"><span class="code">01</span><div><h3>Requirements and evidence drift apart</h3><p>Teams have records, but cannot reliably show which requirement or control they support.</p></div><span class="cause">Evidence fragmentation</span></div>
-        <div class="problem-row"><span class="code">02</span><div><h3>Ownership becomes procedural instead of operational</h3><p>Actions exist, but accountable people, operating decisions and verification are unclear.</p></div><span class="cause">Authority / ownership</span></div>
-        <div class="problem-row"><span class="code">03</span><div><h3>AI is added before governance is resolved</h3><p>Automation creates speed without first defining information boundaries, human review and authority.</p></div><span class="cause">AI governance</span></div>
-        <div class="problem-row"><span class="code">04</span><div><h3>Completed work is confused with verified value</h3><p>Activity is reported, but baseline, method, evidence and measured result are missing.</p></div><span class="cause">Verification / value</span></div>
+  <section class="section section-light" id="three-ps">
+    <div class="shell">
+      <div class="section-title" style="display:block"><div class="eyebrow">People + Property + Planet</div><h2>One operation. Three connected perspectives.</h2><p>Conditions across these three domains may affect operational performance and productivity. TechSafeAI does not guarantee productivity, profitability or compliance outcomes — it helps connect the intelligence that informs them.</p></div>
+      <div class="capability-grid" style="margin-top:42px">
+        {threePs.map((p)=>(
+          <div class="capability">
+            <h3>{p.title}</h3>
+            <p>{p.summary}</p>
+          </div>
+        ))}
       </div>
     </div>
   </section>
 
-  <section class="section section-dark" id="approach">
-    <div class="shell method-grid">
-      <div class="section-title" style="display:block"><div class="eyebrow">TechSafeAI approach</div><h2>Move from problem to evidence-backed change.</h2><p>Technology sits inside a governed consulting process. It does not replace scope, authority, evidence or accountable human judgement.</p></div>
-      <div class="method-list">
-        {method.map(([stage,title,copy]) => <div class="method-step"><span class="method-dot" aria-hidden="true"></span><span class="method-stage">{stage}</span><div><strong>{title}</strong><p>{copy}</p></div></div>)}
+  <section class="section section-muted">
+    <div class="shell content-grid">
+      <div>
+        <div class="eyebrow">Systems Assistant Intelligence</div>
+        <h2>Ask better questions of your operational information.</h2>
+        <p class="lead">SAI assists the human.</p>
+      </div>
+      <div class="content-copy">
+        <p>SAI is contextual, evidence-grounded and human-supervised. It helps people explore governed operational information and understand the evidence behind it.</p>
+        <p class="notice">SAI does not manufacture operational truth, autonomously approve work, determine compliance, or replace a competent person's judgement.</p>
       </div>
     </div>
   </section>
 
-  <section class="section section-muted" id="solutions">
-    <div class="shell"><div class="section-title"><div><div class="eyebrow">Relevant capability</div><h2>Built around the issue, not a product catalogue.</h2></div><p>The visitor identifies the problem. TechSafeAI then connects the consulting capability that fits the context, evidence and required outcome.</p></div>
-      <div class="capability-grid">
-        {capabilities.map((capability,index) => <a class="capability" href={`/solutions/${capability.slug}`}><span class="capability-index">{String(index + 1).padStart(2, '0')}</span><span class="capability-line"></span><h3>{capability.title}</h3><p>{capability.summary}</p><span class="capability-tag">{capability.tag}</span></a>)}
+  <section class="content-section">
+    <div class="shell">
+      <div class="section-title"><div><div class="eyebrow">Ways to engage</div><h2>Two ways to work with TechSafeAI.</h2></div></div>
+      <div class="route-grid" style="margin-top:42px">
+        {engagementPaths.map((path)=>(
+          <a class="route-card" href={path.href}>
+            <h3>{path.title}</h3>
+            <p>{path.summary}</p>
+            <span class="route-link">Learn more →</span>
+          </a>
+        ))}
       </div>
     </div>
   </section>
 
-  <section class="operating-context section-dark">
-    <div class="shell operating-head"><div><div class="eyebrow">Cross-industry operating context</div><h2>Risk-intensive work does not stop at sector labels.</h2></div><p>Mining & Resources and Construction & Infrastructure are the featured initial sector depth. Other regulated operating contexts have a credible route without unsupported specialist claims.</p></div>
-    <div class="shell operating-strip">{broaderContexts.map((context) => <div class="operating-card"><div class="operating-icon" aria-hidden="true"></div><span>{context}</span></div>)}</div>
-    <div class="shell operating-note"><strong>Positioning boundary:</strong> these contexts show broader operational relevance, not proven sector-specialist claims. Fit is assessed from the problem, regulatory context and required capability.</div>
-  </section>
-
-  <section class="section section-light" id="industries">
-    <div class="shell"><div class="section-title"><div><div class="eyebrow">Featured sector depth</div><h2>Depth where it is established. A route where it is not.</h2></div><p>Featured sectors receive the strongest initial content depth. Other risk-intensive organisations can still start with the problem and be triaged without TechSafeAI pretending specialist sector expertise it has not evidenced.</p></div>
-      <div class="sector-grid">
-        {featuredSectors.map((sector,index) => <a class="sector-card" href={`/industries/${sector.slug}`}><div class="eyebrow">Featured {String(index + 1).padStart(2, '0')}</div><h3>{sector.title}</h3><p>{sector.summary}</p><div class="sector-depth">Featured initial sector depth</div><div class="sector-lines" aria-hidden="true"></div></a>)}
-        <a class="sector-card other" href="/industries/other-regulated-operations"><div class="eyebrow">Broader pathway</div><h3>Other Risk-Intensive & Regulated Operations</h3><p>If the problem fits TechSafeAI's governed capability, the enquiry can proceed to consultant triage without implying prior sector depth.</p><ul class="other-list"><li>Problem-led fit assessment</li><li>Regulatory and operating context checked</li><li>No automatic sector-specialist claim</li><li>Clear route to “not a fit” where appropriate</li></ul><div class="sector-depth">Credible enquiry pathway</div></a>
+  <section class="content-section" style="background:#e8e5dd">
+    <div class="shell">
+      <div class="section-title"><div><div class="eyebrow">Industries</div><h2>Featured depth, and a route for every high-risk operation.</h2></div><p>Mining & Resources and Construction & Infrastructure are the featured initial sector depth. Other high-risk operations have a credible route without unsupported specialist claims.</p></div>
+      <div class="route-grid" style="margin-top:42px">
+        {industryLinks.map((industry)=>(
+          <a class="route-card" href={`/industries/${industry.slug}`}>
+            <h3>{industry.title}</h3>
+            <span class="route-link">View industry →</span>
+          </a>
+        ))}
       </div>
     </div>
   </section>
 
-  <section class="section section-light" id="security">
-    <div class="shell security-panel">
-      <div class="security-copy"><div class="eyebrow">Security before evidence</div><h2>Start with context, not confidential files.</h2><p>The public website collects only preliminary business context. Protected information belongs behind a controlled security and intake decision.</p></div>
-      <div class="security-detail"><div class="boundary"><div class="boundary-zone"><h3>PUBLIC STAGE — PERMITTED</h3><ul><li>Business challenge</li><li>High-level operating context</li><li>Industry / jurisdiction</li><li>Timing and trigger</li><li>Business contact details</li></ul></div><div class="boundary-gate"><span>Controlled gate</span></div><div class="boundary-zone"><h3>CONTROLLED STAGE — LATER</h3><ul><li>Evidence and documents</li><li>Restricted operational data</li><li>Detailed security information</li><li>Assessment material</li><li>Protected client records</li></ul></div></div><div class="human-note"><strong>Human accountability:</strong> governed technology may orient, collect, organise, flag or assist with handoff. Consequential assessment and decision-making remain subject to authorised human review.</div></div>
-    </div>
-  </section>
+  <CtaBand title="Operational Intelligence backed by operational expertise." copy="A person from TechSafeAI reviews every enquiry. Your existing systems remain authoritative and human decisions remain human." />
 
-  <section class="section section-light">
-    <div class="shell proof-grid"><div><div class="eyebrow">Evidence discipline</div><h2>No synthetic proof to fill an empty space.</h2><p>Until publishable client evidence exists, TechSafeAI shows what can be substantiated: method, governance, traceability, human accountability and information boundaries.</p></div><div><div class="proof-list"><div class="proof-item"><div class="proof-code">P-01 / GOVERNED METHOD</div><strong>Pain → authority → evidence → transformation → verification.</strong><span>Methodology proof can be shown without pretending it is a client outcome.</span></div><div class="proof-item"><div class="proof-code">P-02 / HUMAN REVIEW</div><strong>Technology assists. Accountable humans decide.</strong><span>Consequential conclusions stay behind authorised human review.</span></div><div class="proof-item"><div class="proof-code">P-03 / VALUE DISCIPLINE</div><strong>No verified value claim without baseline, method and evidence.</strong><span>The site does not manufacture ROI or improvement percentages.</span></div><div class="proof-item"><div class="proof-code">P-04 / INFORMATION BOUNDARY</div><strong>No public document upload.</strong><span>Protected information moves only after the controlled gate.</span></div></div></div></div>
-  </section>
-
-  <section class="cta-band section-dark"><div class="shell cta-band-grid"><div><div class="eyebrow">Start with the problem</div><h2>Tell us what is getting in the way.</h2></div><div><p>Your sector does not need to be one of the two featured sectors to start the conversation. Online enquiry submission is not yet available.</p><a class="button button-primary" href="/start-with-your-challenge">Start with your challenge <span aria-hidden="true">→</span></a></div></div></section>
-
-  <script>
-    const cards = document.querySelectorAll('[data-pain-key]');
-    const status = document.querySelector('#pain-status');
-    const next = document.querySelector('#pain-continue');
-    cards.forEach((card) => {
-      card.addEventListener('click', () => {
-        cards.forEach((item) => item.setAttribute('aria-pressed', 'false'));
-        card.setAttribute('aria-pressed', 'true');
-        const key = card.getAttribute('data-pain-key');
-        const label = card.querySelector('strong')?.textContent ?? 'Selected challenge';
-        if (status) status.textContent = `Selected: ${label}`;
-        if (next && key) next.setAttribute('href', `/start-with-your-challenge?challenge=${encodeURIComponent(key)}`);
-      });
-    });
-  </script>
 </BaseLayout>

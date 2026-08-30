@@ -1,0 +1,46 @@
+---
+import ContentPage from '../../components/ContentPage.astro';
+
+const trustStatements = [
+  { title: 'Systems remain authoritative', copy: 'Your existing HR, LMS, ERP, EHS, CMMS, permit, environmental and maintenance systems remain the systems of record. TechSafeAI connects, structures and explains — it does not replace them.' },
+  { title: 'Evidence stays traceable', copy: 'Where evidence exists, its provenance stays visible. Where it does not, that gap is shown rather than filled.' },
+  { title: 'Uncertainty stays visible', copy: 'Categorisation is not compliance. Coverage is not compliance. What is uncertain is shown as uncertain.' },
+  { title: 'Humans remain accountable', copy: 'SAI explains and assists. Consequential decisions and professional accountability stay with people.' }
+] as const;
+---
+<ContentPage
+  title="Why TechSafeAI"
+  eyebrow="Governed Operational Intelligence"
+  intro="TechSafeAI differs from a dashboard or a generic AI tool because it is governed: your systems stay authoritative, evidence stays traceable, uncertainty stays visible and humans stay accountable."
+>
+  <section class="content-section">
+    <div class="shell">
+      <div class="section-title"><div><div class="eyebrow">Trust statements</div><h2>What TechSafeAI commits to, every time.</h2></div></div>
+      <div class="indexed-list" style="margin-top:24px">
+        {trustStatements.map((item,i)=>(
+          <div class="indexed-item"><span class="index">0{i+1}</span><div><h3>{item.title}</h3><p>{item.copy}</p></div></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section" style="background:#e8e5dd">
+    <div class="shell security-panel">
+      <div class="security-copy"><div class="eyebrow">Public Stage 1</div><h2>Start with context, not confidential files.</h2><p>Do not provide incident files, personal information, credentials, restricted contracts, evidence packs, system exports or detailed cyber architecture through the public website.</p></div>
+      <div class="security-detail">
+        <div class="boundary">
+          <div class="boundary-zone"><h3>PUBLIC</h3><ul><li>Business challenge</li><li>Industry and operating context</li><li>Jurisdiction</li><li>Desired outcome and timing</li><li>Business contact information</li></ul></div>
+          <div class="boundary-gate"><span>Human-controlled gate</span></div>
+          <div class="boundary-zone"><h3>CONTROLLED LATER</h3><ul><li>Documents and evidence</li><li>Restricted operational data</li><li>Detailed security information</li><li>Assessment material</li><li>Protected records</li></ul></div>
+        </div>
+        <div class="human-note"><strong>SAI explains. Humans decide.</strong> Consequential judgement remains with authorised people. Technology does not certify compliance, accept risk or replace professional accountability.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="shell">
+      <div class="section-title"><div><div class="eyebrow">Why not a dashboard, or generic AI</div><h2>Dashboards visualise. Generic AI summarises. Neither is governed.</h2></div><p>TechSafeAI is being built to understand governed operational relationships across activities, risks, controls, evidence and organisational context — with the boundaries above kept in place at every step.</p></div>
+    </div>
+  </section>
+</ContentPage>

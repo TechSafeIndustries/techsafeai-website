@@ -139,10 +139,27 @@ test('review challenge labels exclude decorative choice-card numbering for all g
   assert.equal(CHALLENGES.find(([key]) => key === 'CONTROL_VERIFICATION')?.[1], 'Prove critical controls actually work');
 });
 
-test('Structured Hybrid exposes seven visible stages and only Stage-1 SAI states', () => {
+test('Phase 9 challenge flow exposes the approved 4-step public progress over the unchanged 9-screen structure', () => {
+  // Superseded by Mission 10 / Phase 9 (2026-08-28): the public-facing
+  // progress nav was re-skinned from 7 stage labels to the approved 4
+  // (Problem / Context / Desired outcome / Advisory result) as a
+  // presentation-layer change only. The underlying 9 screens, their own
+  // per-screen eyebrow micro-labels, field names, validation, Turnstile and
+  // HubSpot mapping are unchanged and still asserted below.
   const page = read('src/pages/start-with-your-challenge/index.astro');
-  const stages = ['Challenge', 'Organisation', 'Operating Context', 'Outcome', 'Capability', 'Security', 'Contact & Review'];
-  for (const stage of stages) assert.match(page, new RegExp(stage));
+  const publicSteps = ['Problem', 'Context', 'Desired outcome', 'Advisory result'];
+  for (const step of publicSteps) assert.match(page, new RegExp(step));
+  const screenEyebrows = ['Challenge', 'Organisation', 'Operating Context', 'Outcome', 'Capability', 'Security', 'Contact', 'Review'];
+  for (const eyebrow of screenEyebrows) assert.match(page, new RegExp(eyebrow));
+  assert.match(page, /Based on the context you provided, this enquiry may be relevant to:/);
+  assert.match(page, /A person from TechSafeAI will review your enquiry/);
+  // The advisory-result copy is explicitly required to DISCLAIM these framings
+  // (see the copy above: "not an assessment ... or compliance determination"),
+  // not to omit the words entirely, so check the disclaiming sentence exists
+  // rather than banning the phrases outright.
+  assert.match(page, /not an assessment, Operational Intelligence result, compliance determination or automated recommendation/);
+  assert.doesNotMatch(page, /SAI assessment/i);
+  assert.match(page, /\['Problem', 'Context', 'Desired outcome', 'Advisory result'\]/);
   assert.equal((page.match(/data-screen="/g) || []).length, 9);
   const states = [...page.matchAll(/data-sai-state="([A-Z]+)"/g)].map((match) => match[1]);
   assert.ok(states.length >= 5);
@@ -151,10 +168,15 @@ test('Structured Hybrid exposes seven visible stages and only Stage-1 SAI states
   assert.doesNotMatch(page, /chatbot|floating assistant|open conversational/i);
 });
 
-test('homepage pain selection remains carry-forward compatible', () => {
-  const home = read('src/pages/index.astro');
+test('challenge query-param carry-forward remains supported by the intake script', () => {
+  // Superseded by Mission 10 / Phase 9 (2026-08-28): the homepage's clickable
+  // pain-point selector grid was retired as part of the approved governed
+  // Operational Intelligence narrative (see site.test.mjs), so the homepage
+  // itself no longer emits a `?challenge=` link. The intake script's ability
+  // to read a `challenge` query param and pre-fill Step 1 is still a valid,
+  // reusable mechanism for any other page that wants to deep-link into the
+  // challenge flow, so that half of the contract stays under test here.
   const intake = read('src/scripts/intake.ts');
-  assert.match(home, /start-with-your-challenge\?challenge=/);
   assert.match(intake, /new URLSearchParams\(window\.location\.search\)\.get\('challenge'\)/);
 });
 

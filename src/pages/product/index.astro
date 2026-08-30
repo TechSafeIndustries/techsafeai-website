@@ -1,0 +1,53 @@
+---
+import ContentPage from '../../components/ContentPage.astro';
+import { productTiers } from '../../data/site';
+---
+<ContentPage
+  title="Product"
+  eyebrow="Governed Operational Intelligence"
+  intro="TechSafeAI connects, structures and explains governed operational information from the systems you already run. It does not replace them."
+>
+  <section class="content-section">
+    <div class="shell">
+      <div class="section-title"><div><div class="eyebrow">Core</div><h2>The governed Operational Intelligence platform.</h2></div><p>Available now, built around your existing systems and human review.</p></div>
+      <div class="indexed-list" style="margin-top:24px">
+        {productTiers.core.map((item,i)=>(
+          <div class="indexed-item"><span class="index">0{i+1}</span><div><h3>{item.title}</h3><p>{item.summary}</p></div></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section" style="background:#e8e5dd">
+    <div class="shell">
+      <div class="section-title"><div><div class="eyebrow">Assurance</div><h2>Evidence, controls and change over time.</h2></div><p>Structures the evidence and verification work that sits behind an assurance position.</p></div>
+      <div class="indexed-list" style="margin-top:24px">
+        {productTiers.assurance.map((item,i)=>(
+          <div class="indexed-item"><span class="index">0{i+1}</span><div><h3>{item.title}</h3><p>{item.summary}</p></div></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="shell">
+      <div class="section-title"><div><div class="eyebrow">Enterprise</div><h2>Multi-site, integrated, configurable.</h2></div><p>For organisations operating across more than one site or portfolio.</p></div>
+      <div class="indexed-list" style="margin-top:24px">
+        {productTiers.enterprise.map((item,i)=>(
+          <div class="indexed-item"><span class="index">0{i+1}</span><div><h3>{item.title}</h3><p>{item.summary}</p></div></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section" style="background:#e8e5dd">
+    <div class="shell">
+      <div class="section-title"><div><div class="eyebrow">Operations — Future</div><h2>Planned capability, not yet delivered.</h2></div><p class="notice">Work Preparation Intelligence is future capability. It is not currently delivered and is shown here for transparency about direction, not as a live feature.</p></div>
+      <div class="indexed-list" style="margin-top:24px">
+        {productTiers.future.map((item,i)=>(
+          <div class="indexed-item"><span class="index">FUTURE</span><div><h3>{item.title}</h3><p>{item.summary}</p></div></div>
+        ))}
+      </div>
+    </div>
+  </section>
+</ContentPage>

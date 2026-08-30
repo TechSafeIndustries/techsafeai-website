@@ -33,7 +33,12 @@ import {
 
       <div class="intake-main">
         <nav class="intake-progress" aria-label="Enquiry progress">
-          {['Challenge', 'Organisation', 'Operating Context', 'Outcome', 'Capability', 'Security', 'Contact & Review'].map((label, index) => (
+          {/* Phase 9 (Mission 10, 2026-08-28): re-skinned to the approved 4-step
+              public flow (Problem / Context / Desired outcome / Advisory result).
+              The 9 underlying screens, field names, validation, Turnstile and
+              HubSpot mapping are unchanged — see data-stage on each <section
+              data-screen> below for how the 9 screens group under these 4 steps. */}
+          {['Problem', 'Context', 'Desired outcome', 'Advisory result'].map((label, index) => (
             <span class="progress-step" data-progress-stage={index + 1} aria-current={index === 0 ? 'step' : undefined}>
               <span class="progress-number">{index + 1}</span>
               <span>{label}</span>
@@ -92,7 +97,7 @@ import {
             <div class="intake-actions"><button class="button button-secondary" type="button" data-back>Back</button><button class="button button-primary" type="button" data-next>Continue</button></div>
           </section>
 
-          <section class="intake-screen" data-screen="3" data-stage="3" data-sai-state="COLLECT" hidden>
+          <section class="intake-screen" data-screen="3" data-stage="2" data-sai-state="COLLECT" hidden>
             <div class="screen-heading"><div class="eyebrow">Operating Context — 1 of 2</div><h2>Industry and activity are separate.</h2><p>These selections provide context only. They do not establish legal or regulatory applicability.</p></div>
             <div class="sai-guidance"><strong>Specialist validation:</strong> If your sector is unfamiliar or not yet supported in depth, you can continue. A human may need to validate the context later.</div>
             <fieldset class="choice-fieldset">
@@ -121,7 +126,7 @@ import {
             <div class="intake-actions"><button class="button button-secondary" type="button" data-back>Back</button><button class="button button-primary" type="button" data-next>Continue</button></div>
           </section>
 
-          <section class="intake-screen" data-screen="4" data-stage="3" data-sai-state="COLLECT" hidden>
+          <section class="intake-screen" data-screen="4" data-stage="2" data-sai-state="COLLECT" hidden>
             <div class="screen-heading"><div class="eyebrow">Operating Context — 2 of 2</div><h2>Where does the work happen?</h2><p>Operating environment and jurisdiction remain distinct context dimensions.</p></div>
             <fieldset class="choice-fieldset" data-required-group="operatingEnvironment">
               <legend>Operating environment <span class="required-note">Choose at least one</span></legend>
@@ -147,7 +152,7 @@ import {
             <div class="intake-actions"><button class="button button-secondary" type="button" data-back>Back</button><button class="button button-primary" type="button" data-next>Continue</button></div>
           </section>
 
-          <section class="intake-screen" data-screen="5" data-stage="4" data-sai-state="COLLECT" hidden>
+          <section class="intake-screen" data-screen="5" data-stage="3" data-sai-state="COLLECT" hidden>
             <div class="screen-heading"><div class="eyebrow">Outcome</div><h2>What needs to change, and why now?</h2><p>Use broad timing only. Public intake does not establish or promise a service timeline.</p></div>
             <label class="field">
               <span>Desired outcome <small>300 characters maximum</small></span>
@@ -161,7 +166,7 @@ import {
             <div class="intake-actions"><button class="button button-secondary" type="button" data-back>Back</button><button class="button button-primary" type="button" data-next>Continue</button></div>
           </section>
 
-          <section class="intake-screen" data-screen="6" data-stage="5" data-sai-state="COLLECT" hidden>
+          <section class="intake-screen" data-screen="6" data-stage="3" data-sai-state="COLLECT" hidden>
             <div class="screen-heading"><div class="eyebrow">Capability</div><h2>What internal capability is available?</h2><p>There is no qualifying score. “No” and “Not sure” are valid answers and do not disqualify an enquiry.</p></div>
             <div class="capability-questions">
               {[
@@ -177,7 +182,7 @@ import {
             <div class="intake-actions"><button class="button button-secondary" type="button" data-back>Back</button><button class="button button-primary" type="button" data-next>Continue</button></div>
           </section>
 
-          <section class="intake-screen" data-screen="7" data-stage="6" data-sai-state="FLAG" hidden>
+          <section class="intake-screen" data-screen="7" data-stage="4" data-sai-state="FLAG" hidden>
             <div class="screen-heading"><div class="eyebrow">Security</div><h2>Start with context, not confidential files.</h2><p>This is the security gate before contact and review.</p></div>
             <div class="security-warning" id="security-boundary">
               <strong>Do not provide:</strong>
@@ -195,7 +200,7 @@ import {
             <div class="intake-actions"><button class="button button-secondary" type="button" data-back>Back</button><button class="button button-primary" type="button" data-next>Continue</button></div>
           </section>
 
-          <section class="intake-screen" data-screen="8" data-stage="7" data-sai-state="COLLECT" hidden>
+          <section class="intake-screen" data-screen="8" data-stage="4" data-sai-state="COLLECT" hidden>
             <div class="screen-heading"><div class="eyebrow">Contact</div><h2>Who should TechSafeAI follow up with?</h2><p>Only the minimum contact information required for human follow-up.</p></div>
             <div class="field-grid">
               <label class="field"><span>Name</span><input name="contactName" type="text" minlength="2" maxlength="100" required autocomplete="name" /></label>
@@ -206,10 +211,15 @@ import {
             <div class="intake-actions"><button class="button button-secondary" type="button" data-back>Back</button><button class="button button-primary" type="button" data-next>Review</button></div>
           </section>
 
-          <section class="intake-screen" data-screen="9" data-stage="7" data-sai-state="ORGANISE" hidden>
+          <section class="intake-screen" data-screen="9" data-stage="4" data-sai-state="ORGANISE" hidden>
             <div class="screen-heading"><div class="eyebrow">Review</div><h2>Review the context you provided.</h2><p><strong>This is the context you provided. It is not an assessment or compliance determination.</strong></p></div>
             <div id="review-summary" class="review-summary" aria-live="polite"></div>
             <div class="sai-guidance"><strong>Organised for review:</strong> No findings, risk rating, applicable-requirement conclusion or recommendation has been created.</div>
+            <div class="notice" role="note">
+              <p><strong>Based on the context you provided, this enquiry may be relevant to:</strong></p>
+              <ul><li>Product Services</li><li>Consultancy Services</li><li>A combined engagement</li></ul>
+              <p>This is a plain-language pointer, not an assessment, Operational Intelligence result, compliance determination or automated recommendation. <strong>A person from TechSafeAI will review your enquiry</strong> and confirm the right path with you directly.</p>
+            </div>
             <div class="turnstile-verify" data-turnstile-block hidden>
               <span class="turnstile-label">Verification</span>
               <p class="turnstile-note">A brief automated check confirms this is a genuine enquiry before it is sent for human review.</p>

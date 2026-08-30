@@ -1,0 +1,46 @@
+---
+import ContentPage from '../../components/ContentPage.astro';
+import { consultingServices } from '../../data/site';
+
+const stages = [
+  ['UNDERSTAND', 'Clarify pain, workflow, actors, information, cost/risk and desired outcome.'],
+  ['PROTECT', 'Set the public-versus-controlled information boundary.'],
+  ['AUTHORITY', 'Resolve what governs before declaring a requirement.'],
+  ['EVIDENCE', 'Review evidence only inside an authorised scope and controlled intake.'],
+  ['GAPS', 'Separate current-state findings from future actions.'],
+  ['TRANSFORM', 'Use DRIVER-6 to structure remediation and operating change.'],
+  ['VERIFY', 'Check control effectiveness and measured results.'],
+  ['VALUE', 'Make value claims only where baseline, method and evidence exist.']
+] as const;
+---
+<ContentPage
+  title="Consulting"
+  eyebrow="Human-led expertise"
+  intro="Consultancy Services are first-class, not secondary. Human-led expertise, assurance, review and implementation support for high-risk operations."
+>
+  <section class="content-section">
+    <div class="shell">
+      <div class="section-title"><div><div class="eyebrow">Service areas</div><h2>Ten ways to work with TechSafeAI consultants.</h2></div></div>
+      <div class="route-grid" style="margin-top:24px">
+        {consultingServices.map((service)=>(
+          <div class="route-card"><h3>{service.title}</h3><p>{service.summary}</p></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section" style="background:#e8e5dd">
+    <div class="shell content-grid">
+      <div>
+        <div class="eyebrow">Consulting methodology</div>
+        <h2>A governed route through complex work.</h2>
+        <p>The method is staged because public context, formal assessment, remediation and verified value are different activities with different authority.</p>
+      </div>
+      <div class="indexed-list">
+        {stages.map(([stage,copy],i)=>(
+          <div class="indexed-item"><span class="index">0{i+1}</span><div><h3>{stage}</h3><p>{copy}</p></div></div>
+        ))}
+      </div>
+    </div>
+  </section>
+</ContentPage>
