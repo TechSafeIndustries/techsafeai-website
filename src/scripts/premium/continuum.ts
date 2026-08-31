@@ -128,57 +128,59 @@ function buildSpine(gsap: Gsap, ScrollTrigger: STType, main: HTMLElement, opts: 
         physical object; the chair (foreground) and environment (background,
         in hero-scene) move at different rates for true plane separation. ---- */
 function heroHandoff(gsap: Gsap, _st: STType): void {
-  const monolith = document.querySelector<HTMLElement>('.monolith');
-  if (!monolith) return;
+  const laptop = document.querySelector<HTMLElement>('.laptop');
+  if (!laptop) return;
+  const screen = laptop.querySelector<HTMLElement>('.laptop-screen');
   const copyKids = document.querySelectorAll('.hero-copy > *');
-  const chair = document.querySelector('.hero-chair');
   const callout = document.querySelector('.cockpit-callout.b');
-  const railIcons = document.querySelectorAll('.monolith-rail span');
-  const dockTiles = document.querySelectorAll('.dock-tile');
   const floatChips = document.querySelectorAll('.float-chip');
   const streaks = document.querySelector('.hero-streaks');
+  const ring = document.querySelector('.monolith-ring');
   const underglow = document.querySelector('.monolith-underglow');
   const reflection = document.querySelector('.monolith-reflection');
 
-  const BASE_Y = -7;
-  const BASE_X = 1.8;
+  const BASE_Y = -22;
+  const BASE_X = 12;
+  const SCREEN_X = -6;
+  const sway = { y: 0 }; // idle rotation offset, composed with cursor rig
 
-  /* Entrance (desktop): take over from the staged hidden state. */
+  /* Entrance (desktop): the laptop rises and its screen opens. */
   const staged = document.documentElement.classList.contains('hero-staged');
   if (staged) {
     (window as Window & { __heroEntranceRan?: boolean }).__heroEntranceRan = true;
     gsap.set(copyKids, { autoAlpha: 0, y: 16, filter: 'blur(4px)' });
-    gsap.set(monolith, { autoAlpha: 0, y: 46, rotationY: BASE_Y - 5, rotationX: BASE_X, scale: 0.985 });
-    if (chair) gsap.set(chair, { autoAlpha: 0, y: 26 });
+    gsap.set(laptop, { autoAlpha: 0, y: 52, rotationY: BASE_Y - 8, rotationX: BASE_X });
+    if (screen) gsap.set(screen, { rotationX: -68, transformOrigin: 'bottom center' });
     if (callout) gsap.set(callout, { autoAlpha: 0, y: 10 });
-    gsap.set([railIcons, dockTiles], { autoAlpha: 0, scale: 0.4 });
-    if (floatChips.length) gsap.set(floatChips, { autoAlpha: 0, scale: 0.5, y: 14 });
+    if (floatChips.length) gsap.set(floatChips, { autoAlpha: 0, scale: 0.5 });
     if (streaks) gsap.set(streaks, { autoAlpha: 0 });
+    if (ring) gsap.set(ring, { autoAlpha: 0, scale: 0.85 });
     if (reflection) gsap.set(reflection, { autoAlpha: 0 });
     document.documentElement.classList.remove('hero-staged');
 
     const EXPO = 'expo.out';
     const tl = gsap.timeline({ defaults: { ease: EXPO } });
-    tl.to(monolith, { autoAlpha: 1, y: 0, rotationY: BASE_Y, scale: 1, duration: 1.35 }, 0.05)
-      .to(monolith, { '--rim': '112%', duration: 1.1, ease: 'power2.inOut' }, 0.45)
-      .set(monolith, { '--rim': '-12%' }, '>')
-      .to(monolith, { '--rim': '50%', duration: 0.9, ease: 'power2.out' }, '>')
-      .to(railIcons, { autoAlpha: 1, scale: 1, duration: 0.5, stagger: 0.045, ease: 'back.out(2)' }, 0.55)
-      .to(dockTiles, { autoAlpha: 1, scale: 1, duration: 0.5, stagger: 0.05, ease: 'back.out(2)' }, 0.7);
-    if (streaks) tl.to(streaks, { autoAlpha: 0.8, duration: 1.1 }, 0.6);
-    if (floatChips.length) tl.to(floatChips, { autoAlpha: 1, scale: 1, y: 0, duration: 0.6, stagger: 0.12, ease: 'back.out(1.8)' }, 0.9);
-    if (reflection) tl.to(reflection, { autoAlpha: 1, duration: 0.9 }, 0.8);
-    if (chair) tl.to(chair, { autoAlpha: 1, y: 0, duration: 0.8 }, 0.85);
-    if (callout) tl.to(callout, { autoAlpha: 1, y: 0, duration: 0.6 }, 1.05);
+    tl.to(laptop, { autoAlpha: 1, y: 0, rotationY: BASE_Y, duration: 1.2 }, 0.05);
+    if (ring) tl.to(ring, { autoAlpha: 1, scale: 1, duration: 1.0 }, 0.3);
+    if (screen) tl.to(screen, { rotationX: SCREEN_X, duration: 1.25, ease: 'power3.inOut' }, 0.4);
+    tl.to(laptop, { '--rim': '112%', duration: 1.0, ease: 'power2.inOut' }, 1.2)
+      .set(laptop, { '--rim': '-12%' }, '>')
+      .to(laptop, { '--rim': '50%', duration: 0.8, ease: 'power2.out' }, '>');
+    if (streaks) tl.to(streaks, { autoAlpha: 0.8, duration: 1.1 }, 0.7);
+    if (reflection) tl.to(reflection, { autoAlpha: 1, duration: 0.9 }, 1.3);
+    if (floatChips.length) tl.to(floatChips, { autoAlpha: 1, scale: 1, duration: 0.6, stagger: 0.12, ease: 'back.out(1.8)' }, 1.2);
+    if (callout) tl.to(callout, { autoAlpha: 1, y: 0, duration: 0.6 }, 1.5);
     tl.to(copyKids, { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 0.85, stagger: 0.14 }, 0.25);
   }
 
-  /* Scroll: the console straightens, settles and dims toward the trust seam. */
-  gsap.to(monolith, {
-    rotationY: -1.2,
-    rotationX: 0.4,
-    y: -16,
-    scale: 0.972,
+  /* Continuous 3D rotation: a slow showcase sway (composed with the cursor
+     rig below via the shared sway offset). */
+  gsap.to(sway, { y: 9, duration: 5.5, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: staged ? 1.8 : 0 });
+
+  /* Scroll: the laptop settles flatter and the glow dims into the seam. */
+  const scroll = { p: 0 };
+  gsap.to(scroll, {
+    p: 1,
     ease: 'none',
     scrollTrigger: { trigger: '.hero', start: 'center top+=220', end: 'bottom top', scrub: 0.5 }
   });
@@ -190,27 +192,30 @@ function heroHandoff(gsap: Gsap, _st: STType): void {
     });
   }
 
-  /* Cursor light-rig: console (midground) ±1.6°, chair (foreground) counter-
-     translates slightly, rim highlight follows the pointer. */
+  /* Cursor light-rig + composition loop: cursor, idle sway and scroll all
+     drive one transform so nothing fights (single writer per property). */
+  const cursor = { x: 0, y: 0 };
   if (window.matchMedia('(pointer: fine)').matches) {
-    const ry = gsap.quickTo(monolith, 'rotationY', { duration: 0.75, ease: 'power2.out' });
-    const rx = gsap.quickTo(monolith, 'rotationX', { duration: 0.75, ease: 'power2.out' });
-    const chairX = chair ? gsap.quickTo(chair, 'x', { duration: 0.9, ease: 'power2.out' }) : null;
-    const rimObj = { v: 50 };
-    const rim = gsap.quickTo(rimObj, 'v', {
-      duration: 1.1,
-      ease: 'power2.out',
-      onUpdate: () => monolith.style.setProperty('--rim', `${rimObj.v}%`)
-    });
     window.addEventListener('pointermove', (e) => {
-      const nx = (e.clientX / window.innerWidth - 0.5) * 2;
-      const ny = (e.clientY / window.innerHeight - 0.5) * 2;
-      ry(BASE_Y + nx * 1.6);
-      rx(BASE_X + ny * -1.1);
-      if (chairX) chairX(nx * -10);
-      rim(50 + nx * 34);
+      cursor.x = (e.clientX / window.innerWidth - 0.5) * 2;
+      cursor.y = (e.clientY / window.innerHeight - 0.5) * 2;
     }, { passive: true });
   }
+  const eased = { x: 0, y: 0 };
+  const rimObj = { v: 50 };
+  gsap.ticker.add(() => {
+    eased.x += (cursor.x - eased.x) * 0.04;
+    eased.y += (cursor.y - eased.y) * 0.04;
+    const flat = scroll.p;
+    gsap.set(laptop, {
+      rotationY: (BASE_Y + sway.y + eased.x * 3.2) * (1 - flat * 0.75),
+      rotationX: (BASE_X + eased.y * -2.2) * (1 - flat * 0.6),
+      y: flat * -16,
+      scale: 1 - flat * 0.03
+    });
+    rimObj.v += (50 + eased.x * 34 - rimObj.v) * 0.06;
+    laptop.style.setProperty('--rim', `${rimObj.v}%`);
+  });
 }
 
 /* ---- Trust strip: the thread passes through three governance keylines ---- */

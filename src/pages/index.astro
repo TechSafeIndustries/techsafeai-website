@@ -3,7 +3,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Cockpit from '../components/Cockpit.astro';
 import Icon from '../components/Icon.astro';
 import CtaBand from '../components/CtaBand.astro';
-import BrandMark from '../components/BrandMark.astro';
 import { site } from '../data/site';
 
 const productCards = [
@@ -91,7 +90,7 @@ const industryLinks = [
     <div class="hero-env" aria-hidden="true"></div>
     <div class="hero-wrap">
       <div class="hero-copy">
-        <div class="eyebrow-chip"><BrandMark size={15} /><span class="eyebrow">Governed Operational Intelligence</span></div>
+        <div class="eyebrow-chip"><span class="eyebrow">Governed Operational Intelligence</span></div>
         <h1>Operational information is everywhere.<span>Operational understanding isn't.</span></h1>
         <p class="lead">TechSafeAI brings governed operational information into context, helping leaders see what needs attention, understand the evidence behind it and make better-informed decisions.</p>
         <div class="hero-actions">
@@ -116,46 +115,20 @@ const industryLinks = [
         <span class="float-chip a" aria-hidden="true"><Icon name="doc-check" size={16} /></span>
         <span class="float-chip b" aria-hidden="true"><Icon name="shield-check" size={16} /></span>
         <span class="float-chip c" aria-hidden="true"><Icon name="nodes" size={14} /></span>
-        <div class="monolith">
+        <div class="laptop">
           <span class="monolith-plate">Operational Intelligence Cockpit</span>
-          <i class="mono-edge l" aria-hidden="true"></i>
-          <i class="mono-edge b" aria-hidden="true"></i>
-          <i class="corner tl" aria-hidden="true"></i>
-          <i class="corner tr" aria-hidden="true"></i>
-          <div class="monolith-body">
-            <div class="monolith-rail l" aria-hidden="true">
-              <span><Icon name="grid" size={13} /></span>
-              <span><Icon name="chart" size={13} /></span>
-              <span><Icon name="doc-check" size={13} /></span>
-              <span><Icon name="nodes" size={13} /></span>
-              <span><Icon name="target" size={13} /></span>
-              <span><Icon name="loop" size={13} /></span>
-            </div>
-            <div class="monolith-core">
-              <div class="monolith-grille" aria-hidden="true"></div>
-              <Cockpit />
-            </div>
-            <div class="monolith-rail r" aria-hidden="true">
-              <span><Icon name="layers" size={13} /></span>
-              <span><Icon name="shield-check" size={13} /></span>
-              <span><Icon name="eye" size={13} /></span>
-              <span><Icon name="cite" size={13} /></span>
-              <span><Icon name="person-check" size={13} /></span>
-              <span><Icon name="gauge" size={13} /></span>
-            </div>
+          <div class="laptop-screen">
+            <i class="laptop-cam" aria-hidden="true"></i>
+            <Cockpit />
           </div>
-          <div class="monolith-dock" aria-hidden="true">
-            <span class="dock-tile active"><Icon name="grid" size={15} /></span>
-            <span class="dock-tile"><Icon name="chart" size={15} /></span>
-            <span class="dock-tile"><Icon name="doc-check" size={15} /></span>
-            <span class="dock-tile"><Icon name="nodes" size={15} /></span>
-            <span class="dock-tile"><Icon name="cite" size={15} /></span>
-            <span class="dock-tile"><Icon name="person-check" size={15} /></span>
+          <i class="laptop-hinge" aria-hidden="true"></i>
+          <div class="laptop-base" aria-hidden="true">
+            <i class="laptop-kb"></i>
+            <i class="laptop-pad"></i>
           </div>
-          <div class="monolith-plinth" aria-hidden="true"></div>
-          <div class="monolith-ring" aria-hidden="true"></div>
           <div class="monolith-underglow" aria-hidden="true"></div>
         </div>
+        <div class="monolith-ring" aria-hidden="true"></div>
         <div class="monolith-reflection" aria-hidden="true">
           <img
             src="/assets/sai/website-handoff/sai-ui-016/HERO-COCKPIT-37a6918.png"
@@ -166,18 +139,6 @@ const industryLinks = [
             decoding="async"
           />
         </div>
-        <svg class="hero-chair" viewBox="0 0 200 240" aria-hidden="true">
-          <ellipse cx="100" cy="230" rx="72" ry="7" fill="rgba(45,184,249,.08)"/>
-          <path d="M100 214l-44 14M100 214l44 14M100 214v18M100 214l-27 19M100 214l27 19" stroke="#04101E" stroke-width="6" stroke-linecap="round"/>
-          <path d="M100 188v26" stroke="#050F1E" stroke-width="8" stroke-linecap="round"/>
-          <path d="M78 160h44l4 22H74z" fill="#040D1A"/>
-          <path d="M58 22c0-8 7-14 15-14h54c8 0 15 6 15 14l-5 118c-.4 9-7 16-16 16H79c-9 0-15.6-7-16-16z" fill="#030B16"/>
-          <path d="M70 30c0-5 4-9 9-9h42c5 0 9 4 9 9l-4 100c-.3 6-5 11-11 11H85c-6 0-10.7-5-11-11z" fill="#071527"/>
-          <path d="M74 60h52M73 88h54" stroke="rgba(255,255,255,.04)" stroke-width="2"/>
-          <path d="M42 96c-5 1-8 5-8 10l2 30c0 4 3 7 7 7h7" stroke="#040D1A" stroke-width="9" fill="none" stroke-linecap="round"/>
-          <path d="M158 96c5 1 8 5 8 10l-2 30c0 4-3 7-7 7h-7" stroke="#040D1A" stroke-width="9" fill="none" stroke-linecap="round"/>
-          <path d="M64 12.5a52 52 0 0172 0" stroke="rgba(111,206,251,.35)" stroke-width="1.6" fill="none"/>
-        </svg>
         <span class="cockpit-callout b">SAI assists the human.</span>
       </div>
     </div>

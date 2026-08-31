@@ -1,17 +1,15 @@
-/* WEB-PHASE-10 S6-HERO — industrial command console hero, matched to the
-   Founder-approved binding visual reference. The governed SAI-UI-016 capture
-   is the only product truth on screen: flat, undistorted DOM <img>, CSS crop
-   top 575/692, never transformed. Every dimensional element — extruded shell,
-   bevels, rails, grille, dock, plinth, underglow, reflection, chair, floor,
-   lighting, camera motion — is website-owned scenography.
-   Depth planes: WebGL environment (background) → console shell (midground)
-   → dock/chair/underglow (foreground). */
+/* WEB-PHASE-10 S6-HERO-3 — futuristic 3D laptop hero. The governed
+   SAI-UI-016 capture is the laptop's screen content: rendered flat within
+   the screen plane, CSS crop top 575/692, never warped or overlaid — the
+   only 3D applied is rigid perspective rotation of the website-owned
+   device that carries it (Founder-approved presentation class since S5).
+   Chassis, hinge, keyboard deck, ring platform, streaks, lighting and
+   motion are all website-owned scenography. */
 
 /* ---- Hero shell: dark operational environment ---- */
 .hero{min-height:700px;padding-top:66px;overflow:hidden;position:relative;background:
   radial-gradient(1100px 560px at 68% 30%,rgba(45,184,249,.15),rgba(45,184,249,0) 62%),
   linear-gradient(178deg,#050D1B 0%,var(--navy-950) 42%,#081A34 100%)}
-/* floor: perspective glow the console stands on (CSS fallback; WebGL enriches) */
 .hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:210px;pointer-events:none;background:
   radial-gradient(58% 140px at 62% 100%,rgba(45,184,249,.19),rgba(45,184,249,0) 70%),
   linear-gradient(0deg,rgba(45,184,249,.05),rgba(45,184,249,0) 60%)}
@@ -21,7 +19,7 @@
 
 /* ---- Copy column ---- */
 .hero-copy{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:4px;z-index:2}
-.eyebrow-chip{display:inline-flex;align-items:center;gap:9px;padding:8px 16px 8px 12px;border-radius:999px;background:rgba(45,184,249,.08);border:1px solid rgba(45,184,249,.35);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 0 18px rgba(45,184,249,.12)}
+.eyebrow-chip{display:inline-flex;align-items:center;gap:9px;padding:8px 16px;border-radius:999px;background:rgba(45,184,249,.08);border:1px solid rgba(45,184,249,.35);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 0 18px rgba(45,184,249,.12)}
 .eyebrow-chip .eyebrow{margin:0}
 .hero .button{border-radius:999px}
 .hero h1{font-size:clamp(31px,2.75vw,41px);line-height:1.1;margin:14px 0 0;letter-spacing:-0.03em}
@@ -29,80 +27,64 @@
 .hero .lead{font-size:14px;line-height:1.65;margin-top:16px;max-width:46ch}
 .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
 
-/* ---- Stage (deep perspective; origin biased toward the copy column) ---- */
-.cockpit-stage{position:relative;max-width:100%;perspective:1500px;perspective-origin:18% 42%;z-index:1;padding:12px 0 92px}
+/* ---- Stage ---- */
+.cockpit-stage{position:relative;max-width:100%;perspective:1600px;perspective-origin:38% 30%;z-index:1;padding:16px 6% 118px}
 
-/* ---- The console object ---- */
-.monolith{position:relative;transform-style:preserve-3d;transform:rotateY(-7deg) rotateX(1.8deg);will-change:transform;z-index:2}
-.monolith-plate{position:absolute;left:50%;top:-13px;transform:translateX(-50%) translateZ(26px);z-index:5;white-space:nowrap;font:700 10px/1.3 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.16em;text-transform:uppercase;color:#EAF4FA;background:rgba(14,37,66,.65);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(111,206,251,.55);border-radius:999px;padding:8px 22px;box-shadow:0 0 18px rgba(45,184,249,.25),inset 0 1px 0 rgba(255,255,255,.08)}
+/* ---- The laptop (website-owned device; screen content is governed) ---- */
+.laptop{position:relative;transform-style:preserve-3d;transform:rotateY(-22deg) rotateX(12deg);will-change:transform;z-index:2}
+.monolith-plate{position:absolute;left:50%;top:-34px;transform:translateX(-50%) translateZ(40px);z-index:6;white-space:nowrap;font:700 10px/1.3 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.16em;text-transform:uppercase;color:#EAF4FA;background:rgba(14,37,66,.65);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(111,206,251,.55);border-radius:999px;padding:8px 22px;box-shadow:0 0 18px rgba(45,184,249,.25),inset 0 1px 0 rgba(255,255,255,.08)}
 
-/* extruded shell thickness — visible because the console yaws away */
-.mono-edge{position:absolute;pointer-events:none}
-.mono-edge.l{left:0;top:10px;bottom:44px;width:22px;transform-origin:left center;transform:rotateY(72deg);background:linear-gradient(90deg,#132C4D 0%,#081729 85%);border-radius:20px 0 0 20px;box-shadow:inset 2px 0 0 rgba(111,206,251,.28),inset 0 1px 0 rgba(255,255,255,.08)}
-.mono-edge.b{left:16px;right:16px;bottom:40px;height:20px;transform-origin:center bottom;transform:rotateX(-74deg);background:linear-gradient(180deg,#0B1E37,#050F1F);border-radius:0 0 16px 16px;box-shadow:inset 0 -2px 0 rgba(45,184,249,.20)}
-
-.monolith-body{position:relative;display:flex;align-items:stretch;background:linear-gradient(180deg,rgba(20,44,80,.72) 0%,rgba(12,32,56,.66) 46%,rgba(9,26,47,.72) 100%);-webkit-backdrop-filter:blur(10px) saturate(1.2);backdrop-filter:blur(10px) saturate(1.2);border:1px solid rgba(111,206,251,.55);border-radius:20px;padding:20px 12px 26px;box-shadow:
+/* screen: futuristic ultrawide command display */
+.laptop-screen{position:relative;transform-origin:bottom center;transform:rotateX(-6deg);background:linear-gradient(180deg,#0C1E36,#081627);border:1px solid rgba(111,206,251,.6);border-radius:14px 14px 5px 5px;padding:14px 14px 20px;box-shadow:
   0 0 0 1px rgba(4,11,23,.9),
-  0 0 80px -4px rgba(45,184,249,.42),
-  0 0 26px -2px rgba(45,184,249,.30),
+  0 0 70px -4px rgba(45,184,249,.40),
+  0 0 24px -2px rgba(45,184,249,.30),
   inset 0 2px 0 rgba(255,255,255,.12),
-  inset 0 -16px 34px rgba(3,9,18,.55),
-  0 34px 64px -18px rgba(2,8,18,.8),
-  0 100px 180px -40px rgba(2,8,18,.65)}
-/* bevel highlight ring + machined corner brackets */
-.monolith-body::after{content:"";position:absolute;inset:3px;border-radius:17px;pointer-events:none;border:1px solid rgba(255,255,255,.05);box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
-/* rim light along the top edge (sweep position driven by --rim via GSAP) */
-.monolith-body::before{content:"";position:absolute;left:6%;right:6%;top:-1px;height:2px;border-radius:2px;background:linear-gradient(90deg,rgba(45,184,249,0),rgba(111,206,251,.95) calc(var(--rim,50%) - 14%),rgba(111,206,251,.95) calc(var(--rim,50%) + 14%),rgba(45,184,249,0));filter:drop-shadow(0 0 9px rgba(45,184,249,.65))}
-.monolith{--rim:50%}
-.monolith>i.corner{position:absolute;width:15px;height:15px;pointer-events:none;z-index:4}
-.monolith>i.corner.tl{left:-8px;top:-8px;border-left:2px solid rgba(111,206,251,.55);border-top:2px solid rgba(111,206,251,.55);border-radius:3px 0 0 0}
-.monolith>i.corner.tr{right:-8px;top:-8px;border-right:2px solid rgba(111,206,251,.55);border-top:2px solid rgba(111,206,251,.55);border-radius:0 3px 0 0}
+  0 30px 60px -18px rgba(2,8,18,.8)}
+/* rim light along the screen's top edge (sweep driven by --rim via GSAP) */
+.laptop-screen::before{content:"";position:absolute;left:6%;right:6%;top:-1px;height:2px;border-radius:2px;background:linear-gradient(90deg,rgba(45,184,249,0),rgba(111,206,251,.95) calc(var(--rim,50%) - 14%),rgba(111,206,251,.95) calc(var(--rim,50%) + 14%),rgba(45,184,249,0));filter:drop-shadow(0 0 9px rgba(45,184,249,.65))}
+.laptop{--rim:50%}
+.laptop-cam{position:absolute;left:50%;top:5px;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:#06121F;border:1px solid rgba(111,206,251,.5);box-shadow:0 0 6px rgba(45,184,249,.4)}
 
-.monolith-rail{display:flex;flex-direction:column;justify-content:center;gap:13px;padding:8px 7px;flex:0 0 auto}
-.monolith-rail span{width:26px;height:26px;display:flex;align-items:center;justify-content:center;color:#7FA9C7;background:rgba(255,255,255,.05);border:1px solid rgba(111,206,251,.22);border-radius:7px;box-shadow:0 2px 5px rgba(2,8,18,.5),inset 0 1px 0 rgba(255,255,255,.10)}
-.monolith-rail span:nth-child(3){color:#6FCEFB;border-color:rgba(45,184,249,.45);box-shadow:0 0 10px rgba(45,184,249,.25)}
-.monolith-core{flex:1 1 auto;min-width:0;margin:0 8px}
-
-/* hardware grille above the screen (texture, not UI) */
-.monolith-grille{height:9px;margin:2px 6px 12px;border-radius:3px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.10) 0 2px,rgba(255,255,255,0) 2px 7px);opacity:.5;box-shadow:inset 0 1px 2px rgba(2,8,18,.8)}
-
-/* governed figure inside the core (flat — the capture is never transformed) */
+/* governed figure inside the screen (flat within the screen plane) */
 .cockpit{margin:0;position:relative}
 .cockpit-shell{transform:none}
 .cockpit-rim{display:none}
-.cockpit-bezel{border-radius:10px;padding:7px;background:linear-gradient(180deg,#050F1F,#04101F);box-shadow:inset 0 0 0 1px rgba(45,184,249,.30),inset 0 0 26px rgba(3,9,18,.9),0 1px 0 rgba(255,255,255,.05)}
-.cockpit-crop{overflow:hidden;border-radius:5px;aspect-ratio:1506/575}
+.cockpit-bezel{border-radius:8px;padding:6px;background:linear-gradient(180deg,#050F1F,#04101F);box-shadow:inset 0 0 0 1px rgba(45,184,249,.30),inset 0 0 24px rgba(3,9,18,.9)}
+.cockpit-crop{overflow:hidden;border-radius:4px;aspect-ratio:1506/575}
 .cockpit-crop img{display:block;width:100%;height:auto}
 .cockpit-reflection{display:none}
-.cockpit-caption{position:absolute;left:2px;bottom:-64px;font:700 9.5px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.10em;text-transform:uppercase;color:var(--grey-brand);z-index:6}
+.cockpit-caption{position:absolute;left:2px;bottom:-96px;font:700 9.5px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.10em;text-transform:uppercase;color:var(--grey-brand);z-index:6;transform:translateZ(30px)}
 
-/* dock: hardware icon strip on the console face (foreground plane) */
-.monolith-dock{position:relative;z-index:3;display:flex;justify-content:center;gap:10px;margin-top:-1px;background:linear-gradient(180deg,rgba(12,32,57,.78),rgba(8,23,41,.82));-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(45,184,249,.34);border-top-color:rgba(255,255,255,.06);border-radius:0 0 16px 16px;width:92%;margin-inline:auto;padding:12px 18px 14px;transform:translateZ(18px);box-shadow:0 20px 38px -14px rgba(2,8,18,.85),inset 0 1px 0 rgba(255,255,255,.05),inset 0 -1px 0 rgba(45,184,249,.15)}
-.dock-tile{width:36px;height:31px;display:flex;align-items:center;justify-content:center;color:#7FA9C7;background:rgba(255,255,255,.05);border:1px solid rgba(111,206,251,.22);border-radius:8px;box-shadow:0 2px 5px rgba(2,8,18,.55),inset 0 1px 0 rgba(255,255,255,.10)}
-.dock-tile.active{color:#6FCEFB;border-color:rgba(45,184,249,.55);box-shadow:0 0 12px rgba(45,184,249,.32)}
+/* hinge */
+.laptop-hinge{display:block;height:7px;width:96%;margin:-1px auto 0;border-radius:4px;background:linear-gradient(180deg,#122A48,#081627);border:1px solid rgba(111,206,251,.35);box-shadow:inset 0 1px 0 rgba(255,255,255,.10)}
 
-/* plinth + underlighting (foreground) */
-.monolith-plinth{width:78%;height:18px;margin:-2px auto 0;background:linear-gradient(180deg,#0A1C33,#050F1F);border-radius:0 0 14px 14px;border:1px solid rgba(45,184,249,.30);border-top:0;transform:translateZ(8px);box-shadow:0 14px 26px -6px rgba(45,184,249,.34)}
-/* luminous base lip (the platform edge light in the reference) */
-.monolith-plinth::after{content:"";position:absolute;left:4%;right:4%;bottom:-3px;height:3px;border-radius:3px;background:linear-gradient(90deg,rgba(45,184,249,0),rgba(111,206,251,.9) 22%,rgba(111,206,251,.9) 78%,rgba(45,184,249,0));filter:drop-shadow(0 0 12px rgba(45,184,249,.8));}
-.monolith-underglow{position:absolute;left:2%;right:2%;bottom:-38px;height:66px;pointer-events:none;background:radial-gradient(56% 100% at 50% 0%,rgba(45,184,249,.52),rgba(45,184,249,.12) 55%,rgba(45,184,249,0) 80%);filter:blur(7px);z-index:1}
+/* keyboard deck: hinged at its top edge, swinging toward the viewer */
+.laptop-base{position:relative;height:190px;margin-top:-2px;transform-origin:top center;transform:rotateX(-77deg);background:linear-gradient(180deg,#0E2440 0%,#0A1B31 70%,#071322 100%);border:1px solid rgba(111,206,251,.42);border-radius:6px 6px 18px 18px;box-shadow:
+  inset 0 2px 0 rgba(255,255,255,.10),
+  inset 0 -10px 24px rgba(3,9,18,.6),
+  0 24px 40px -14px rgba(2,8,18,.8)}
+/* backlit key field (texture, not UI) */
+.laptop-kb{position:absolute;left:7%;right:7%;top:16px;height:96px;border-radius:6px;background:
+  repeating-linear-gradient(90deg,rgba(255,255,255,.055) 0 34px,rgba(0,0,0,0) 34px 38px),
+  repeating-linear-gradient(180deg,rgba(255,255,255,.055) 0 20px,rgba(0,0,0,0) 20px 24px),
+  linear-gradient(180deg,rgba(45,184,249,.12),rgba(45,184,249,.04));box-shadow:inset 0 0 0 1px rgba(111,206,251,.18),inset 0 0 22px rgba(45,184,249,.12)}
+.laptop-pad{position:absolute;left:50%;bottom:14px;width:26%;height:44px;transform:translateX(-50%);border-radius:6px;background:rgba(255,255,255,.045);box-shadow:inset 0 0 0 1px rgba(111,206,251,.22)}
 
-/* mirrored floor reflection (masked mirror of the governed capture — the
-   capture itself is untouched; this is scenography light-bounce) */
-.monolith-reflection{position:absolute;left:6%;right:6%;top:100%;margin-top:-86px;height:130px;overflow:hidden;pointer-events:none;z-index:0;opacity:.38;filter:blur(2.5px) saturate(1.15);-webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.8),transparent 78%);mask-image:linear-gradient(180deg,rgba(0,0,0,.8),transparent 78%)}
+/* under-glow + holographic ring platform + reflection */
+.monolith-underglow{position:absolute;left:-4%;right:-4%;bottom:-176px;height:70px;pointer-events:none;background:radial-gradient(56% 100% at 50% 0%,rgba(45,184,249,.5),rgba(45,184,249,.12) 55%,rgba(45,184,249,0) 80%);filter:blur(7px);z-index:0}
+.monolith-ring{position:absolute;left:50%;bottom:-4px;width:104%;height:110px;transform:translateX(-50%);border-radius:50%;pointer-events:none;z-index:0;border:2px solid rgba(111,206,251,.45);background:radial-gradient(50% 46% at 50% 50%,rgba(45,184,249,.15),rgba(45,184,249,.03) 60%,rgba(45,184,249,0) 75%);box-shadow:0 0 34px rgba(45,184,249,.35),inset 0 0 40px rgba(45,184,249,.15);-webkit-mask-image:linear-gradient(180deg,transparent 0 30%,#000 50%);mask-image:linear-gradient(180deg,transparent 0 30%,#000 50%)}
+.monolith-reflection{position:absolute;left:10%;right:10%;bottom:-64px;height:110px;overflow:hidden;pointer-events:none;z-index:0;opacity:.30;filter:blur(2.5px) saturate(1.15);-webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.75),transparent 75%);mask-image:linear-gradient(180deg,rgba(0,0,0,.75),transparent 75%)}
 .monolith-reflection img{display:block;width:100%;height:auto;transform:scaleY(-1);transform-origin:top center}
 
-/* holographic ring platform (glass-concept base) */
-.monolith-ring{position:absolute;left:50%;bottom:-46px;width:112%;height:96px;transform:translateX(-50%);border-radius:50%;pointer-events:none;z-index:0;border:2px solid rgba(111,206,251,.45);background:radial-gradient(50% 46% at 50% 50%,rgba(45,184,249,.14),rgba(45,184,249,.03) 60%,rgba(45,184,249,0) 75%);box-shadow:0 0 34px rgba(45,184,249,.35),inset 0 0 40px rgba(45,184,249,.15);-webkit-mask-image:linear-gradient(180deg,transparent 0 34%,#000 52%);mask-image:linear-gradient(180deg,transparent 0 34%,#000 52%)}
+/* energy streaks sweeping under the platform */
+.hero-streaks{position:absolute;left:-14%;right:-6%;bottom:-24px;width:120%;height:300px;pointer-events:none;z-index:0;filter:drop-shadow(0 0 8px rgba(45,184,249,.5));opacity:.8}
 
-/* energy streaks sweeping under the platform (glass-concept motif) */
-.hero-streaks{position:absolute;left:-14%;right:-6%;bottom:-34px;width:120%;height:300px;pointer-events:none;z-index:0;filter:drop-shadow(0 0 8px rgba(45,184,249,.5));opacity:.8}
-
-/* floating glass hardware chips (depth accents; icon-only, no data) */
+/* floating glass hardware chips (icon-only, no data) */
 .float-chip{position:absolute;display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:11px;color:#6FCEFB;background:rgba(20,44,80,.5);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(111,206,251,.4);box-shadow:0 8px 24px rgba(2,8,18,.6),0 0 16px rgba(45,184,249,.2),inset 0 1px 0 rgba(255,255,255,.12);z-index:3;pointer-events:none}
-.float-chip.a{left:-30px;top:2%}
-.float-chip.b{right:-32px;top:46%}
-.float-chip.c{left:-2%;bottom:20%;width:34px;height:34px}
+.float-chip.a{left:-2%;top:4%}
+.float-chip.b{right:-2%;top:38%}
+.float-chip.c{left:0%;bottom:26%;width:34px;height:34px}
 @media (prefers-reduced-motion:no-preference){
   @keyframes chip-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
   .float-chip.a{animation:chip-bob 7s ease-in-out infinite}
@@ -110,59 +92,54 @@
   .float-chip.c{animation:chip-bob 6.2s ease-in-out .6s infinite}
 }
 
-/* chair silhouette (foreground plane, own parallax rate via JS) */
-.hero-chair{position:absolute;left:50%;bottom:-10px;width:158px;height:auto;transform:translateX(-54%);z-index:5;filter:drop-shadow(0 14px 18px rgba(2,8,18,.85))}
-
 /* ---- Flanking governed label (bottom-right) ---- */
 .cockpit-callout{display:none}
 @media (min-width:1400px){
   .cockpit-callout{display:block;position:absolute;z-index:6;font:700 10px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.12em;text-transform:uppercase;color:#EAF4FA;background:rgba(10,31,62,.85);border:1px solid rgba(45,184,249,.45);border-radius:2px;padding:8px 11px}
-  .cockpit-callout.b{right:2px;bottom:30px}
+  .cockpit-callout.b{right:0;bottom:44px}
 }
 
 /* ---- Entrance ----
-   Desktop entrance is a GSAP timeline (continuum.ts). The `hero-staged`
-   class is added by JS only (never in markup), so no-JS and reduced-motion
-   always render the complete static hero; GSAP animates FROM these states
-   and removes the class. Sub-desktop keeps the lightweight CSS entrance. */
+   Desktop entrance is a GSAP timeline (continuum.ts): the hero-staged class
+   is added by JS only, so no-JS and reduced-motion always render the
+   complete static hero. Sub-desktop keeps a lightweight CSS entrance. */
 .hero-staged .hero-copy>*,
-.hero-staged .monolith,
-.hero-staged .hero-chair,
+.hero-staged .laptop,
 .hero-staged .float-chip,
 .hero-staged .hero-streaks,
+.hero-staged .monolith-ring,
+.hero-staged .monolith-reflection,
 .hero-staged .cockpit-callout{opacity:0}
 @keyframes monolith-in-flat{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:no-preference) and (max-width:1250px){
-  .monolith{animation:monolith-in-flat var(--dur-entrance) var(--ease-reveal) both}
+  .laptop{animation:monolith-in-flat var(--dur-entrance) var(--ease-reveal) both}
 }
 
 /* ---- Stacked hero ---- */
 @media (max-width:1250px){
   .hero-wrap{grid-template-columns:1fr;row-gap:36px;padding:40px 0 48px}
   .hero h1{font-size:clamp(32px,5vw,44px)}
-  .cockpit-stage{width:100%;perspective:none;padding-bottom:70px}
-  .monolith{transform:none}
-  .mono-edge{display:none}
-  .hero-chair{display:none}
-  .float-chip{display:none}
-  .monolith-reflection{display:none}
+  .cockpit-stage{width:100%;perspective:none;padding:10px 0 70px}
+  .laptop{transform:none}
+  .laptop-screen{transform:none}
+  .laptop-base{height:26px;transform:none;border-radius:0 0 14px 14px}
+  .laptop-kb,.laptop-pad{display:none}
+  .hero-streaks,.float-chip,.monolith-ring,.monolith-reflection{display:none}
+  .cockpit-caption{bottom:-58px;transform:none}
 }
 @media (max-width:767px){
   .hero{padding-top:60px;min-height:auto}
   .hero-wrap{width:min(100% - 32px,1600px);padding:30px 0 38px;gap:26px}
-  .monolith-rail{display:none}
-  .monolith-grille{display:none}
-  .hero-streaks,.float-chip,.monolith-ring{display:none}
-  .monolith-body{padding:14px 10px 12px;border-radius:14px}
-  .monolith-dock{gap:7px;padding:9px 10px 10px;transform:none}
-  .dock-tile{width:28px;height:26px}
-  .monolith-plate{font-size:9px;padding:6px 14px;letter-spacing:.12em}
+  .laptop-screen{padding:10px 10px 14px;border-radius:10px 10px 4px 4px}
+  .laptop-hinge{display:none}
+  .laptop-base{display:none}
+  .monolith-plate{font-size:9px;padding:6px 14px;letter-spacing:.12em;top:-12px}
   .cockpit-caption{position:static;margin-top:10px}
   .cockpit-stage{padding-bottom:28px}
   .monolith-underglow{display:none}
 }
 
-/* ---- Governance trust strip (compact keyline bar per reference) ---- */
+/* ---- Governance trust strip (compact keyline bar) ---- */
 .trust-strip{background:var(--ground);color:#fff;border-top:1px solid var(--seam);border-bottom:1px solid var(--hairline-dark)}
 .trust-strip .shell{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;padding:22px 0}
 .trust-strip .shell>span{display:flex;align-items:center;gap:12px;padding:6px 26px;font-size:13px;line-height:1.5;color:#A6B6C1;border-left:1px solid rgba(255,255,255,.10)}
@@ -174,3 +151,9 @@
   .trust-strip .shell{grid-template-columns:1fr;gap:12px;padding:20px 0}
   .trust-strip .shell>span{border-left:0;padding:0}
 }
+
+/* ---- 03 governed brand lockup (asset byte-identical; the opaque navy
+       background is presented as a deliberate badge plate) ---- */
+.brand-lockup{display:block;height:30px;width:auto}
+.brand:has(.brand-lockup){background:#0A1F3E;border:1px solid rgba(45,184,249,.28);border-radius:6px;padding:5px 12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.site-footer .brand-lockup{height:24px}
