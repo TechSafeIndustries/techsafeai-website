@@ -29,7 +29,13 @@ const paths: Record<string, string> = {
   'shield-check': '<path d="M12 3l7 3v6c0 4-3 6.5-7 8-4-1.5-7-4-7-8V6z"/><path d="M9.5 11.5l2 2 3.5-4"/>',
   'seal-check': '<circle cx="12" cy="12" r="8.5"/><path d="M9 12.2l2 2 3.8-4.4"/>',
   loop: '<path d="M20 5v4h-4"/><path d="M4 19v-4h4"/><path d="M20 9a8 8 0 00-14-3"/><path d="M4 15a8 8 0 0014 3"/>',
-  target: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="0.75"/>'
+  target: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="0.75"/>',
+  check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  pick: '<path d="M4 20L14.5 9.5"/><path d="M12 4c3.2-.6 6.4.4 8.5 2.5S23 11.6 22.4 14.8"/><path d="M12 4l2.5 2.5M19.9 12.3l2.5 2.5"/>',
+  crane: '<path d="M4 21h16"/><path d="M7 21V6l11-3"/><path d="M7 9l9-2.4"/><path d="M18 3v6"/><path d="M18 9v4"/><circle cx="18" cy="14.6" r="1.4"/>',
+  eye: '<path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.6"/>',
+  cite: '<path d="M5 4h14v13H9l-4 4z"/><path d="M8.5 9h7M8.5 12.4h5"/>',
+  gauge: '<path d="M4.5 17a8.5 8.5 0 1115 0"/><path d="M12 14.5l3.6-4.6"/><circle cx="12" cy="15" r="1.1"/>'
 };
 
 const body = paths[name] ?? '';

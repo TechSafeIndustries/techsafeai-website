@@ -1,81 +1,117 @@
-/* WEB-PHASE-10 S2 — Hero A (Command Elevation) + governance trust strip.
-   Depth/elevation/motion tokens consumed from depth.css (Founder-approved
-   system, claude/59 §8–§9, claude/62 §4 sizing ruling).
-   Loaded last so it owns the hero cascade; legacy hero rules removed from
-   shell.css / responsive.css in the same commit. */
+/* WEB-PHASE-10 S6 — Command Monolith hero, matched to the Founder-approved
+   binding visual reference (31 Aug 2026). The governed SAI-UI-016 capture is
+   the only product truth on screen: flat, undistorted, CSS crop top 575/692.
+   Everything dimensional — bezel monolith, icon rails, dock, plinth, chair,
+   floor, lighting — is website-owned scenography. */
 
-/* ---- Hero shell ---- */
-.hero{min-height:720px;padding-top:78px;overflow:hidden;position:relative;background:linear-gradient(178deg,var(--navy-950) 0%,var(--navy-900) 46%,#081A34 100%)}
-.hero-wrap{width:min(100% - 112px,1760px);margin-inline:auto;display:grid;grid-template-columns:minmax(280px,1fr) clamp(760px,66vw,1040px);grid-template-areas:"head head" "copy stage";align-items:center;column-gap:32px;row-gap:20px;padding:56px 0 56px}
-.hero-head{grid-area:head}
-.hero-copy{grid-area:copy;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:4px;z-index:2}
-.hero h1{font-size:clamp(40px,4.4vw,68px);margin:14px 0 0}
-.hero-head h1 span{display:block;color:#dce6eb;font-weight:450}
-.hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px}
+/* ---- Hero shell: dark operational environment ---- */
+.hero{min-height:680px;padding-top:66px;overflow:hidden;position:relative;background:
+  radial-gradient(1100px 560px at 68% 30%,rgba(45,184,249,.14),rgba(45,184,249,0) 62%),
+  linear-gradient(178deg,#050D1B 0%,var(--navy-950) 42%,#081A34 100%)}
+/* floor: perspective glow the monolith stands on (CSS fallback; WebGL enriches) */
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:200px;pointer-events:none;background:
+  radial-gradient(58% 130px at 62% 100%,rgba(45,184,249,.13),rgba(45,184,249,0) 70%),
+  linear-gradient(0deg,rgba(45,184,249,.035),rgba(45,184,249,0) 60%)}
+.hero-env{position:absolute;inset:0;z-index:0;pointer-events:none}
+.hero-env canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero-wrap{position:relative;z-index:1;width:min(100% - 96px,1560px);margin-inline:auto;display:grid;grid-template-columns:minmax(330px,430px) 1fr;align-items:center;column-gap:48px;padding:44px 0 64px}
 
-/* ---- Cockpit stage (E4 object — one per page) ---- */
-.cockpit-stage{grid-area:stage;position:relative;max-width:100%;perspective:2400px;z-index:1}
-.cockpit-bloom{position:absolute;inset:-14% -20% -20% -10%;background:radial-gradient(closest-side,rgba(45,184,249,.19),rgba(45,184,249,.06) 55%,rgba(45,184,249,0) 74%);pointer-events:none}
+/* ---- Copy column (compact, reference-scale typography) ---- */
+.hero-copy{min-width:0;display:flex;flex-direction:column;justify-content:center;gap:4px;z-index:2}
+.hero h1{font-size:clamp(30px,2.55vw,38px);line-height:1.12;margin:14px 0 0;letter-spacing:-0.03em}
+.hero h1 span{display:block;color:var(--accent);font-weight:800;margin-top:4px;text-shadow:0 0 26px rgba(45,184,249,.35)}
+.hero .lead{font-size:14px;line-height:1.65;margin-top:16px;max-width:46ch}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+
+/* ---- Stage ---- */
+.cockpit-stage{position:relative;max-width:100%;perspective:2000px;z-index:1;padding:10px 0 66px}
+
+/* ---- The monolith ---- */
+.monolith{position:relative;transform-style:preserve-3d;transform:rotateY(-2.4deg) rotateX(.8deg);will-change:transform}
+.monolith-plate{position:absolute;left:50%;top:-13px;transform:translateX(-50%);z-index:4;white-space:nowrap;font:700 10px/1.3 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.16em;text-transform:uppercase;color:#EAF4FA;background:linear-gradient(180deg,#0E2542,#0A1D36);border:1px solid rgba(45,184,249,.55);border-radius:999px;padding:8px 22px;box-shadow:0 0 18px rgba(45,184,249,.25),inset 0 1px 0 rgba(255,255,255,.08)}
+.monolith-body{position:relative;display:flex;align-items:stretch;background:linear-gradient(180deg,#0F2440 0%,#0A1B31 100%);border:1px solid rgba(45,184,249,.42);border-radius:22px;padding:24px 12px 16px;box-shadow:
+  0 0 0 1px rgba(4,11,23,.9),
+  0 0 44px -6px rgba(45,184,249,.30),
+  inset 0 1px 0 rgba(255,255,255,.10),
+  0 34px 64px -18px rgba(2,8,18,.75),
+  0 90px 160px -40px rgba(2,8,18,.6)}
+/* aqua rim light along the monolith's top edge */
+.monolith-body::before{content:"";position:absolute;left:7%;right:7%;top:-1px;height:2px;border-radius:2px;background:linear-gradient(90deg,rgba(45,184,249,0),rgba(111,206,251,.95) 40%,rgba(111,206,251,.95) 60%,rgba(45,184,249,0));filter:drop-shadow(0 0 8px rgba(45,184,249,.6))}
+.monolith-rail{display:flex;flex-direction:column;justify-content:center;gap:14px;padding:8px 7px;flex:0 0 auto}
+.monolith-rail span{width:26px;height:26px;display:flex;align-items:center;justify-content:center;color:#5E88A9;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.09);border-radius:6px}
+.monolith-rail span:nth-child(3){color:#6FCEFB;border-color:rgba(45,184,249,.45);box-shadow:0 0 10px rgba(45,184,249,.22)}
+.monolith-core{flex:1 1 auto;min-width:0;margin:0 8px}
+
+/* governed figure inside the core (flat — no transform on the capture) */
 .cockpit{margin:0;position:relative}
-.cockpit-shell{transform:rotateY(-6deg) rotateX(1.6deg);transform-origin:left center}
-.cockpit-rim{height:2px;position:relative;top:1px;z-index:1;background:linear-gradient(90deg,rgba(45,184,249,0) 0%,rgba(45,184,249,.9) 38%,rgba(111,206,251,1) 52%,rgba(45,184,249,0) 100%);border-radius:6px 6px 0 0;filter:drop-shadow(0 0 6px rgba(45,184,249,.45))}
-.cockpit-bezel{border-radius:6px;padding:10px;background:linear-gradient(180deg,var(--navy-800) 0%,#0B1B30 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 0 0 1px rgba(45,184,249,.30),0 0 34px -6px rgba(45,184,249,.18),0 26px 48px -14px rgba(2,8,18,.65),0 70px 130px -30px rgba(2,8,18,.60)}
-.cockpit-crop{overflow:hidden;border-radius:3px;aspect-ratio:1506/575}
+.cockpit-shell{transform:none}
+.cockpit-rim{display:none}
+.cockpit-bezel{border-radius:10px;padding:7px;background:linear-gradient(180deg,#050F1F,#04101F);box-shadow:inset 0 0 0 1px rgba(45,184,249,.28),inset 0 0 26px rgba(3,9,18,.9)}
+.cockpit-crop{overflow:hidden;border-radius:5px;aspect-ratio:1506/575}
 .cockpit-crop img{display:block;width:100%;height:auto}
-.cockpit-reflection{height:84px;margin-top:6px;background:linear-gradient(180deg,rgba(45,184,249,.16),rgba(45,184,249,0) 82%);transform:scaleY(-1);opacity:.65;filter:blur(2px);border-radius:6px}
-.cockpit-caption{margin-top:4px;font:700 10px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.10em;text-transform:uppercase;color:var(--grey-brand)}
+.cockpit-reflection{display:none}
+.cockpit-caption{position:absolute;left:2px;bottom:-58px;font:700 9.5px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.10em;text-transform:uppercase;color:var(--grey-brand)}
 
-/* ---- Wide-desktop flanking callouts (verbatim governed labels only) ---- */
+/* dock: decorative icon strip on the console face (no invented product chrome) */
+.monolith-dock{position:relative;z-index:3;display:flex;justify-content:center;gap:10px;margin-top:-1px;background:linear-gradient(180deg,#0B1E37,#081729);border:1px solid rgba(45,184,249,.30);border-top-color:rgba(255,255,255,.06);border-radius:0 0 18px 18px;width:86%;margin-inline:auto;padding:10px 18px 12px;box-shadow:0 18px 34px -14px rgba(2,8,18,.8),inset 0 -1px 0 rgba(45,184,249,.15)}
+.dock-tile{width:34px;height:30px;display:flex;align-items:center;justify-content:center;color:#5E88A9;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:7px}
+.dock-tile.active{color:#6FCEFB;border-color:rgba(45,184,249,.55);box-shadow:0 0 12px rgba(45,184,249,.30)}
+
+/* plinth + under-glow */
+.monolith-plinth{width:64%;height:16px;margin:-2px auto 0;background:linear-gradient(180deg,#0A1C33,#050F1F);border-radius:0 0 12px 12px;border:1px solid rgba(45,184,249,.22);border-top:0;box-shadow:0 16px 30px -8px rgba(45,184,249,.28)}
+
+/* chair silhouette (website-owned scenography) */
+.hero-chair{position:absolute;left:50%;bottom:-6px;width:118px;height:auto;transform:translateX(-54%);z-index:4;filter:drop-shadow(0 14px 18px rgba(2,8,18,.8))}
+
+/* ---- Flanking governed label (bottom-right) ---- */
 .cockpit-callout{display:none}
 @media (min-width:1400px){
-  .cockpit-callout{display:block;position:absolute;z-index:3;font:700 10px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.12em;text-transform:uppercase;color:#EAF4FA;background:rgba(10,31,62,.85);border:1px solid rgba(45,184,249,.45);border-radius:2px;padding:8px 11px}
-  /* Overhang must stay under the 20px head→stage row gap so the callout can
-     never cross the H1's descenders at any wrapped width (S5 fix). */
-  .cockpit-callout.a{left:-6px;top:-12px}
-  .cockpit-callout.b{right:2px;bottom:-8px}
+  .cockpit-callout{display:block;position:absolute;z-index:5;font:700 10px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.12em;text-transform:uppercase;color:#EAF4FA;background:rgba(10,31,62,.85);border:1px solid rgba(45,184,249,.45);border-radius:2px;padding:8px 11px}
+  .cockpit-callout.b{right:2px;bottom:26px}
 }
 
-/* ---- Restrained entrance motion (CSS only; keyframes carry the hidden
-       state so the global reduced-motion kill resolves to the final state
-       and nothing is ever left invisible) ---- */
-@keyframes cockpit-in{from{opacity:0;transform:translateY(24px) rotateY(-8deg) rotateX(1.6deg)}to{opacity:1;transform:translateY(0) rotateY(-6deg) rotateX(1.6deg)}}
-@keyframes cockpit-in-flat{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+/* ---- Entrance motion (CSS only; keyframes carry the hidden state) ---- */
+@keyframes monolith-in{from{opacity:0;transform:translateY(30px) rotateY(-4.5deg) rotateX(.8deg)}to{opacity:1;transform:translateY(0) rotateY(-2.4deg) rotateX(.8deg)}}
+@keyframes monolith-in-flat{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
 @keyframes copy-in{from{opacity:0;transform:translateY(var(--reveal-distance))}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:no-preference) and (min-width:1251px){
-  .cockpit-shell{animation:cockpit-in var(--dur-entrance) var(--ease-reveal) both}
+  .monolith{animation:monolith-in var(--dur-entrance) var(--ease-reveal) both}
   .hero-copy{animation:copy-in var(--dur-reveal) var(--ease-reveal) both}
+  .hero-chair{animation:copy-in var(--dur-entrance) var(--ease-reveal) both}
 }
 @media (prefers-reduced-motion:no-preference) and (max-width:1250px){
-  .cockpit-shell{animation:cockpit-in-flat var(--dur-entrance) var(--ease-reveal) both}
+  .monolith{animation:monolith-in-flat var(--dur-entrance) var(--ease-reveal) both}
 }
 
-/* ---- Narrow side-by-side band ---- */
-@media (min-width:1251px) and (max-width:1399px){
-  .hero-wrap{column-gap:28px}
-}
-
-/* ---- Stacked hero (Founder ruling: stack transition raised toward ~1250px) ---- */
+/* ---- Stacked hero ---- */
 @media (max-width:1250px){
-  .hero-wrap{grid-template-columns:1fr;grid-template-areas:"head" "copy" "stage";row-gap:32px;padding:48px 0 52px}
-  .hero h1{font-size:clamp(40px,5.4vw,64px)}
-  .cockpit-stage{width:100%;max-width:1040px;perspective:none}
-  .cockpit-shell{transform:none}
-  .cockpit-bloom{display:none}
+  .hero-wrap{grid-template-columns:1fr;row-gap:36px;padding:40px 0 48px}
+  .hero h1{font-size:clamp(32px,5vw,44px)}
+  .cockpit-stage{width:100%;perspective:none;padding-bottom:64px}
+  .monolith{transform:none}
+  .hero-chair{display:none}
 }
 @media (max-width:767px){
-  .hero{padding-top:68px;min-height:auto}
-  .hero-wrap{width:min(100% - 32px,1760px);padding:36px 0 44px;gap:28px}
-  .cockpit-reflection{display:none}
+  .hero{padding-top:60px;min-height:auto}
+  .hero-wrap{width:min(100% - 32px,1560px);padding:30px 0 38px;gap:26px}
+  .monolith-rail{display:none}
+  .monolith-body{padding:16px 10px 12px;border-radius:14px}
+  .monolith-dock{gap:7px;padding:8px 10px}
+  .dock-tile{width:28px;height:26px}
+  .monolith-plate{font-size:9px;padding:6px 14px;letter-spacing:.12em}
+  .cockpit-caption{position:static;margin-top:10px}
+  .cockpit-stage{padding-bottom:28px}
 }
 
-/* ---- Governance trust strip (Hero C horizon-band language: seam-bounded
-       dark band on the ground surface) ---- */
+/* ---- Governance trust strip (compact keyline bar per reference) ---- */
 .trust-strip{background:var(--ground);color:#fff;border-top:1px solid var(--seam);border-bottom:1px solid var(--hairline-dark)}
-.trust-strip .shell{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:48px;padding:44px 0}
-.trust-strip .shell>span{display:flex;align-items:flex-start;gap:12px;border-top:2px solid var(--accent);padding-top:14px;font-size:13px;line-height:1.6;color:#A6B6C1}
-.trust-strip .shell>span .icon{color:var(--accent);margin-top:2px}
+.trust-strip .shell{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;padding:22px 0}
+.trust-strip .shell>span{display:flex;align-items:center;gap:12px;padding:6px 26px;font-size:13px;line-height:1.5;color:#A6B6C1;border-left:1px solid rgba(255,255,255,.10)}
+.trust-strip .shell>span:first-child{border-left:0;padding-left:0}
+.trust-strip .shell>span .icon{color:var(--accent);flex:0 0 auto}
 .trust-copy{display:inline}
-.trust-strip strong{color:#FFFFFF}
+.trust-strip strong{color:#FFFFFF;display:block}
 @media (max-width:767px){
-  .trust-strip .shell{grid-template-columns:1fr;gap:18px;padding:32px 0}
+  .trust-strip .shell{grid-template-columns:1fr;gap:12px;padding:20px 0}
+  .trust-strip .shell>span{border-left:0;padding:0}
 }

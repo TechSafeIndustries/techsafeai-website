@@ -1,171 +1,116 @@
 /**
- * WEB-PHASE-10 S5 — Three.js hero environment (desktop only, lazy).
- * The governed cockpit capture is a FLAT textured plane — never warped,
- * never overlaid, cropped identically to the CSS shell (top 575/692,
- * synthetic-data badge in view). Everything dimensional is website-owned:
- * floor grid, reflection, rim light, bloom, camera and light rig.
+ * WEB-PHASE-10 S6 — Three.js hero ENVIRONMENT (desktop only, lazy).
+ * The governed cockpit capture stays a plain DOM <img> at native crispness —
+ * WebGL renders the operational atmosphere behind and beneath the command
+ * monolith: receding floor grid, volumetric aqua glow, drifting light
+ * particles, cursor parallax. Everything rendered here is website-owned;
+ * no product truth is generated.
  *
- * Guards: WebGL availability; frame-rate guard (sustained <45fps →
- * dispose and restore the CSS shell); full teardown on failure. The CSS
- * shell is the designed fallback and the reduced-motion/mobile experience.
+ * Guards: WebGL availability; frame-rate guard (sustained <45fps over the
+ * first ~2.5s → dispose and remove — the CSS gradient environment remains
+ * the designed fallback, identical to reduced-motion/mobile).
  */
 import * as THREE from 'three';
 import type { gsap as GSAP } from 'gsap';
 import type { ScrollTrigger as ST } from 'gsap/ScrollTrigger';
 
-const CROP = 575 / 692; // identical to the CSS crop
-const PLANE_W = 2;
-const PLANE_H = PLANE_W * (575 / 1506);
-
-export function mountHeroScene(gsap: typeof GSAP, ScrollTrigger: typeof ST): void {
-  const stage = document.querySelector<HTMLElement>('.cockpit-stage');
-  const shellEl = document.querySelector<HTMLElement>('.cockpit-shell');
-  const reflEl = document.querySelector<HTMLElement>('.cockpit-reflection');
-  const img = document.querySelector<HTMLImageElement>('.cockpit-crop img');
-  if (!stage || !shellEl || !img) return;
+export function mountHeroScene(gsap: typeof GSAP, _st: typeof ST): void {
+  const env = document.querySelector<HTMLElement>('.hero-env');
+  const hero = document.querySelector<HTMLElement>('.hero');
+  if (!env || !hero) return;
 
   let renderer: THREE.WebGLRenderer;
   try {
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance' });
   } catch {
-    return; // CSS shell remains
+    return; // CSS environment remains
   }
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const canvas = renderer.domElement;
   canvas.setAttribute('aria-hidden', 'true');
-  Object.assign(canvas.style, {
-    position: 'absolute', left: '-12%', top: '-16%', width: '124%', height: '150%',
-    pointerEvents: 'none', opacity: '0', zIndex: '0'
-  });
-  stage.style.position = 'relative';
-  stage.prepend(canvas);
+  canvas.style.opacity = '0';
+  env.appendChild(canvas);
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(26, 1, 0.1, 30);
+  const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 60);
+  camera.position.set(0, 0.4, 8);
+  camera.lookAt(0, 0, 0);
 
-  const group = new THREE.Group();
-  scene.add(group);
-
-  // Governed cockpit plane — flat, undistorted, CSS-identical crop.
-  const tex = new THREE.Texture(img);
-  tex.needsUpdate = true;
-  tex.colorSpace = THREE.SRGBColorSpace;
-  tex.repeat.set(1, CROP);
-  tex.offset.set(0, 1 - CROP);
-  tex.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), 4);
-  const cockpitMat = new THREE.MeshBasicMaterial({ map: tex, transparent: true });
-  const cockpit = new THREE.Mesh(new THREE.PlaneGeometry(PLANE_W, PLANE_H), cockpitMat);
-  group.add(cockpit);
-
-  // Bezel frame (website-owned): slightly larger dark plane behind.
-  const bezel = new THREE.Mesh(
-    new THREE.PlaneGeometry(PLANE_W + 0.05, PLANE_H + 0.05),
-    new THREE.MeshBasicMaterial({ color: 0x0e2138, transparent: true, opacity: 0.98 })
-  );
-  bezel.position.z = -0.008;
-  group.add(bezel);
-
-  // Rim light strip along the top edge.
-  const rimTex = gradientTexture(256, 8, (g) => {
-    g.addColorStop(0, 'rgba(45,184,249,0)');
-    g.addColorStop(0.45, 'rgba(111,206,251,1)');
-    g.addColorStop(0.55, 'rgba(111,206,251,1)');
-    g.addColorStop(1, 'rgba(45,184,249,0)');
-  }, true);
-  const rim = new THREE.Mesh(
-    new THREE.PlaneGeometry(PLANE_W + 0.05, 0.014),
-    new THREE.MeshBasicMaterial({ map: rimTex, transparent: true })
-  );
-  rim.position.y = (PLANE_H + 0.05) / 2 + 0.007;
-  rim.position.z = 0.002;
-  group.add(rim);
-
-  // Floor reflection — mirrored governed plane, faded (website-owned lighting).
-  const reflTex = tex.clone();
-  reflTex.needsUpdate = true;
-  const reflAlpha = gradientTexture(4, 256, (g) => {
-    g.addColorStop(0, 'rgba(255,255,255,0.30)');
-    g.addColorStop(0.55, 'rgba(255,255,255,0.04)');
-    g.addColorStop(1, 'rgba(255,255,255,0)');
-  });
-  const reflection = new THREE.Mesh(
-    new THREE.PlaneGeometry(PLANE_W, PLANE_H),
-    new THREE.MeshBasicMaterial({ map: reflTex, alphaMap: reflAlpha, transparent: true, opacity: 0.5 })
-  );
-  reflection.scale.y = -1;
-  reflection.position.y = -PLANE_H - 0.02;
-  group.add(reflection);
-
-  // Bloom sprite behind the panel.
-  const bloomTex = radialTexture(256, 'rgba(45,184,249,0.55)');
-  const bloom = new THREE.Sprite(new THREE.SpriteMaterial({ map: bloomTex, transparent: true, opacity: 0.5, depthWrite: false }));
-  bloom.scale.set(4.2, 3.0, 1);
-  bloom.position.z = -0.4;
-  scene.add(bloom);
-
-  // Receding floor grid (shader).
+  // ---- Receding floor grid (GLSL; fades toward the horizon) ----
   const floor = new THREE.Mesh(
-    new THREE.PlaneGeometry(14, 8),
+    new THREE.PlaneGeometry(40, 22),
     new THREE.ShaderMaterial({
       transparent: true,
       depthWrite: false,
       uniforms: { uColor: { value: new THREE.Color(0x2db8f9) } },
-      vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+      vertexShader:
+        'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
       fragmentShader:
         'varying vec2 vUv; uniform vec3 uColor;' +
         'void main(){' +
-        ' vec2 g = abs(fract(vUv * vec2(28.0,16.0)) - 0.5);' +
-        ' float line = smoothstep(0.062,0.012,min(g.x,g.y));' +
-        ' float fade = smoothstep(0.0,0.55,vUv.y) * (1.0 - smoothstep(0.55,1.0,vUv.y));' +
-        ' gl_FragColor = vec4(uColor, line * fade * 0.16);' +
+        ' vec2 g = abs(fract(vUv * vec2(46.0,26.0)) - 0.5);' +
+        ' float line = smoothstep(0.055,0.010,min(g.x,g.y));' +
+        ' float fade = smoothstep(0.0,0.42,vUv.y) * (1.0 - smoothstep(0.42,0.95,vUv.y));' +
+        ' float cx = 1.0 - smoothstep(0.15,0.5,abs(vUv.x - 0.62));' +
+        ' gl_FragColor = vec4(uColor, line * fade * (0.018 + 0.055 * cx));' +
         '}'
     })
   );
-  floor.rotation.x = -Math.PI / 2.15;
-  floor.position.set(0, -PLANE_H * 1.55, -1.2);
+  floor.rotation.x = -Math.PI / 2.05;
+  floor.position.set(0, -2.6, -4);
   scene.add(floor);
 
-  group.rotation.y = -0.105;
-  group.rotation.x = 0.028;
+  // ---- Volumetric glow behind the monolith (right of centre) ----
+  const glowTex = radialTexture(256, 'rgba(45,184,249,0.42)');
+  const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, transparent: true, opacity: 0.55, depthWrite: false }));
+  glow.scale.set(11, 7, 1);
+  glow.position.set(2.4, 0.3, -3);
+  scene.add(glow);
+
+  const underTex = radialTexture(256, 'rgba(45,184,249,0.5)');
+  const under = new THREE.Sprite(new THREE.SpriteMaterial({ map: underTex, transparent: true, opacity: 0.5, depthWrite: false }));
+  under.scale.set(8, 2.2, 1);
+  under.position.set(2.2, -2.7, -2.5);
+  scene.add(under);
+
+  // ---- Drifting light particles ----
+  const COUNT = 46;
+  const pos = new Float32Array(COUNT * 3);
+  const drift: number[] = [];
+  for (let i = 0; i < COUNT; i++) {
+    pos[i * 3] = (Math.random() - 0.5) * 16;
+    pos[i * 3 + 1] = (Math.random() - 0.5) * 8;
+    pos[i * 3 + 2] = -2 - Math.random() * 6;
+    drift.push(0.02 + Math.random() * 0.05);
+  }
+  const pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  const points = new THREE.Points(
+    pGeo,
+    new THREE.PointsMaterial({
+      size: 0.055,
+      map: radialTexture(64, 'rgba(111,206,251,0.9)'),
+      color: 0x6fcefb,
+      transparent: true,
+      opacity: 0.33,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending
+    })
+  );
+  scene.add(points);
 
   const fit = () => {
-    const r = stage.getBoundingClientRect();
+    const r = hero.getBoundingClientRect();
     if (r.width < 50) return;
-    const w = r.width * 1.24;
-    const h = r.height * 1.5;
-    renderer.setSize(w, h, false);
-    camera.aspect = w / h;
-    const vFov = (camera.fov * Math.PI) / 180;
-    const targetWorldW = PLANE_W / 0.80; // panel occupies ~80% of stage width
-    camera.position.z = targetWorldW / (2 * Math.tan(vFov / 2) * camera.aspect);
-    camera.position.y = -PLANE_H * 0.28;
-    camera.lookAt(0, -PLANE_H * 0.18, 0);
+    renderer.setSize(r.width, r.height, false);
+    camera.aspect = r.width / r.height;
     camera.updateProjectionMatrix();
   };
   fit();
 
-  // ---- Entrance choreography ----
-  const swap = () => {
-    gsap.to([shellEl, reflEl].filter(Boolean), { opacity: 0, duration: 0.5 });
-    gsap.to(canvas, { opacity: 1, duration: 0.7 });
-  };
-  gsap.fromTo(group.position, { y: -0.22 }, { y: 0, duration: 1.1, ease: 'power3.out' });
-  gsap.fromTo(group.rotation, { y: -0.2 }, { y: -0.105, duration: 1.2, ease: 'power3.out' });
-  gsap.fromTo(bloom.material, { opacity: 0 }, { opacity: 0.5, duration: 1.4, ease: 'power2.out' });
-
-  // ---- Scroll scrub: ease toward flat and dock into the trust seam ----
-  const scrollState = { p: 0 };
-  ScrollTrigger.create({
-    trigger: '.hero',
-    start: 'center top+=200',
-    end: 'bottom top',
-    scrub: 0.5,
-    onUpdate: (self) => { scrollState.p = self.progress; }
-  });
-
-  // ---- Cursor light rig (±1.2°) ----
+  // ---- Cursor parallax ----
   const cursor = { x: 0, y: 0 };
   const onMove = (e: PointerEvent) => {
     cursor.x = (e.clientX / window.innerWidth - 0.5) * 2;
@@ -179,20 +124,27 @@ export function mountHeroScene(gsap: typeof GSAP, ScrollTrigger: typeof ST): voi
   let guardStart = performance.now();
   let guarded = false;
   let alive = true;
-  const clockY = { v: 0 };
+  const sway = { x: 0, y: 0 };
 
   const loop = () => {
     if (!alive) return;
     raf = requestAnimationFrame(loop);
-    const baseY = -0.105 * (1 - scrollState.p * 0.85);
-    clockY.v += ((cursor.x * 0.021 + baseY) - clockY.v) * 0.06;
-    group.rotation.y = clockY.v;
-    group.rotation.x = 0.028 + cursor.y * -0.012 + scrollState.p * -0.02;
-    group.position.y = scrollState.p * 0.1;
-    bloom.material.opacity = 0.5 * (1 - scrollState.p * 0.6);
-    rim.position.x = cursor.x * 0.12;
+    const t = performance.now() / 1000;
+    sway.x += (cursor.x * 0.35 - sway.x) * 0.05;
+    sway.y += (cursor.y * 0.2 - sway.y) * 0.05;
+    glow.position.x = 2.4 + sway.x;
+    glow.position.y = 0.3 - sway.y;
+    glow.material.opacity = 0.5 + Math.sin(t * 0.7) * 0.06;
+    const p = pGeo.getAttribute('position') as THREE.BufferAttribute;
+    for (let i = 0; i < COUNT; i++) {
+      let y = p.getY(i) + drift[i] * 0.016;
+      if (y > 4.2) y = -4.2;
+      p.setY(i, y);
+    }
+    p.needsUpdate = true;
+    camera.position.x = sway.x * 0.25;
+    camera.lookAt(0, 0, 0);
     renderer.render(scene, camera);
-    // guard: sustained fps over the first ~2.5s after swap
     if (!guarded) {
       frames++;
       const dt = performance.now() - guardStart;
@@ -215,45 +167,25 @@ export function mountHeroScene(gsap: typeof GSAP, ScrollTrigger: typeof ST): voi
         renderer.dispose();
       }
     });
-    gsap.to([shellEl, reflEl].filter(Boolean), { opacity: 1, duration: 0.5 });
   };
 
-  const start = () => {
-    guardStart = performance.now();
-    frames = 0;
-    swap();
-    loop();
-  };
-  if (img.complete) start();
-  else img.addEventListener('load', start, { once: true });
+  guardStart = performance.now();
+  frames = 0;
+  gsap.to(canvas, { opacity: 1, duration: 1.2, ease: 'power2.out' });
+  loop();
 
   window.addEventListener('resize', fit);
   (window as unknown as { __heroSceneActive?: boolean }).__heroSceneActive = true;
 }
 
-/* ---- tiny texture helpers (no assets, no network) ---- */
-function gradientTexture(
-  w: number, h: number,
-  stops: (g: CanvasGradient) => void,
-  horizontal = false
-): THREE.CanvasTexture {
-  const c = document.createElement('canvas');
-  c.width = w; c.height = h;
-  const ctx = c.getContext('2d')!;
-  const g = horizontal ? ctx.createLinearGradient(0, 0, w, 0) : ctx.createLinearGradient(0, 0, 0, h);
-  stops(g);
-  ctx.fillStyle = g;
-  ctx.fillRect(0, 0, w, h);
-  return new THREE.CanvasTexture(c);
-}
-
+/* ---- tiny texture helper (no assets, no network) ---- */
 function radialTexture(size: number, color: string): THREE.CanvasTexture {
   const c = document.createElement('canvas');
   c.width = size; c.height = size;
   const ctx = c.getContext('2d')!;
   const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
   g.addColorStop(0, color);
-  g.addColorStop(0.55, color.replace(/[\d.]+\)$/, '0.12)'));
+  g.addColorStop(0.55, color.replace(/[\d.]+\)$/, '0.10)'));
   g.addColorStop(1, 'rgba(45,184,249,0)');
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, size, size);

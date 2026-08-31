@@ -14,12 +14,6 @@ main{position:relative}
 .continuum-node.human{background:#FFFFFF;width:10px;height:10px;margin-left:-4px}
 
 /* ---- 3Ps spatial ---- */
-.p3-wm{position:absolute;right:12px;bottom:8px;opacity:.08;pointer-events:none;color:var(--navy-900)}
-@media (min-width:1101px){
-  .p3-grid{align-items:start}
-  .p3-card:nth-child(2){margin-top:26px}
-  .p3-card:nth-child(3){margin-top:52px}
-}
 
 /* ---- Support Functions constellation ---- */
 .support-grid{position:relative}
@@ -37,7 +31,7 @@ main{position:relative}
 
 /* ---- Evidence boundary flow ---- */
 .boundary-band{position:relative}
-.boundary-flow{position:relative;margin:20px 38px 26px;height:40px;display:flex;align-items:center;pointer-events:none}
+.boundary-flow{position:relative;margin:16px 38px 20px;height:40px;display:flex;align-items:center;pointer-events:none}
 .bf-line{position:relative;flex:1 1 0;height:2px;background:linear-gradient(90deg,rgba(45,184,249,.35),#2DB8F9);transform-origin:left center}
 .bf-line.r{background:var(--navy-900);transform-origin:left center}
 .bf-dot{position:absolute;top:50%;width:7px;height:7px;margin-top:-3.5px;border-radius:50%;background:#FFFFFF;border:2px solid #2DB8F9;box-sizing:border-box}
@@ -52,13 +46,13 @@ main{position:relative}
 .int-network{display:none}
 @media (min-width:1101px){
   .integration-chips{display:none}
-  .int-network{display:block;position:relative;height:520px;margin-top:8px}
+  .int-network{display:block;position:relative;height:440px;margin-top:4px}
   .int-links{position:absolute;inset:0;width:100%;height:100%}
   .int-links path{stroke:rgba(45,184,249,.55);stroke-width:1.5;stroke-dasharray:6 5;fill:none}
   .int-orbit{fill:none;stroke:rgba(255,255,255,.09);stroke-dasharray:3 6}
   .int-hub{position:absolute;left:50%;top:50%;width:150px;height:150px;margin:-75px 0 0 -75px;border-radius:50%;background:var(--navy-950);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;letter-spacing:-0.02em;box-shadow:0 0 0 1px rgba(45,184,249,.45),0 0 46px rgba(45,184,249,.28),inset 0 1px 0 rgba(255,255,255,.08)}
-  .int-node{position:absolute;left:var(--x);top:var(--y);transform:translate(-50%,-50%);font:700 10px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.10em;text-transform:uppercase;color:#EAF4FA;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:2px;padding:9px 13px;white-space:nowrap;transition:border-color var(--dur-hover) ease-out,box-shadow var(--dur-hover) ease-out}
-  .int-node:hover{border-color:rgba(45,184,249,.6);box-shadow:0 0 16px rgba(45,184,249,.25)}
+  .int-node{position:absolute;left:var(--x);top:var(--y);transform:translate(-50%,-50%);font-family:Montserrat,Arial,sans-serif;font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:#EAF4FA;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.14);border-radius:4px;padding:10px 16px;white-space:nowrap;transition:border-color var(--dur-hover) ease-out,box-shadow var(--dur-hover) ease-out,color var(--dur-hover) ease-out}
+  .int-node:hover{border-color:rgba(45,184,249,.6);box-shadow:0 0 16px rgba(45,184,249,.25);color:#6FCEFB}
 }
 
 /* ---- Industries terrain ---- */
@@ -79,11 +73,9 @@ main{position:relative}
   .cta-band .cta-band-grid>div:last-child::before{animation:cta-pulse 2.6s ease-out infinite}
 }
 
-/* ---- Mobile: 3Ps depth carousel + spine sizing ---- */
+/* ---- Mobile: 3Ps depth carousel ---- */
 @media (max-width:767px){
   .p3-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;padding:4px 4px 14px;-webkit-overflow-scrolling:touch}
   .p3-grid::-webkit-scrollbar{display:none}
   .p3-card{flex:0 0 78%;scroll-snap-align:center;min-height:0}
-  .cockpit-caption{order:-1;margin:0 0 8px}
-  .cockpit{display:flex;flex-direction:column}
 }

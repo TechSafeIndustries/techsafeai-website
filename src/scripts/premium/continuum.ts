@@ -123,23 +123,26 @@ function buildSpine(gsap: Gsap, ScrollTrigger: STType, main: HTMLElement, opts: 
   });
 }
 
-/* ---- Hero → trust strip handoff (cockpit eases flat, bloom dims) ---- */
+/* ---- Hero: monolith cursor light-rig + scroll handoff (eases flat) ---- */
 function heroHandoff(gsap: Gsap, _st: STType): void {
-  const shell = document.querySelector('.cockpit-shell');
-  const bloom = document.querySelector('.cockpit-bloom');
-  if (!shell) return;
-  gsap.to(shell, {
-    rotateY: -1.5,
-    y: -18,
+  const monolith = document.querySelector<HTMLElement>('.monolith');
+  if (!monolith) return;
+  gsap.to(monolith, {
+    rotateY: -0.6,
+    y: -14,
     ease: 'none',
     scrollTrigger: { trigger: '.hero', start: 'center top+=200', end: 'bottom top', scrub: 0.5 }
   });
-  if (bloom) {
-    gsap.to(bloom, {
-      opacity: 0.25,
-      ease: 'none',
-      scrollTrigger: { trigger: '.hero', start: 'center top+=200', end: 'bottom top', scrub: 0.5 }
-    });
+  // cursor tilt: the whole console (rails, screen, dock) moves as one object
+  if (window.matchMedia('(pointer: fine)').matches) {
+    const ry = gsap.quickTo(monolith, 'rotationY', { duration: 0.7, ease: 'power2.out' });
+    const rx = gsap.quickTo(monolith, 'rotationX', { duration: 0.7, ease: 'power2.out' });
+    window.addEventListener('pointermove', (e) => {
+      const nx = (e.clientX / window.innerWidth - 0.5) * 2;
+      const ny = (e.clientY / window.innerHeight - 0.5) * 2;
+      ry(-2.4 + nx * 1.5);
+      rx(0.8 + ny * -1.0);
+    }, { passive: true });
   }
 }
 

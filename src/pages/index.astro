@@ -72,25 +72,26 @@ const integrationCategories = [
 ] as const;
 
 const valueOutcomes = [
-  'Better operational understanding', 'Improved evidence visibility',
-  'Faster human review', 'Stronger audit preparation'
+  { name: 'Better operational understanding', icon: 'nodes' },
+  { name: 'Improved evidence visibility', icon: 'eye' },
+  { name: 'Faster human review', icon: 'person-check' },
+  { name: 'Stronger audit preparation', icon: 'doc-check' }
 ] as const;
 
 const industryLinks = [
-  { slug: 'mining-resources', title: 'Mining & Resources' },
-  { slug: 'construction-infrastructure', title: 'Construction & Infrastructure' },
-  { slug: 'other-regulated-operations', title: 'Other Risk-Intensive & Regulated Operations' }
+  { slug: 'mining-resources', title: 'Mining & Resources', icon: 'pick' },
+  { slug: 'construction-infrastructure', title: 'Construction & Infrastructure', icon: 'crane' },
+  { slug: 'other-regulated-operations', title: 'Other Risk-Intensive & Regulated Operations', icon: 'shield-check' }
 ] as const;
 ---
 <BaseLayout title={site.name} description="TechSafeAI brings governed operational information into context, helping leaders see what needs attention, understand the evidence behind it and make better-informed decisions.">
 
   <section class="hero section-dark">
+    <div class="hero-env" aria-hidden="true"></div>
     <div class="hero-wrap">
-      <div class="hero-head">
+      <div class="hero-copy">
         <div class="eyebrow">Governed Operational Intelligence</div>
         <h1>Operational information is everywhere.<span>Operational understanding isn't.</span></h1>
-      </div>
-      <div class="hero-copy">
         <p class="lead">TechSafeAI brings governed operational information into context, helping leaders see what needs attention, understand the evidence behind it and make better-informed decisions.</p>
         <div class="hero-actions">
           <a class="button button-primary" href="/start-with-your-challenge">Start with your challenge <span aria-hidden="true">→</span></a>
@@ -98,9 +99,51 @@ const industryLinks = [
         </div>
       </div>
       <div class="cockpit-stage">
-        <div class="cockpit-bloom" aria-hidden="true"></div>
-        <Cockpit />
-        <span class="cockpit-callout a">Operational Intelligence Cockpit</span>
+        <div class="monolith">
+          <span class="monolith-plate">Operational Intelligence Cockpit</span>
+          <div class="monolith-body">
+            <div class="monolith-rail l" aria-hidden="true">
+              <span><Icon name="grid" size={13} /></span>
+              <span><Icon name="chart" size={13} /></span>
+              <span><Icon name="doc-check" size={13} /></span>
+              <span><Icon name="nodes" size={13} /></span>
+              <span><Icon name="target" size={13} /></span>
+              <span><Icon name="loop" size={13} /></span>
+            </div>
+            <div class="monolith-core">
+              <Cockpit />
+            </div>
+            <div class="monolith-rail r" aria-hidden="true">
+              <span><Icon name="layers" size={13} /></span>
+              <span><Icon name="shield-check" size={13} /></span>
+              <span><Icon name="eye" size={13} /></span>
+              <span><Icon name="cite" size={13} /></span>
+              <span><Icon name="person-check" size={13} /></span>
+              <span><Icon name="gauge" size={13} /></span>
+            </div>
+          </div>
+          <div class="monolith-dock" aria-hidden="true">
+            <span class="dock-tile active"><Icon name="grid" size={15} /></span>
+            <span class="dock-tile"><Icon name="chart" size={15} /></span>
+            <span class="dock-tile"><Icon name="doc-check" size={15} /></span>
+            <span class="dock-tile"><Icon name="nodes" size={15} /></span>
+            <span class="dock-tile"><Icon name="cite" size={15} /></span>
+            <span class="dock-tile"><Icon name="person-check" size={15} /></span>
+          </div>
+          <div class="monolith-plinth" aria-hidden="true"></div>
+        </div>
+        <svg class="hero-chair" viewBox="0 0 200 240" aria-hidden="true">
+          <ellipse cx="100" cy="230" rx="72" ry="7" fill="rgba(45,184,249,.08)"/>
+          <path d="M100 214l-44 14M100 214l44 14M100 214v18M100 214l-27 19M100 214l27 19" stroke="#04101E" stroke-width="6" stroke-linecap="round"/>
+          <path d="M100 188v26" stroke="#050F1E" stroke-width="8" stroke-linecap="round"/>
+          <path d="M78 160h44l4 22H74z" fill="#040D1A"/>
+          <path d="M58 22c0-8 7-14 15-14h54c8 0 15 6 15 14l-5 118c-.4 9-7 16-16 16H79c-9 0-15.6-7-16-16z" fill="#030B16"/>
+          <path d="M70 30c0-5 4-9 9-9h42c5 0 9 4 9 9l-4 100c-.3 6-5 11-11 11H85c-6 0-10.7-5-11-11z" fill="#071527"/>
+          <path d="M74 60h52M73 88h54" stroke="rgba(255,255,255,.04)" stroke-width="2"/>
+          <path d="M42 96c-5 1-8 5-8 10l2 30c0 4 3 7 7 7h7" stroke="#040D1A" stroke-width="9" fill="none" stroke-linecap="round"/>
+          <path d="M158 96c5 1 8 5 8 10l-2 30c0 4-3 7-7 7h-7" stroke="#040D1A" stroke-width="9" fill="none" stroke-linecap="round"/>
+          <path d="M64 12.5a52 52 0 0172 0" stroke="rgba(111,206,251,.35)" stroke-width="1.6" fill="none"/>
+        </svg>
         <span class="cockpit-callout b">SAI assists the human.</span>
       </div>
     </div>
@@ -120,12 +163,12 @@ const industryLinks = [
       <div class="p3-grid reveal-group">
         {threePs.map((p)=>(
           <article class="p3-card">
+            <span class="p3-mono" aria-hidden="true">P</span>
             <div class="p3-head">
               <span class="p3-icon-tile" aria-hidden="true"><Icon name={p.icon} size={24} /></span>
               <h3>{p.title}</h3>
             </div>
             <p>{p.summary}</p>
-            <span class="p3-wm" aria-hidden="true"><Icon name={p.icon} size={104} /></span>
           </article>
         ))}
       </div>
@@ -217,20 +260,47 @@ const industryLinks = [
       <div class="section-title title-stack"><div class="eyebrow">Ways to engage</div><h2>Two ways to work with TechSafeAI.</h2></div>
       <div class="split-grid grid-lead">
         <a class="split-panel" href={engagementPaths[0].href}>
-          <span class="split-kicker"><Icon name="grid" size={18} /> Product Services</span>
+          <span class="split-kicker"><span class="kicker-tile" aria-hidden="true"><Icon name="grid" size={16} /></span> Product Services</span>
           <p>{engagementPaths[0].summary}</p>
-          <ul>
-            {productCapabilities.map((name)=>(<li>{name}</li>))}
-          </ul>
+          <div class="split-media">
+            <ul>
+              {productCapabilities.map((name)=>(<li>{name}</li>))}
+            </ul>
+            <figure class="split-inset" aria-hidden="false">
+              <img
+                src="/assets/sai/website-handoff/sai-ui-016/SAI-GROUNDED-INTERACTION-37a6918.png"
+                width="621"
+                height="547"
+                alt="SAI grounded explanation interface showing source-based operational context using synthetic demonstration data."
+                loading="lazy"
+              />
+            </figure>
+          </div>
           <span class="route-link">Learn more →</span>
         </a>
         <a class="split-panel split-panel-consult" href={engagementPaths[1].href}>
-          <span class="split-kicker"><Icon name="person" size={18} /> Consultancy Services</span>
+          <span class="split-kicker"><span class="kicker-tile" aria-hidden="true"><Icon name="person" size={16} /></span> Consultancy Services</span>
           <p>{engagementPaths[1].summary}</p>
-          <ul>
-            {consultancyCapabilities.map((name)=>(<li>{name}</li>))}
-          </ul>
-          <span class="split-wm" aria-hidden="true"><Icon name="person" size={92} /></span>
+          <div class="split-media">
+            <ul>
+              {consultancyCapabilities.map((name)=>(<li>{name}</li>))}
+            </ul>
+            <svg class="split-illustration" viewBox="0 0 260 300" aria-hidden="true">
+              <g stroke="rgba(111,206,251,.75)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M52 96a26 26 0 0152 0"/><path d="M48 96h60"/>
+                <circle cx="78" cy="116" r="16"/>
+                <path d="M50 190c2-32 12-46 28-46s26 14 28 46"/>
+                <path d="M150 76a24 24 0 0148 0"/><path d="M146 76h56"/>
+                <circle cx="174" cy="95" r="15"/>
+                <path d="M148 168c2-30 11-43 26-43s24 13 26 43"/>
+                <rect x="118" y="140" width="34" height="24" rx="3"/>
+                <path d="M106 148l12 4M152 150l14-6"/>
+              </g>
+              <g stroke="rgba(45,184,249,.30)" stroke-width="1.5" fill="none">
+                <path d="M20 250h220M40 274h180"/>
+              </g>
+            </svg>
+          </div>
           <span class="route-link">Learn more →</span>
         </a>
       </div>
@@ -309,6 +379,7 @@ const industryLinks = [
       <div class="industry-grid grid-lead">
         {industryLinks.map((industry, index)=>(
           <a class={`industry-card ${index < 2 ? 'industry-card-featured' : ''}`} href={`/industries/${industry.slug}`}>
+            <span class="industry-icon" aria-hidden="true"><Icon name={industry.icon} size={24} /></span>
             <h3>{industry.title}</h3>
             <span class="route-link">View industry →</span>
             {index === 0 && <svg class="industry-terrain" viewBox="0 0 400 78" preserveAspectRatio="none" aria-hidden="true"><path d="M0 70 L60 70 L80 56 L150 56 L170 42 L240 42 L260 28 L330 28 L350 14 L400 14" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M0 78 L90 78 L110 64 L190 64 L210 50 L290 50 L310 36 L400 36" stroke="currentColor" stroke-width="1" fill="none" opacity=".5"/></svg>}
@@ -323,7 +394,13 @@ const industryLinks = [
     <div class="shell">
       <div class="section-title title-stack"><div class="eyebrow">Value</div><h2>What changes in how you work.</h2><p>TechSafeAI does not guarantee productivity, profitability or compliance outcomes — it helps connect the intelligence that informs them.</p></div>
       <div class="value-grid reveal-group">
-        {valueOutcomes.map((name)=>(<div class="value-panel"><h3>{name}</h3><i class="value-sheen" aria-hidden="true"></i></div>))}
+        {valueOutcomes.map((v)=>(
+          <div class="value-panel">
+            <span class="value-icon" aria-hidden="true"><Icon name={v.icon} size={20} /></span>
+            <h3>{v.name}</h3>
+            <i class="value-sheen" aria-hidden="true"></i>
+          </div>
+        ))}
       </div>
     </div>
   </section>
