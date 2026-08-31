@@ -135,6 +135,8 @@ function heroHandoff(gsap: Gsap, _st: STType): void {
   const callout = document.querySelector('.cockpit-callout.b');
   const railIcons = document.querySelectorAll('.monolith-rail span');
   const dockTiles = document.querySelectorAll('.dock-tile');
+  const floatChips = document.querySelectorAll('.float-chip');
+  const streaks = document.querySelector('.hero-streaks');
   const underglow = document.querySelector('.monolith-underglow');
   const reflection = document.querySelector('.monolith-reflection');
 
@@ -150,6 +152,8 @@ function heroHandoff(gsap: Gsap, _st: STType): void {
     if (chair) gsap.set(chair, { autoAlpha: 0, y: 26 });
     if (callout) gsap.set(callout, { autoAlpha: 0, y: 10 });
     gsap.set([railIcons, dockTiles], { autoAlpha: 0, scale: 0.4 });
+    if (floatChips.length) gsap.set(floatChips, { autoAlpha: 0, scale: 0.5, y: 14 });
+    if (streaks) gsap.set(streaks, { autoAlpha: 0 });
     if (reflection) gsap.set(reflection, { autoAlpha: 0 });
     document.documentElement.classList.remove('hero-staged');
 
@@ -161,6 +165,8 @@ function heroHandoff(gsap: Gsap, _st: STType): void {
       .to(monolith, { '--rim': '50%', duration: 0.9, ease: 'power2.out' }, '>')
       .to(railIcons, { autoAlpha: 1, scale: 1, duration: 0.5, stagger: 0.045, ease: 'back.out(2)' }, 0.55)
       .to(dockTiles, { autoAlpha: 1, scale: 1, duration: 0.5, stagger: 0.05, ease: 'back.out(2)' }, 0.7);
+    if (streaks) tl.to(streaks, { autoAlpha: 0.8, duration: 1.1 }, 0.6);
+    if (floatChips.length) tl.to(floatChips, { autoAlpha: 1, scale: 1, y: 0, duration: 0.6, stagger: 0.12, ease: 'back.out(1.8)' }, 0.9);
     if (reflection) tl.to(reflection, { autoAlpha: 1, duration: 0.9 }, 0.8);
     if (chair) tl.to(chair, { autoAlpha: 1, y: 0, duration: 0.8 }, 0.85);
     if (callout) tl.to(callout, { autoAlpha: 1, y: 0, duration: 0.6 }, 1.05);

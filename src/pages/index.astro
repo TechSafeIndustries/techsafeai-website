@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Cockpit from '../components/Cockpit.astro';
 import Icon from '../components/Icon.astro';
 import CtaBand from '../components/CtaBand.astro';
+import BrandMark from '../components/BrandMark.astro';
 import { site } from '../data/site';
 
 const productCards = [
@@ -90,7 +91,7 @@ const industryLinks = [
     <div class="hero-env" aria-hidden="true"></div>
     <div class="hero-wrap">
       <div class="hero-copy">
-        <div class="eyebrow">Governed Operational Intelligence</div>
+        <div class="eyebrow-chip"><BrandMark size={15} /><span class="eyebrow">Governed Operational Intelligence</span></div>
         <h1>Operational information is everywhere.<span>Operational understanding isn't.</span></h1>
         <p class="lead">TechSafeAI brings governed operational information into context, helping leaders see what needs attention, understand the evidence behind it and make better-informed decisions.</p>
         <div class="hero-actions">
@@ -99,6 +100,22 @@ const industryLinks = [
         </div>
       </div>
       <div class="cockpit-stage">
+        <svg class="hero-streaks" viewBox="0 0 1200 420" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="stk" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="rgba(45,184,249,0)"/>
+              <stop offset=".45" stop-color="rgba(45,184,249,.55)"/>
+              <stop offset=".75" stop-color="rgba(111,206,251,.85)"/>
+              <stop offset="1" stop-color="rgba(45,184,249,0)"/>
+            </linearGradient>
+          </defs>
+          <path d="M-40 400 C 260 400 480 330 660 296 S 1080 268 1240 300" stroke="url(#stk)" stroke-width="5" fill="none"/>
+          <path d="M-40 418 C 300 416 560 360 760 330 S 1120 306 1240 330" stroke="url(#stk)" stroke-width="2.5" fill="none" opacity=".7"/>
+          <path d="M-40 372 C 220 376 420 306 600 268 S 1040 224 1240 262" stroke="url(#stk)" stroke-width="1.5" fill="none" opacity=".45"/>
+        </svg>
+        <span class="float-chip a" aria-hidden="true"><Icon name="doc-check" size={16} /></span>
+        <span class="float-chip b" aria-hidden="true"><Icon name="shield-check" size={16} /></span>
+        <span class="float-chip c" aria-hidden="true"><Icon name="nodes" size={14} /></span>
         <div class="monolith">
           <span class="monolith-plate">Operational Intelligence Cockpit</span>
           <i class="mono-edge l" aria-hidden="true"></i>
@@ -136,6 +153,7 @@ const industryLinks = [
             <span class="dock-tile"><Icon name="person-check" size={15} /></span>
           </div>
           <div class="monolith-plinth" aria-hidden="true"></div>
+          <div class="monolith-ring" aria-hidden="true"></div>
           <div class="monolith-underglow" aria-hidden="true"></div>
         </div>
         <div class="monolith-reflection" aria-hidden="true">
