@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Cockpit from '../components/Cockpit.astro';
 import CtaBand from '../components/CtaBand.astro';
 import { site } from '../data/site';
 
@@ -50,7 +51,7 @@ const industryLinks = [
 <BaseLayout title={site.name} description="TechSafeAI brings governed operational information into context, helping leaders see what needs attention, understand the evidence behind it and make better-informed decisions.">
 
   <section class="hero section-dark">
-    <div class="shell hero-grid">
+    <div class="hero-wrap">
       <div class="hero-copy">
         <div class="eyebrow">Governed Operational Intelligence</div>
         <h1>Operational information is everywhere.<span>Operational understanding isn't.</span></h1>
@@ -59,20 +60,21 @@ const industryLinks = [
           <a class="button button-primary" href="/start-with-your-challenge">Start with your challenge <span aria-hidden="true">→</span></a>
           <a class="button button-outline-light" href="#operational-intelligence">See how it works</a>
         </div>
-        <div class="trustline">
-          <span><strong>Your existing systems</strong> remain authoritative</span>
-          <span><strong>Evidence and provenance</strong> stay visible</span>
-          <span><strong>Human decisions</strong> remain human</span>
-        </div>
       </div>
-      <div class="hero-art" aria-hidden="true">
-        <div class="hero-art-grid"></div>
-        <span class="art-node a"></span><span class="art-node b"></span><span class="art-node c"></span>
-        <span class="art-label a">Activities</span>
-        <span class="art-label b">Risks / controls</span>
-        <span class="art-label c">Evidence</span>
-        <div class="art-caption"><div><strong>Operational context</strong>High-risk industries</div><div><strong>Governed intelligence</strong>Context → evidence → decision</div></div>
+      <div class="cockpit-stage">
+        <div class="cockpit-bloom" aria-hidden="true"></div>
+        <Cockpit />
+        <span class="cockpit-callout a">Operational Intelligence Cockpit</span>
+        <span class="cockpit-callout b">SAI assists the human.</span>
       </div>
+    </div>
+  </section>
+
+  <section class="trust-strip">
+    <div class="shell">
+      <span><strong>Your existing systems</strong> remain authoritative</span>
+      <span><strong>Evidence and provenance</strong> stay visible</span>
+      <span><strong>Human decisions</strong> remain human</span>
     </div>
   </section>
 

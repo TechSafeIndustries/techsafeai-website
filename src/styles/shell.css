@@ -42,20 +42,3 @@ p{max-width:72ch}
 .mobile-nav summary::-webkit-details-marker{display:none}
 .mobile-nav nav{position:absolute;right:0;top:50px;width:min(320px,calc(100vw - 32px));background:var(--navy-800);padding:18px;display:grid;gap:4px;border:1px solid #355365;box-shadow:var(--shadow)}
 .mobile-nav nav>a:not(.button){padding:10px 6px;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.12)}
-.hero{min-height:760px;padding-top:78px;overflow:hidden;position:relative}
-.hero-grid{display:grid;grid-template-columns:1.06fr .94fr;min-height:682px}
-.hero-copy{padding:88px 64px 84px 0;display:flex;flex-direction:column;justify-content:center;z-index:2}
-.hero-copy h1 span{display:block;color:#dce6eb;font-weight:450}
-.hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:4px}
-.trustline{margin-top:38px;display:flex;gap:18px;flex-wrap:wrap;font-size:11px;color:#96aab5}
-.trustline strong{color:#edf2f4}
-.hero-art{position:relative;border-left:1px solid rgba(255,255,255,.11);background:#0b2a3c;min-height:640px;overflow:hidden}
-.hero-art-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:48px 48px}
-.hero-art:before{content:"";position:absolute;width:62%;height:1px;background:#4e7081;left:17%;top:30%;transform:rotate(-18deg);box-shadow:0 150px 0 #4e7081,80px 270px 0 #4e7081}
-.hero-art:after{content:"";position:absolute;width:1px;height:60%;background:#3b5d6e;left:46%;top:18%;box-shadow:110px 30px 0 #3b5d6e,-105px 60px 0 #3b5d6e}
-.art-node{position:absolute;width:16px;height:16px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 8px rgba(39,182,246,.12)}
-.art-node.a{left:22%;top:26%}.art-node.b{left:62%;top:47%}.art-node.c{left:43%;top:72%}
-.art-label{position:absolute;color:#a9bcc5;font:700 9px ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase}
-.art-label.a{left:11%;top:18%}.art-label.b{right:9%;top:39%}.art-label.c{left:28%;bottom:17%}
-.art-caption{position:absolute;left:30px;right:30px;bottom:34px;padding-top:16px;border-top:1px solid rgba(255,255,255,.17);display:flex;justify-content:space-between;gap:16px;color:#a4b5be;font-size:10px}
-.art-caption strong{display:block;color:#fff;font-size:12px;margin-bottom:3px}

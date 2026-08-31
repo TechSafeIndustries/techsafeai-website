@@ -1,0 +1,42 @@
+---
+/**
+ * WEB-PHASE-10 S2 — governed Operational Intelligence Cockpit figure.
+ * Renders the SAI-UI-016 HERO-COCKPIT asset (byte-identical, untouched binary)
+ * inside a website-owned dimensional shell.
+ *
+ * SAI-UI-016 §9 compliance, enforced structurally here:
+ * - No upscale beyond 1506px native width (rendered width is capped by the
+ *   consuming layout at 1040 CSS px).
+ * - CSS crop only: top 575px of 692 shown (excludes the truncated
+ *   "Top Attention Items" table); the SYNTHETIC DEMO DATA badge and the
+ *   schema-validation banner remain in-crop.
+ * - The governed image itself is never transformed; only the website-owned
+ *   shell rotates.
+ * - Demonstration-data status stated in both alt text and visible caption
+ *   (existing governed wording reused verbatim from /product).
+ */
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+---
+<figure class={`cockpit ${className}`.trim()}>
+  <div class="cockpit-shell">
+    <div class="cockpit-rim" aria-hidden="true"></div>
+    <div class="cockpit-bezel">
+      <div class="cockpit-crop">
+        <img
+          src="/assets/sai/website-handoff/sai-ui-016/HERO-COCKPIT-37a6918.png"
+          width="1506"
+          height="692"
+          alt="TechSafeAI Operational Intelligence cockpit shown with synthetic demonstration data."
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </div>
+    </div>
+    <div class="cockpit-reflection" aria-hidden="true"></div>
+  </div>
+  <figcaption class="cockpit-caption">Product interface shown with synthetic demonstration data.</figcaption>
+</figure>
