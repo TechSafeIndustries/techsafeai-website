@@ -91,7 +91,7 @@ const industryLinks = [
   <section class="section section-muted" id="operational-intelligence">
     <div class="shell">
       <div class="section-title" style="display:block"><div class="eyebrow">Product story</div><h2>Operational Intelligence without replacing the systems that own your data.</h2><p>TechSafeAI connects, structures and explains governed information from the systems you already run. It does not become a new system of record.</p></div>
-      <div class="capability-grid" style="margin-top:42px">
+      <div class="capability-grid grid-lead">
         {productCards.map((card,index)=>(
           <div class="capability">
             <span class="capability-index">0{index+1}</span>
@@ -106,7 +106,7 @@ const industryLinks = [
   <section class="section section-light" id="three-ps">
     <div class="shell">
       <div class="section-title" style="display:block"><div class="eyebrow">People + Property + Planet</div><h2>One operation. Three connected perspectives.</h2><p>Conditions across these three domains may affect operational performance and productivity. TechSafeAI does not guarantee productivity, profitability or compliance outcomes — it helps connect the intelligence that informs them.</p></div>
-      <div class="capability-grid" style="margin-top:42px">
+      <div class="capability-grid grid-lead">
         {threePs.map((p)=>(
           <div class="capability">
             <h3>{p.title}</h3>
@@ -144,7 +144,7 @@ const industryLinks = [
   <section class="content-section">
     <div class="shell">
       <div class="section-title"><div><div class="eyebrow">Ways to engage</div><h2>Two ways to work with TechSafeAI.</h2></div></div>
-      <div class="route-grid" style="margin-top:42px">
+      <div class="route-grid grid-lead">
         {engagementPaths.map((path)=>(
           <a class="route-card" href={path.href}>
             <h3>{path.title}</h3>
@@ -156,10 +156,10 @@ const industryLinks = [
     </div>
   </section>
 
-  <section class="content-section" style="background:#e8e5dd">
+  <section class="content-section bg-surface-100">
     <div class="shell">
       <div class="section-title"><div><div class="eyebrow">Industries</div><h2>Featured depth, and a route for every high-risk operation.</h2></div><p>Mining & Resources and Construction & Infrastructure are the featured initial sector depth. Other high-risk operations have a credible route without unsupported specialist claims.</p></div>
-      <div class="route-grid" style="margin-top:42px">
+      <div class="route-grid grid-lead">
         {industryLinks.map((industry)=>(
           <a class="route-card" href={`/industries/${industry.slug}`}>
             <h3>{industry.title}</h3>
