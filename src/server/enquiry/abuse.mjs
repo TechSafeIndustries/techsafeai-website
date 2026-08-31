@@ -83,11 +83,34 @@ export async function validateOptionalTurnstile(payload, clientAddress, env = pr
       signal: controller.signal
     });
     const result = await response.json();
-    if (!result?.success) return { ok: false, code: 'BOT_VALIDATION_FAILED' };
-    if (expectedHostname && result.hostname && result.hostname !== expectedHostname) return { ok: false, code: 'BOT_HOSTNAME_MISMATCH' };
-    if (expectedAction && result.action && result.action !== expectedAction) return { ok: false, code: 'BOT_ACTION_MISMATCH' };
+    // TEMPORARY — WEB-PROD-TURNSTILE-DIAG-01: diagnostic logging only, no secrets/token/IP/payload.
+    // Remove once the Siteverify 400 root cause is diagnosed.
+    const logTurnstileDiagnostic = () => {
+      console.error('TURNSTILE_DIAGNOSTIC', {
+        success: Boolean(result?.success),
+        errorCodes: Array.isArray(result?.['error-codes']) ? result['error-codes'] : [],
+        hostname: result?.hostname ?? '',
+        action: result?.action ?? '',
+        expectedHostname,
+        expectedAction
+      });
+    };
+    if (!result?.success) {
+      logTurnstileDiagnostic();
+      return { ok: false, code: 'BOT_VALIDATION_FAILED' };
+    }
+    if (expectedHostname && result.hostname && result.hostname !== expectedHostname) {
+      logTurnstileDiagnostic();
+      return { ok: false, code: 'BOT_HOSTNAME_MISMATCH' };
+    }
+    if (expectedAction && result.action && result.action !== expectedAction) {
+      logTurnstileDiagnostic();
+      return { ok: false, code: 'BOT_ACTION_MISMATCH' };
+    }
     return { ok: true, configured: true, hostname: result.hostname || '', action: result.action || '' };
   } catch {
+    // TEMPORARY — WEB-PROD-TURNSTILE-DIAG-01: safe marker only, no secrets/token/IP/payload.
+    console.error('TURNSTILE_DIAGNOSTIC', { error: 'SITEVERIFY_UNAVAILABLE' });
     return { ok: false, code: 'BOT_VALIDATION_UNAVAILABLE' };
   } finally {
     clearTimeout(timeout);
