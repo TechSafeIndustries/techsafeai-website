@@ -75,6 +75,47 @@ export function mountHeroScene(gsap: typeof GSAP, _st: typeof ST): void {
   under.position.set(2.2, -2.7, -2.5);
   scene.add(under);
 
+  // ---- Horizon line (thin luminous band where floor meets the dark) ----
+  const horizonTex = gradientTexture(512, 6, (g) => {
+    g.addColorStop(0, 'rgba(45,184,249,0)');
+    g.addColorStop(0.35, 'rgba(45,184,249,0.5)');
+    g.addColorStop(0.65, 'rgba(111,206,251,0.6)');
+    g.addColorStop(1, 'rgba(45,184,249,0)');
+  }, true);
+  const horizon = new THREE.Mesh(
+    new THREE.PlaneGeometry(30, 0.05),
+    new THREE.MeshBasicMaterial({ map: horizonTex, transparent: true, opacity: 0.5, depthWrite: false })
+  );
+  horizon.position.set(1.5, -1.05, -9);
+  scene.add(horizon);
+
+  // ---- Vertical light shafts falling toward the console ----
+  const shaftTex = gradientTexture(8, 256, (g) => {
+    g.addColorStop(0, 'rgba(111,206,251,0.28)');
+    g.addColorStop(0.7, 'rgba(45,184,249,0.05)');
+    g.addColorStop(1, 'rgba(45,184,249,0)');
+  });
+  const shafts: THREE.Mesh[] = [];
+  [[1.1, 0.5], [2.9, 0.9], [4.4, 0.4]].forEach(([x, w]) => {
+    const shaft = new THREE.Mesh(
+      new THREE.PlaneGeometry(w, 6.5),
+      new THREE.MeshBasicMaterial({ map: shaftTex, transparent: true, opacity: 0.30, depthWrite: false, blending: THREE.AdditiveBlending })
+    );
+    shaft.position.set(x, 1.6, -5.5);
+    shaft.rotation.z = -0.06;
+    scene.add(shaft);
+    shafts.push(shaft);
+  });
+
+  // ---- Floor light streak beneath the console ----
+  const streak = new THREE.Mesh(
+    new THREE.PlaneGeometry(7, 1.1),
+    new THREE.MeshBasicMaterial({ map: horizonTex, transparent: true, opacity: 0.4, depthWrite: false, blending: THREE.AdditiveBlending })
+  );
+  streak.rotation.x = -Math.PI / 2.05;
+  streak.position.set(2.1, -2.55, -2.2);
+  scene.add(streak);
+
   // ---- Drifting light particles ----
   const COUNT = 46;
   const pos = new Float32Array(COUNT * 3);
@@ -142,6 +183,10 @@ export function mountHeroScene(gsap: typeof GSAP, _st: typeof ST): void {
       p.setY(i, y);
     }
     p.needsUpdate = true;
+    shafts.forEach((sh, i) => {
+      (sh.material as THREE.MeshBasicMaterial).opacity = 0.24 + Math.sin(t * (0.5 + i * 0.17) + i * 2.1) * 0.08;
+      sh.position.x += (([1.1, 2.9, 4.4][i] + sway.x * (0.5 + i * 0.2)) - sh.position.x) * 0.04;
+    });
     camera.position.x = sway.x * 0.25;
     camera.lookAt(0, 0, 0);
     renderer.render(scene, camera);
@@ -174,11 +219,46 @@ export function mountHeroScene(gsap: typeof GSAP, _st: typeof ST): void {
   gsap.to(canvas, { opacity: 1, duration: 1.2, ease: 'power2.out' });
   loop();
 
+  // Pause rendering when the hero is offscreen or the tab is hidden
+  // (optimize-web-animations: no continuously animated offscreen content).
+  let paused = false;
+  const setPaused = (v: boolean) => {
+    if (v === paused || !alive) return;
+    paused = v;
+    if (paused) cancelAnimationFrame(raf);
+    else loop();
+  };
+  let heroInView = true;
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver((entries) => {
+      heroInView = entries[0].isIntersecting;
+      if (guarded) setPaused(!heroInView || document.hidden);
+    }).observe(hero);
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (guarded) setPaused(!heroInView || document.hidden);
+  });
+
   window.addEventListener('resize', fit);
   (window as unknown as { __heroSceneActive?: boolean }).__heroSceneActive = true;
 }
 
-/* ---- tiny texture helper (no assets, no network) ---- */
+/* ---- tiny texture helpers (no assets, no network) ---- */
+function gradientTexture(
+  w: number, h: number,
+  stops: (g: CanvasGradient) => void,
+  horizontal = false
+): THREE.CanvasTexture {
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  const ctx = c.getContext('2d')!;
+  const g = horizontal ? ctx.createLinearGradient(0, 0, w, 0) : ctx.createLinearGradient(0, 0, 0, h);
+  stops(g);
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
+  return new THREE.CanvasTexture(c);
+}
+
 function radialTexture(size: number, color: string): THREE.CanvasTexture {
   const c = document.createElement('canvas');
   c.width = size; c.height = size;

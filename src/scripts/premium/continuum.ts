@@ -123,25 +123,86 @@ function buildSpine(gsap: Gsap, ScrollTrigger: STType, main: HTMLElement, opts: 
   });
 }
 
-/* ---- Hero: monolith cursor light-rig + scroll handoff (eases flat) ---- */
+/* ---- Hero experience: GSAP entrance timeline, depth-plane cursor rig,
+        scroll-linked console transformation. The console yaws as a single
+        physical object; the chair (foreground) and environment (background,
+        in hero-scene) move at different rates for true plane separation. ---- */
 function heroHandoff(gsap: Gsap, _st: STType): void {
   const monolith = document.querySelector<HTMLElement>('.monolith');
   if (!monolith) return;
+  const copyKids = document.querySelectorAll('.hero-copy > *');
+  const chair = document.querySelector('.hero-chair');
+  const callout = document.querySelector('.cockpit-callout.b');
+  const railIcons = document.querySelectorAll('.monolith-rail span');
+  const dockTiles = document.querySelectorAll('.dock-tile');
+  const underglow = document.querySelector('.monolith-underglow');
+  const reflection = document.querySelector('.monolith-reflection');
+
+  const BASE_Y = -7;
+  const BASE_X = 1.8;
+
+  /* Entrance (desktop): take over from the staged hidden state. */
+  const staged = document.documentElement.classList.contains('hero-staged');
+  if (staged) {
+    (window as Window & { __heroEntranceRan?: boolean }).__heroEntranceRan = true;
+    gsap.set(copyKids, { autoAlpha: 0, y: 16, filter: 'blur(4px)' });
+    gsap.set(monolith, { autoAlpha: 0, y: 46, rotationY: BASE_Y - 5, rotationX: BASE_X, scale: 0.985 });
+    if (chair) gsap.set(chair, { autoAlpha: 0, y: 26 });
+    if (callout) gsap.set(callout, { autoAlpha: 0, y: 10 });
+    gsap.set([railIcons, dockTiles], { autoAlpha: 0, scale: 0.4 });
+    if (reflection) gsap.set(reflection, { autoAlpha: 0 });
+    document.documentElement.classList.remove('hero-staged');
+
+    const EXPO = 'expo.out';
+    const tl = gsap.timeline({ defaults: { ease: EXPO } });
+    tl.to(monolith, { autoAlpha: 1, y: 0, rotationY: BASE_Y, scale: 1, duration: 1.35 }, 0.05)
+      .to(monolith, { '--rim': '112%', duration: 1.1, ease: 'power2.inOut' }, 0.45)
+      .set(monolith, { '--rim': '-12%' }, '>')
+      .to(monolith, { '--rim': '50%', duration: 0.9, ease: 'power2.out' }, '>')
+      .to(railIcons, { autoAlpha: 1, scale: 1, duration: 0.5, stagger: 0.045, ease: 'back.out(2)' }, 0.55)
+      .to(dockTiles, { autoAlpha: 1, scale: 1, duration: 0.5, stagger: 0.05, ease: 'back.out(2)' }, 0.7);
+    if (reflection) tl.to(reflection, { autoAlpha: 1, duration: 0.9 }, 0.8);
+    if (chair) tl.to(chair, { autoAlpha: 1, y: 0, duration: 0.8 }, 0.85);
+    if (callout) tl.to(callout, { autoAlpha: 1, y: 0, duration: 0.6 }, 1.05);
+    tl.to(copyKids, { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 0.85, stagger: 0.14 }, 0.25);
+  }
+
+  /* Scroll: the console straightens, settles and dims toward the trust seam. */
   gsap.to(monolith, {
-    rotateY: -0.6,
-    y: -14,
+    rotationY: -1.2,
+    rotationX: 0.4,
+    y: -16,
+    scale: 0.972,
     ease: 'none',
-    scrollTrigger: { trigger: '.hero', start: 'center top+=200', end: 'bottom top', scrub: 0.5 }
+    scrollTrigger: { trigger: '.hero', start: 'center top+=220', end: 'bottom top', scrub: 0.5 }
   });
-  // cursor tilt: the whole console (rails, screen, dock) moves as one object
+  if (underglow) {
+    gsap.to(underglow, {
+      opacity: 0.35,
+      ease: 'none',
+      scrollTrigger: { trigger: '.hero', start: 'center top+=220', end: 'bottom top', scrub: 0.5 }
+    });
+  }
+
+  /* Cursor light-rig: console (midground) ±1.6°, chair (foreground) counter-
+     translates slightly, rim highlight follows the pointer. */
   if (window.matchMedia('(pointer: fine)').matches) {
-    const ry = gsap.quickTo(monolith, 'rotationY', { duration: 0.7, ease: 'power2.out' });
-    const rx = gsap.quickTo(monolith, 'rotationX', { duration: 0.7, ease: 'power2.out' });
+    const ry = gsap.quickTo(monolith, 'rotationY', { duration: 0.75, ease: 'power2.out' });
+    const rx = gsap.quickTo(monolith, 'rotationX', { duration: 0.75, ease: 'power2.out' });
+    const chairX = chair ? gsap.quickTo(chair, 'x', { duration: 0.9, ease: 'power2.out' }) : null;
+    const rimObj = { v: 50 };
+    const rim = gsap.quickTo(rimObj, 'v', {
+      duration: 1.1,
+      ease: 'power2.out',
+      onUpdate: () => monolith.style.setProperty('--rim', `${rimObj.v}%`)
+    });
     window.addEventListener('pointermove', (e) => {
       const nx = (e.clientX / window.innerWidth - 0.5) * 2;
       const ny = (e.clientY / window.innerHeight - 0.5) * 2;
-      ry(-2.4 + nx * 1.5);
-      rx(0.8 + ny * -1.0);
+      ry(BASE_Y + nx * 1.6);
+      rx(BASE_X + ny * -1.1);
+      if (chairX) chairX(nx * -10);
+      rim(50 + nx * 34);
     }, { passive: true });
   }
 }

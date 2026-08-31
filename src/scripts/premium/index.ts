@@ -8,9 +8,24 @@
  */
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// Stage the hero entrance as early as possible (module eval, before load) so
+// the GSAP timeline animates from hidden without a visible flash. The class
+// exists only when JS runs with motion allowed — no-JS and reduced-motion
+// render the complete static hero. Failsafe: if the premium layer never
+// starts (network/runtime failure), unstage after 2.5s.
+if (!reduced && window.matchMedia('(min-width: 1251px)').matches) {
+  document.documentElement.classList.add('hero-staged');
+  window.setTimeout(() => {
+    if (!(window as Window & { __heroEntranceRan?: boolean }).__heroEntranceRan) {
+      document.documentElement.classList.remove('hero-staged');
+    }
+  }, 2500);
+}
+
 if (!reduced) {
   const boot = () => {
     void init().catch(() => {
+      document.documentElement.classList.remove('hero-staged');
       /* premium layer is best-effort; the static site is complete without it */
     });
   };
