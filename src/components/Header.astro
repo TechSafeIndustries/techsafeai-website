@@ -3,15 +3,11 @@ import { navigation } from '../data/navigation';
 ---
 <header class="site-header">
   <div class="shell header-inner">
+    {/* Interim Montserrat-set TechSafeAI wordmark (Founder ruling, 31 Aug 2026):
+        implementation-only, not a new canonical logo. Replaced when Brand
+        workstream 01 supplies the governed TechSafeAI-first lockup. */}
     <a class="brand" href="/" aria-label="TechSafeAI home">
-      <img
-        class="brand-logo"
-        src="/brand/techsafeai/lockup_header_40px_dark.png"
-        width="237"
-        height="40"
-        alt=""
-        decoding="async"
-      />
+      <span class="wordmark">TechSafeAI</span>
     </a>
     <nav class="desktop-nav" aria-label="Primary navigation">
       {navigation.map((item) => <a href={item.href}>{item.label}</a>)}

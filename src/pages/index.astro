@@ -42,6 +42,39 @@ const engagementPaths = [
   }
 ] as const;
 
+// WEB-PHASE-10 S4 — names below are Founder-supplied governed lists (WEB-PHASE-10
+// mission / S4 directive). No availability, maturity or compliance status is stated.
+const supportFunctions = [
+  ['Contractor Management', 'Contractor context alongside operational risk.'],
+  ['Governance & Compliance', 'Obligations and governance context, kept visible.'],
+  ['Risk & Control Verification', 'Controls and verification context, kept visible.'],
+  ['Quality Assurance', 'Quality context connected to operational activity.'],
+  ['Data & Reporting', 'Reporting grounded in governed, cited information.'],
+  ['Systems & Technology', 'Systems and technology connected to the operational picture.'],
+  ['Incident Learning', 'What happened, what it touched, what changed after.'],
+  ['Stakeholder & Communications', 'The people and parties affected by operational conditions.']
+] as const;
+
+const productCapabilities = [
+  'Operational Intelligence Cockpit', 'SAI Assistant', 'Risk & Activity Intelligence',
+  'Compliance & Evidence Adapters', 'Incident Learning', 'Contractor Management', 'Integrations & Connectors'
+] as const;
+
+const consultancyCapabilities = [
+  'Strategy and operational advisory', 'Operational reviews', 'Risk and assurance',
+  'System design and implementation', 'Capability uplift', 'Training', 'Change and adoption'
+] as const;
+
+const integrationCategories = [
+  'ERP', 'HR', 'LMS', 'Environmental systems', 'Inspection platforms',
+  'Document systems', 'Power BI', 'SharePoint', 'IoT / GIS'
+] as const;
+
+const valueOutcomes = [
+  'Better operational understanding', 'Improved evidence visibility',
+  'Faster human review', 'Stronger audit preparation'
+] as const;
+
 const industryLinks = [
   { slug: 'mining-resources', title: 'Mining & Resources' },
   { slug: 'construction-infrastructure', title: 'Construction & Infrastructure' },
@@ -161,31 +194,98 @@ const industryLinks = [
     </div>
   </section>
 
-  <section class="content-section">
+  <section class="section section-light">
     <div class="shell">
-      <div class="section-title"><div><div class="eyebrow">Ways to engage</div><h2>Two ways to work with TechSafeAI.</h2></div></div>
-      <div class="route-grid grid-lead">
-        {engagementPaths.map((path)=>(
-          <a class="route-card" href={path.href}>
-            <h3>{path.title}</h3>
-            <p>{path.summary}</p>
-            <span class="route-link">Learn more →</span>
+      <div class="section-title title-stack"><div class="eyebrow">Support Functions</div><h2>One integrated support layer.</h2></div>
+      <div class="support-grid reveal-group">
+        {supportFunctions.map(([title, copy])=>(
+          <div class="support-tile">
+            <h3>{title}</h3>
+            <p>{copy}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section split-section">
+    <div class="shell">
+      <div class="section-title title-stack"><div class="eyebrow">Ways to engage</div><h2>Two ways to work with TechSafeAI.</h2></div>
+      <div class="split-grid grid-lead">
+        <a class="split-panel" href={engagementPaths[0].href}>
+          <span class="split-kicker">Product Services</span>
+          <p>{engagementPaths[0].summary}</p>
+          <ul>
+            {productCapabilities.map((name)=>(<li>{name}</li>))}
+          </ul>
+          <span class="route-link">Learn more →</span>
+        </a>
+        <a class="split-panel split-panel-consult" href={engagementPaths[1].href}>
+          <span class="split-kicker">Consultancy Services</span>
+          <p>{engagementPaths[1].summary}</p>
+          <ul>
+            {consultancyCapabilities.map((name)=>(<li>{name}</li>))}
+          </ul>
+          <span class="route-link">Learn more →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-light">
+    <div class="shell">
+      <div class="section-title title-stack"><div class="eyebrow">Evidence &amp; Human Review</div><h2>Evidence-led. Human review.</h2></div>
+      <div class="boundary-band grid-lead">
+        <div class="boundary-side">
+          <span class="split-kicker">SAI assists</span>
+          <ul>
+            <li>SAI explains and cites its sources — consequential decisions remain human.</li>
+            <li>Helps people ask better questions of governed operational information.</li>
+            <li>Contextual, evidence-grounded and human-supervised.</li>
+          </ul>
+        </div>
+        <div class="boundary-divider" aria-hidden="true"></div>
+        <div class="boundary-side">
+          <span class="split-kicker">Humans decide</span>
+          <ul>
+            <li>TechSafeAI does not determine legal compliance.</li>
+            <li>It does not accept risk or authorise consequential work.</li>
+            <li>It does not make regulatory interpretations.</li>
+            <li>It does not create unsupported operational facts.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section integrations-section">
+    <div class="shell">
+      <div class="section-title title-stack"><div class="eyebrow">Integration-ready</div><h2>Built to sit beside the systems you already run.</h2><p>Your existing systems remain authoritative — TechSafeAI does not become a new system of record. Integrations are scoped per deployment.</p></div>
+      <div class="integration-chips grid-lead">
+        {integrationCategories.map((name)=>(<span class="integration-chip">{name}</span>))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-cool">
+    <div class="shell">
+      <div class="section-title title-stack"><div class="eyebrow">Industries</div><h2>Featured depth, and a route for every high-risk operation.</h2><p>Mining & Resources and Construction & Infrastructure are the featured initial sector depth. Other high-risk operations have a credible route without unsupported specialist claims.</p></div>
+      <div class="industry-grid grid-lead">
+        {industryLinks.map((industry, index)=>(
+          <a class={`industry-card ${index < 2 ? 'industry-card-featured' : ''}`} href={`/industries/${industry.slug}`}>
+            <h3>{industry.title}</h3>
+            <span class="route-link">View industry →</span>
           </a>
         ))}
       </div>
     </div>
   </section>
 
-  <section class="content-section bg-surface-100">
+  <section class="section value-section">
     <div class="shell">
-      <div class="section-title"><div><div class="eyebrow">Industries</div><h2>Featured depth, and a route for every high-risk operation.</h2></div><p>Mining & Resources and Construction & Infrastructure are the featured initial sector depth. Other high-risk operations have a credible route without unsupported specialist claims.</p></div>
-      <div class="route-grid grid-lead">
-        {industryLinks.map((industry)=>(
-          <a class="route-card" href={`/industries/${industry.slug}`}>
-            <h3>{industry.title}</h3>
-            <span class="route-link">View industry →</span>
-          </a>
-        ))}
+      <div class="section-title title-stack"><div class="eyebrow">Value</div><h2>What changes in how you work.</h2><p>TechSafeAI does not guarantee productivity, profitability or compliance outcomes — it helps connect the intelligence that informs them.</p></div>
+      <div class="value-grid reveal-group">
+        {valueOutcomes.map((name)=>(<div class="value-panel"><h3>{name}</h3></div>))}
       </div>
     </div>
   </section>
