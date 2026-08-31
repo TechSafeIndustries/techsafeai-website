@@ -1,0 +1,50 @@
+---
+/**
+ * WEB-PHASE-10 S5 — restrained inline stroke-icon system (R2).
+ * One consistent language: 24px grid, 1.5 stroke, round joins, currentColor.
+ * Decorative only (aria-hidden); no icon library dependency; Navy/Aqua via
+ * the consuming context's `color`. No generic AI glyphs.
+ */
+interface Props {
+  name: string;
+  size?: number;
+  class?: string;
+}
+const { name, size = 22, class: cls = '' } = Astro.props;
+
+const paths: Record<string, string> = {
+  person: '<circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.2-3.4 3.8-5 7-5s5.8 1.6 7 5"/>',
+  people: '<circle cx="9" cy="9" r="3"/><path d="M3.5 19c1-2.8 3-4.2 5.5-4.2s4.5 1.4 5.5 4.2"/><circle cx="16.5" cy="10" r="2.5"/><path d="M15.8 15.2c2.2.3 3.7 1.6 4.6 3.8"/>',
+  building: '<path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-6h6v6"/><path d="M4 20h16"/>',
+  globe: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/><path d="M12 3.5c2.6 2.4 2.6 14.6 0 17-2.6-2.4-2.6-14.6 0-17z"/>',
+  layers: '<path d="M12 4l8 4-8 4-8-4z"/><path d="M4 12l8 4 8-4"/><path d="M4 16l8 4 8-4"/>',
+  'doc-check': '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9.5 14l2 2 3.5-4"/>',
+  nodes: '<circle cx="6" cy="12" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="18" cy="18" r="2"/><path d="M7.8 11l8.4-4"/><path d="M7.8 13l8.4 4"/>',
+  compass: '<circle cx="12" cy="12" r="8.5"/><path d="M14.8 9.2l-1.6 4.4-4 1.2 1.6-4.4z"/>',
+  'person-check': '<circle cx="10" cy="8" r="3.2"/><path d="M4 19.5c1-3 3.2-4.5 6-4.5 1 0 2 .2 2.8.6"/><path d="M14.5 17.5l2 2 3.5-4"/>',
+  grid: '<path d="M4 4h7v7H4z"/><path d="M13 4h7v5h-7z"/><path d="M13 11h7v9h-7z"/><path d="M4 13h7v7H4z"/>',
+  chip: '<rect x="7" y="7" width="10" height="10" rx="1"/><path d="M9 4V2M15 4V2M9 22v-2M15 22v-2M4 9H2M4 15H2M22 9h-2M22 15h-2"/>',
+  chart: '<path d="M4 20h16"/><path d="M7 16v-5"/><path d="M12 16V8"/><path d="M17 16v-8"/>',
+  'id-badge': '<path d="M5 4h14v16H5z"/><circle cx="12" cy="10" r="2.2"/><path d="M8.5 16.5c.8-1.6 2-2.4 3.5-2.4s2.7.8 3.5 2.4"/>',
+  'shield-check': '<path d="M12 3l7 3v6c0 4-3 6.5-7 8-4-1.5-7-4-7-8V6z"/><path d="M9.5 11.5l2 2 3.5-4"/>',
+  'seal-check': '<circle cx="12" cy="12" r="8.5"/><path d="M9 12.2l2 2 3.8-4.4"/>',
+  loop: '<path d="M20 5v4h-4"/><path d="M4 19v-4h4"/><path d="M20 9a8 8 0 00-14-3"/><path d="M4 15a8 8 0 0014 3"/>',
+  target: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="0.75"/>'
+};
+
+const body = paths[name] ?? '';
+---
+<svg
+  class={`icon ${cls}`.trim()}
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.5"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+  set:html={body}
+/>
