@@ -1,0 +1,72 @@
+/* WEB-PHASE-10 S3 — 3Ps composition, How-TechSafeAI-works flow, section rhythm.
+   Consumes depth.css tokens. Visual quality target: Founder concept reference
+   (31 Aug 2026) — governed copy/assets/claims override the concept wherever
+   they differ. No colours outside the canonical Navy/Aqua system. */
+
+/* ---- Rhythm utilities ---- */
+.section-cool{background:var(--surface-50)}
+/* .lead is tuned for dark surfaces (#becbd2); on light sections it was a
+   pre-existing near-invisible pairing — corrected for the light rhythm. */
+.section-cool .lead,.section-light .lead,.section-muted .lead{color:var(--text-secondary)}
+.title-stack{display:block}
+.site-footer{border-top:1px solid var(--seam)}
+
+/* ---- 3Ps (light, monogram columns per concept rhythm) ---- */
+.p3-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:48px}
+.p3-card{background:var(--surface-0);border:1px solid var(--hairline-light);border-radius:2px;padding:28px 28px 32px;position:relative;box-shadow:var(--e1-shadow-light);transition:box-shadow var(--dur-hover) ease-out,transform var(--dur-hover) ease-out}
+.p3-card:hover{box-shadow:var(--e2-shadow-light);transform:translateY(-4px)}
+.p3-card::before{content:"";position:absolute;left:0;top:0;width:44px;height:2px;background:var(--accent)}
+.p3-head{display:flex;align-items:center;gap:14px}
+.p3-monogram{flex:0 0 auto;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:var(--navy-900);color:#FFFFFF;border-radius:2px;font-weight:800;font-size:22px;letter-spacing:-0.02em;box-shadow:var(--e1-shadow)}
+.p3-icon{display:block;color:var(--accent)}
+.p3-card h3{margin:0;font-size:clamp(20px,1.8vw,24px)}
+.p3-card p{margin:14px 0 0;font-size:14px;line-height:1.6;color:var(--text-secondary)}
+
+/* Governed influence chain (canonical 3Ps model) */
+.p3-chain{margin-top:40px;background:var(--navy-900);color:#FFFFFF;border-radius:2px;padding:24px 28px;display:flex;align-items:center;gap:18px;box-shadow:var(--e3-shadow)}
+.p3-chain span{font:700 10px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.12em;text-transform:uppercase;color:#6FCEFB;white-space:nowrap}
+.p3-chain i{flex:1 1 auto;height:1px;min-width:24px;background:linear-gradient(90deg,var(--accent),rgba(45,184,249,.2))}
+
+/* ---- How TechSafeAI works (dark band per concept rhythm) ---- */
+.how-section{background:linear-gradient(180deg,var(--navy-900) 0%,#081A34 100%);color:#FFFFFF;border-top:1px solid var(--seam);border-bottom:1px solid var(--hairline-dark)}
+.how-section .section-title h2{color:#FFFFFF}
+.how-section .section-title p{color:#AABAC3}
+.how-section .eyebrow{color:var(--accent)}
+.how-section .problem-list{border-top:1px solid rgba(255,255,255,.16)}
+.how-section .problem-row{border-bottom:1px solid rgba(255,255,255,.12)}
+.how-section .problem-row .code{color:#6FCEFB}
+.how-section .problem-row p{color:#AABAC3}
+.how-section .problem-row .cause{color:#8FA3B0}
+.how-section .notice{background:rgba(255,255,255,.05);color:#C7D3DC;border-left-color:var(--accent)}
+
+.flow-kicker{margin:64px 0 0;font:700 11px/1.3 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.15em;text-transform:uppercase;color:#6FCEFB}
+.flow-rail{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;margin-top:20px}
+.flow-step{position:relative;background:var(--navy-850);border:1px solid rgba(255,255,255,.10);border-radius:2px;padding:18px 20px 20px;box-shadow:var(--e1-shadow);transition:box-shadow var(--dur-hover) ease-out,transform var(--dur-hover) ease-out,border-color var(--dur-hover) ease-out}
+.flow-step:hover{box-shadow:var(--e2-shadow);transform:translateY(-4px);border-color:rgba(45,184,249,.45)}
+.flow-step::before{content:"";position:absolute;left:0;top:0;width:44px;height:2px;background:var(--accent)}
+.flow-num{font:700 10px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#6FCEFB;letter-spacing:.08em}
+.flow-label{display:block;margin-top:10px;font-weight:750;font-size:16px;letter-spacing:-0.02em;color:#FFFFFF}
+.flow-step p{margin:8px 0 0;font-size:13px;line-height:1.6;color:#AABAC3}
+.flow-arrow{position:absolute;right:-16px;top:50%;width:12px;height:1px;background:rgba(45,184,249,.55);display:block}
+.flow-arrow::after{content:"";position:absolute;right:0;top:-2.5px;border-left:5px solid rgba(45,184,249,.75);border-top:3px solid transparent;border-bottom:3px solid transparent}
+.flow-step:last-child .flow-arrow{display:none}
+
+/* ---- Scroll reveal (progressive enhancement; script no-ops under
+       prefers-reduced-motion and for content already in view) ---- */
+.reveal-pending{opacity:0;transform:translateY(var(--reveal-distance))}
+.revealed{opacity:1;transform:none;transition:opacity var(--dur-reveal) var(--ease-reveal),transform var(--dur-reveal) var(--ease-reveal)}
+
+/* ---- Responsive ---- */
+@media (max-width:1100px){
+  .flow-rail{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+  .flow-arrow{display:none}
+  .p3-chain{flex-wrap:wrap;gap:10px 18px}
+  .p3-chain i{min-width:16px}
+}
+@media (max-width:767px){
+  .p3-grid{grid-template-columns:1fr;gap:14px;margin-top:34px}
+  .flow-rail{grid-template-columns:1fr;gap:14px}
+  .flow-kicker{margin-top:48px}
+  .p3-chain{flex-direction:column;align-items:flex-start;gap:10px;padding:20px}
+  .p3-chain i{flex:0 0 auto;width:1px;height:20px;min-width:0;background:linear-gradient(180deg,var(--accent),rgba(45,184,249,.2))}
+}

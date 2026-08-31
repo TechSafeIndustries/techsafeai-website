@@ -78,15 +78,47 @@ const industryLinks = [
     </div>
   </section>
 
-  <section class="section section-light">
+  <section class="section section-light" id="three-ps">
+    <div class="shell">
+      <div class="section-title title-stack"><div class="eyebrow">People + Property + Planet</div><h2>One operation. Three connected perspectives.</h2><p>Conditions across these three domains may affect operational performance and productivity. TechSafeAI does not guarantee productivity, profitability or compliance outcomes — it helps connect the intelligence that informs them.</p></div>
+      <div class="p3-grid reveal-group">
+        {threePs.map((p)=>(
+          <article class="p3-card">
+            <div class="p3-head">
+              <span class="p3-monogram" aria-hidden="true">{p.title.charAt(0)}</span>
+              <h3>{p.title}</h3>
+            </div>
+            <p>{p.summary}</p>
+          </article>
+        ))}
+      </div>
+      <div class="p3-chain">
+        <span>Operational conditions</span><i aria-hidden="true"></i>
+        <span>Operational performance</span><i aria-hidden="true"></i>
+        <span>Productivity</span><i aria-hidden="true"></i>
+        <span>Business performance / value</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section how-section">
     <div class="shell problem-grid">
-      <div class="section-title" style="display:block"><div class="eyebrow">The problem isn't another dashboard</div><h2>Existing systems can show what they contain.</h2><p>Dashboards can visualise it. Generic AI can summarise it. None of that is the same as understanding how it fits together.</p></div>
+      <div class="section-title title-stack"><div class="eyebrow">The problem isn't another dashboard</div><h2>Existing systems can show what they contain.</h2><p>Dashboards can visualise it. Generic AI can summarise it. None of that is the same as understanding how it fits together.</p></div>
       <div class="problem-list">
         <div class="problem-row"><span class="code">01</span><div><h3>Existing systems</h3><p>Can show what they contain — inside their own boundary, in their own format.</p></div><span class="cause">Shows its own data</span></div>
         <div class="problem-row"><span class="code">02</span><div><h3>Dashboards</h3><p>Can visualise it — a clearer picture of the same disconnected information.</p></div><span class="cause">Visualises, doesn't connect</span></div>
         <div class="problem-row"><span class="code">03</span><div><h3>Generic AI</h3><p>Can summarise it — without knowing what is governed, evidenced or still uncertain.</p></div><span class="cause">Summarises, doesn't govern</span></div>
       </div>
       <p class="notice" style="grid-column:1/-1;margin-top:8px">TechSafeAI is being built to understand governed operational relationships across activities, risks, controls, evidence and organisational context — not to add another view of the same fragmented information.</p>
+    </div>
+    <div class="shell">
+      <p class="flow-kicker">How TechSafeAI works</p>
+      <div class="flow-rail reveal-group">
+        <div class="flow-step"><span class="flow-num">01</span><span class="flow-label">Challenge</span><p>Start with context, not confidential files.</p><i class="flow-arrow" aria-hidden="true"></i></div>
+        <div class="flow-step"><span class="flow-num">02</span><span class="flow-label">Context</span><p>TechSafeAI connects, structures and explains governed information from the systems you already run.</p><i class="flow-arrow" aria-hidden="true"></i></div>
+        <div class="flow-step"><span class="flow-num">03</span><span class="flow-label">Evidence</span><p>Surfaces what evidence exists, what is missing and where a control claim is not yet supported.</p><i class="flow-arrow" aria-hidden="true"></i></div>
+        <div class="flow-step"><span class="flow-num">04</span><span class="flow-label">Human review</span><p>Human decisions remain human.</p></div>
+      </div>
     </div>
   </section>
 
@@ -105,21 +137,7 @@ const industryLinks = [
     </div>
   </section>
 
-  <section class="section section-light" id="three-ps">
-    <div class="shell">
-      <div class="section-title" style="display:block"><div class="eyebrow">People + Property + Planet</div><h2>One operation. Three connected perspectives.</h2><p>Conditions across these three domains may affect operational performance and productivity. TechSafeAI does not guarantee productivity, profitability or compliance outcomes — it helps connect the intelligence that informs them.</p></div>
-      <div class="capability-grid grid-lead">
-        {threePs.map((p)=>(
-          <div class="capability">
-            <h3>{p.title}</h3>
-            <p>{p.summary}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="section section-muted">
+  <section class="section section-cool">
     <div class="shell content-grid">
       <div>
         <div class="eyebrow">Systems Assistant Intelligence</div>
@@ -174,6 +192,7 @@ const industryLinks = [
 
   <CtaBand title="Operational Intelligence backed by operational expertise." copy="A person from TechSafeAI reviews every enquiry. Your existing systems remain authoritative and human decisions remain human." />
 
+  <script src="../scripts/reveal.ts"></script>
 </BaseLayout>
 
 <style>
