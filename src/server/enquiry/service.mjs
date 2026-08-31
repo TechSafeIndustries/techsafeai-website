@@ -60,15 +60,6 @@ export async function handleEnquiryRequest(request, {
   }
 
   const selectedTransport = transport ?? getConfiguredTransport(env, { fetchImpl });
-  // TEMPORARY — WEB-PROD-HUBSPOT-DIAG-03: diagnostic logging only, no secrets/PII.
-  // Remove once the transport-rejection root cause is diagnosed.
-  console.error('ENQUIRY_TRANSPORT_DIAGNOSTIC', {
-    transportKind: selectedTransport?.kind ?? 'unknown',
-    deploymentEnvironment: env.DEPLOYMENT_ENVIRONMENT ?? '',
-    enquiryTransportMode: env.ENQUIRY_TRANSPORT_MODE ?? '',
-    hubspotAccountClass: env.HUBSPOT_ACCOUNT_CLASS ?? '',
-    allowTestTransport: env.ALLOW_TEST_ENQUIRY_TRANSPORT === '1'
-  });
   const enquiryId = deriveEnquiryId(validated.data, payload.startedAt);
   const fingerprint = contextFingerprint(validated.data);
   const workpacketStub = buildWorkpacketStub(validated.data, new Date(nowMs));
@@ -77,13 +68,6 @@ export async function handleEnquiryRequest(request, {
   try {
     result = await selectedTransport.submit(workpacketStub, { enquiryId, fingerprint });
   } catch (error) {
-    // TEMPORARY — WEB-PROD-HUBSPOT-DIAG-03: safe diagnostic only, no message/token/body/PII.
-    console.error('HUBSPOT_TRANSPORT_ERROR', {
-      name: error?.name ?? '',
-      code: error?.code ?? '',
-      status: Number(error?.status || 0),
-      uncertain: Boolean(error?.uncertain)
-    });
     const retryAfterMs = Number(error?.retryAfterMs || 0);
     const extraHeaders = retryAfterMs > 0 ? { 'retry-after': String(Math.max(1, Math.ceil(retryAfterMs / 1000))) } : {};
     return json(503, {
@@ -91,15 +75,6 @@ export async function handleEnquiryRequest(request, {
       code: error?.code === 'RATE_LIMITED' ? 'TRANSPORT_RATE_LIMITED' : 'TRANSPORT_UNAVAILABLE',
       message: 'Online enquiry submission is temporarily unavailable. Your information has not been confirmed as received.'
     }, extraHeaders);
-  }
-
-  // TEMPORARY — WEB-PROD-HUBSPOT-DIAG-03: diagnostic logging only, no secrets/PII.
-  if (!result?.accepted) {
-    console.error('ENQUIRY_TRANSPORT_RESULT', {
-      accepted: false,
-      transportKind: result?.transportKind ?? selectedTransport?.kind ?? 'unknown',
-      reason: result?.reason ?? 'UNKNOWN'
-    });
   }
 
   if (!result?.accepted) {
