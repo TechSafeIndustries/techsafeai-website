@@ -29,7 +29,9 @@
 .cockpit-callout{display:none}
 @media (min-width:1400px){
   .cockpit-callout{display:block;position:absolute;z-index:3;font:700 10px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.12em;text-transform:uppercase;color:#EAF4FA;background:rgba(10,31,62,.85);border:1px solid rgba(45,184,249,.45);border-radius:2px;padding:8px 11px}
-  .cockpit-callout.a{left:-6px;top:-38px}
+  /* Overhang must stay under the 20px head→stage row gap so the callout can
+     never cross the H1's descenders at any wrapped width (S5 fix). */
+  .cockpit-callout.a{left:-6px;top:-12px}
   .cockpit-callout.b{right:2px;bottom:-8px}
 }
 

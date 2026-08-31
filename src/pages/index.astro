@@ -125,6 +125,7 @@ const industryLinks = [
               <h3>{p.title}</h3>
             </div>
             <p>{p.summary}</p>
+            <span class="p3-wm" aria-hidden="true"><Icon name={p.icon} size={104} /></span>
           </article>
         ))}
       </div>
@@ -229,6 +230,7 @@ const industryLinks = [
           <ul>
             {consultancyCapabilities.map((name)=>(<li>{name}</li>))}
           </ul>
+          <span class="split-wm" aria-hidden="true"><Icon name="person" size={92} /></span>
           <span class="route-link">Learn more →</span>
         </a>
       </div>
@@ -258,6 +260,12 @@ const industryLinks = [
           </ul>
         </div>
       </div>
+      <div class="boundary-flow" aria-hidden="true">
+        <i class="bf-line l"><span class="bf-dot"></span><span class="bf-dot"></span><span class="bf-dot"></span></i>
+        <span class="bf-rings"><i></i><i></i></span>
+        <span class="bf-human"><Icon name="person" size={14} /></span>
+        <i class="bf-line r"></i>
+      </div>
     </div>
   </section>
 
@@ -266,6 +274,31 @@ const industryLinks = [
       <div class="section-title title-stack"><div class="eyebrow">Integration-ready</div><h2>Built to sit beside the systems you already run.</h2><p>Your existing systems remain authoritative — TechSafeAI does not become a new system of record. Integrations are scoped per deployment.</p></div>
       <div class="integration-chips grid-lead">
         {integrationCategories.map((name)=>(<span class="integration-chip">{name}</span>))}
+      </div>
+      <div class="int-network" aria-label="System categories TechSafeAI is designed to connect to">
+        <svg class="int-links" viewBox="0 0 1100 520" aria-hidden="true">
+          <circle class="int-orbit" cx="550" cy="260" r="150" />
+          <circle class="int-orbit" cx="550" cy="260" r="235" />
+          <path d="M 550 96 L 550 178" />
+          <path d="M 762 128 L 618 210" />
+          <path d="M 858 260 L 636 260" />
+          <path d="M 780 408 L 622 316" />
+          <path d="M 550 448 L 550 342" />
+          <path d="M 320 410 L 480 318" />
+          <path d="M 242 260 L 464 260" />
+          <path d="M 318 116 L 482 206" />
+          <path d="M 688 62 L 594 190" />
+        </svg>
+        <div class="int-hub">TechSafeAI</div>
+        <span class="int-node" style="--x:50%;--y:14%">ERP</span>
+        <span class="int-node" style="--x:70.5%;--y:22%">HR</span>
+        <span class="int-node" style="--x:79%;--y:50%">LMS</span>
+        <span class="int-node" style="--x:71.5%;--y:80%">Environmental systems</span>
+        <span class="int-node" style="--x:50%;--y:88.5%">Inspection platforms</span>
+        <span class="int-node" style="--x:28.5%;--y:80.5%">Document systems</span>
+        <span class="int-node" style="--x:21%;--y:50%">Power BI</span>
+        <span class="int-node" style="--x:28.5%;--y:20.5%">SharePoint</span>
+        <span class="int-node" style="--x:63%;--y:9.5%">IoT / GIS</span>
       </div>
     </div>
   </section>
@@ -278,6 +311,8 @@ const industryLinks = [
           <a class={`industry-card ${index < 2 ? 'industry-card-featured' : ''}`} href={`/industries/${industry.slug}`}>
             <h3>{industry.title}</h3>
             <span class="route-link">View industry →</span>
+            {index === 0 && <svg class="industry-terrain" viewBox="0 0 400 78" preserveAspectRatio="none" aria-hidden="true"><path d="M0 70 L60 70 L80 56 L150 56 L170 42 L240 42 L260 28 L330 28 L350 14 L400 14" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M0 78 L90 78 L110 64 L190 64 L210 50 L290 50 L310 36 L400 36" stroke="currentColor" stroke-width="1" fill="none" opacity=".5"/></svg>}
+            {index === 1 && <svg class="industry-terrain" viewBox="0 0 400 78" preserveAspectRatio="none" aria-hidden="true"><path d="M40 78 V26 M40 26 L120 78 M120 78 V18 M120 18 L210 78 M210 78 V30 M210 30 L300 78 M300 78 V12 M300 12 L380 60" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M20 78 H400" stroke="currentColor" stroke-width="1" opacity=".5"/></svg>}
           </a>
         ))}
       </div>
@@ -288,14 +323,14 @@ const industryLinks = [
     <div class="shell">
       <div class="section-title title-stack"><div class="eyebrow">Value</div><h2>What changes in how you work.</h2><p>TechSafeAI does not guarantee productivity, profitability or compliance outcomes — it helps connect the intelligence that informs them.</p></div>
       <div class="value-grid reveal-group">
-        {valueOutcomes.map((name)=>(<div class="value-panel"><h3>{name}</h3></div>))}
+        {valueOutcomes.map((name)=>(<div class="value-panel"><h3>{name}</h3><i class="value-sheen" aria-hidden="true"></i></div>))}
       </div>
     </div>
   </section>
 
   <CtaBand title="Operational Intelligence backed by operational expertise." copy="A person from TechSafeAI reviews every enquiry. Your existing systems remain authoritative and human decisions remain human." />
 
-  <script src="../scripts/reveal.ts"></script>
+  <script src="../scripts/premium/index.ts"></script>
 </BaseLayout>
 
 <style>

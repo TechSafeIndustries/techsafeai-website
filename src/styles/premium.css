@@ -1,0 +1,89 @@
+/* WEB-PHASE-10 S5 — Fable 5 Premium Experience (Operational Continuum).
+   Styling for the evidence thread, boundary flow, integrations network,
+   sector terrain, value sweeps and mobile spine. All motion states are
+   set by JS only when animation is allowed; every static default below is
+   the complete, final state (reduced-motion / no-JS safe). */
+
+main{position:relative}
+
+/* ---- Evidence thread (continuum spine) ---- */
+.continuum{position:absolute;top:0;left:0;width:0;height:0;pointer-events:none;z-index:8}
+.continuum-line{position:absolute;width:2px;background:linear-gradient(180deg,#6FCEFB,rgba(45,184,249,.38));transform-origin:top center;box-shadow:0 0 10px rgba(45,184,249,.35)}
+.continuum-head{position:absolute;width:10px;height:10px;margin-left:-4px;border-radius:50%;background:#6FCEFB;box-shadow:0 0 14px rgba(111,206,251,.9)}
+.continuum-node{position:absolute;width:8px;height:8px;margin-left:-3px;border-radius:50%;background:#2DB8F9;box-shadow:0 0 8px rgba(45,184,249,.7)}
+.continuum-node.human{background:#FFFFFF;width:10px;height:10px;margin-left:-4px}
+
+/* ---- 3Ps spatial ---- */
+.p3-wm{position:absolute;right:12px;bottom:8px;opacity:.08;pointer-events:none;color:var(--navy-900)}
+@media (min-width:1101px){
+  .p3-grid{align-items:start}
+  .p3-card:nth-child(2){margin-top:26px}
+  .p3-card:nth-child(3){margin-top:52px}
+}
+
+/* ---- Support Functions constellation ---- */
+.support-grid{position:relative}
+.support-links{position:absolute;inset:14px;width:calc(100% - 28px);height:calc(100% - 28px);pointer-events:none;opacity:.55;transition:opacity var(--dur-hover) ease-out}
+.support-grid:hover .support-links{opacity:.9}
+.support-links line{stroke:rgba(45,184,249,.30);stroke-width:1}
+.support-tile{position:relative;z-index:1}
+
+/* ---- Product / Consultancy differentiation ---- */
+.split-grid{perspective:1600px}
+.split-panel{transform-style:preserve-3d;will-change:transform}
+.split-panel::after{content:"";position:absolute;inset:0;border-radius:2px;pointer-events:none;background-image:linear-gradient(rgba(45,184,249,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(45,184,249,.05) 1px,transparent 1px);background-size:34px 34px;opacity:.6;-webkit-mask-image:linear-gradient(200deg,#000 20%,transparent 70%)}
+.split-panel-consult::after{background-image:none;background:radial-gradient(120% 120% at 85% 10%,rgba(255,255,255,.05),transparent 55%)}
+.split-wm{position:absolute;right:16px;bottom:10px;opacity:.10;color:#FFFFFF;pointer-events:none}
+
+/* ---- Evidence boundary flow ---- */
+.boundary-band{position:relative}
+.boundary-flow{position:relative;margin:20px 38px 26px;height:40px;display:flex;align-items:center;pointer-events:none}
+.bf-line{position:relative;flex:1 1 0;height:2px;background:linear-gradient(90deg,rgba(45,184,249,.35),#2DB8F9);transform-origin:left center}
+.bf-line.r{background:var(--navy-900);transform-origin:left center}
+.bf-dot{position:absolute;top:50%;width:7px;height:7px;margin-top:-3.5px;border-radius:50%;background:#FFFFFF;border:2px solid #2DB8F9;box-sizing:border-box}
+.bf-dot:nth-child(1){left:24%}.bf-dot:nth-child(2){left:52%}.bf-dot:nth-child(3){left:80%}
+.bf-rings{position:relative;flex:0 0 34px;height:34px;margin:0 2px}
+.bf-rings i{position:absolute;inset:0;border:2px solid #2DB8F9;border-radius:50%;opacity:.55}
+.bf-rings i:nth-child(2){inset:-7px;border-width:1.5px;opacity:.28}
+.bf-human{flex:0 0 30px;height:30px;border-radius:50%;background:var(--navy-900);color:#fff;display:flex;align-items:center;justify-content:center;margin:0 4px;box-shadow:0 0 0 3px rgba(10,31,62,.12)}
+@media (max-width:767px){.boundary-flow{display:none}}
+
+/* ---- Integrations network ---- */
+.int-network{display:none}
+@media (min-width:1101px){
+  .integration-chips{display:none}
+  .int-network{display:block;position:relative;height:520px;margin-top:8px}
+  .int-links{position:absolute;inset:0;width:100%;height:100%}
+  .int-links path{stroke:rgba(45,184,249,.55);stroke-width:1.5;stroke-dasharray:6 5;fill:none}
+  .int-orbit{fill:none;stroke:rgba(255,255,255,.09);stroke-dasharray:3 6}
+  .int-hub{position:absolute;left:50%;top:50%;width:150px;height:150px;margin:-75px 0 0 -75px;border-radius:50%;background:var(--navy-950);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;letter-spacing:-0.02em;box-shadow:0 0 0 1px rgba(45,184,249,.45),0 0 46px rgba(45,184,249,.28),inset 0 1px 0 rgba(255,255,255,.08)}
+  .int-node{position:absolute;left:var(--x);top:var(--y);transform:translate(-50%,-50%);font:700 10px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.10em;text-transform:uppercase;color:#EAF4FA;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:2px;padding:9px 13px;white-space:nowrap;transition:border-color var(--dur-hover) ease-out,box-shadow var(--dur-hover) ease-out}
+  .int-node:hover{border-color:rgba(45,184,249,.6);box-shadow:0 0 16px rgba(45,184,249,.25)}
+}
+
+/* ---- Industries terrain ---- */
+.industry-card{overflow:hidden}
+.industry-terrain{position:absolute;left:0;right:0;bottom:0;height:78px;pointer-events:none;color:#6FCEFB;opacity:.20}
+.industry-card-featured .industry-terrain{opacity:.28}
+
+/* ---- Value sweeps ---- */
+.value-panel{position:relative;overflow:hidden}
+.value-sheen{position:absolute;top:0;bottom:0;width:36%;left:-40%;background:linear-gradient(105deg,transparent,rgba(111,206,251,.10) 45%,rgba(111,206,251,.16) 50%,rgba(111,206,251,.10) 55%,transparent);pointer-events:none}
+
+/* ---- CTA start node (CSS only; pulse gated to motion-allowed) ---- */
+.cta-band .cta-band-grid>div:last-child{position:relative}
+.cta-band .button-primary{position:relative;z-index:1}
+.cta-band .cta-band-grid>div:last-child::before{content:"";position:absolute;left:-26px;top:58%;width:12px;height:12px;border-radius:50%;background:#6FCEFB;box-shadow:0 0 18px rgba(111,206,251,.8);pointer-events:none}
+@media (prefers-reduced-motion:no-preference){
+  @keyframes cta-pulse{0%{box-shadow:0 0 18px rgba(111,206,251,.8),0 0 0 0 rgba(111,206,251,.5)}70%{box-shadow:0 0 18px rgba(111,206,251,.8),0 0 0 16px rgba(111,206,251,0)}100%{box-shadow:0 0 18px rgba(111,206,251,.8),0 0 0 0 rgba(111,206,251,0)}}
+  .cta-band .cta-band-grid>div:last-child::before{animation:cta-pulse 2.6s ease-out infinite}
+}
+
+/* ---- Mobile: 3Ps depth carousel + spine sizing ---- */
+@media (max-width:767px){
+  .p3-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;padding:4px 4px 14px;-webkit-overflow-scrolling:touch}
+  .p3-grid::-webkit-scrollbar{display:none}
+  .p3-card{flex:0 0 78%;scroll-snap-align:center;min-height:0}
+  .cockpit-caption{order:-1;margin:0 0 8px}
+  .cockpit{display:flex;flex-direction:column}
+}
