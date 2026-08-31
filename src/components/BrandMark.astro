@@ -1,35 +1,42 @@
 ---
 /**
- * TechSafeAI mark — faithful vector recreation of the Founder-supplied
- * logo (31 Aug 2026): isometric cube inside a pointy-top hexagon with a
- * bottom connector strut, flat cyan #06E8F0 (sampled from the supplied
- * asset). Not an interpretation — geometry and colour traced from the
- * reference at 16x zoom.
+ * TechSafeAI mark — LOCKED per Founder logo specification (31 Aug 2026):
+ * wireframe hexagon enclosing a 3D isometric cube, with a delicate
+ * connected-network line running from a left node, down and under the
+ * bottom vertex, up to a right node. Neon cyan #00E5FF, traced from the
+ * supplied master asset. Do not restyle without Founder authority.
  */
 interface Props {
   size?: number;
   class?: string;
+  /** Render without the extended node-network (tiny sizes). */
+  compact?: boolean;
 }
-const { size = 28, class: cls = '' } = Astro.props;
+const { size = 28, class: cls = '', compact = false } = Astro.props;
 ---
 <svg
   class={`brand-mark ${cls}`.trim()}
   width={size}
-  height={Math.round(size * 1.1)}
-  viewBox="0 0 60 66"
+  height={Math.round(size * (compact ? 1.1 : 1.02))}
+  viewBox={compact ? '0 0 60 66' : '-8 0 74 72.5'}
   fill="none"
-  stroke="#06E8F0"
+  stroke="#00E5FF"
   stroke-linecap="round"
   stroke-linejoin="round"
   aria-hidden="true"
   focusable="false"
 >
   <!-- outer hexagon -->
-  <path stroke-width="5" d="M30 3.6 54.4 17.7c.4.23.6.65.6 1.1v28.4c0 .45-.2.87-.6 1.1L30 62.4 5.6 48.3c-.4-.23-.6-.65-.6-1.1V18.8c0-.45.2-.87.6-1.1z"/>
-  <!-- inner cube: hexagon silhouette -->
-  <path stroke-width="4" d="M30 19 42.1 26v14L30 47 17.9 40V26z"/>
-  <!-- cube edges: top-face rhombus V + front vertical -->
-  <path stroke-width="4" d="M17.9 26 30 33l12.1-7M30 33v14"/>
-  <!-- bottom connector strut -->
-  <path stroke-width="4" d="M30 47V62"/>
+  <path stroke-width="3.1" d="M30 3.6 54.4 17.7c.4.23.6.65.6 1.1v28.4c0 .45-.2.87-.6 1.1L30 62.4 5.6 48.3c-.4-.23-.6-.65-.6-1.1V18.8c0-.45.2-.87.6-1.1z"/>
+  <!-- isometric cube -->
+  <path stroke-width="2.4" d="M30 20 41.3 26.5v13L30 46 18.7 39.5v-13z"/>
+  <path stroke-width="2.4" d="M18.7 26.5 30 33l11.3-6.5M30 33v13"/>
+  {!compact && (
+    <g stroke-width="1.3">
+      <!-- connected network: left node → drop → under the vertex → right node -->
+      <circle cx="-3.2" cy="27.3" r="2.4"/>
+      <path d="M-3.2 29.7v18.4L31.5 66.2 54.6 53.5"/>
+      <circle cx="56.8" cy="52.3" r="2.4"/>
+    </g>
+  )}
 </svg>

@@ -4,12 +4,12 @@ import BrandMark from './BrandMark.astro';
 ---
 <header class="site-header">
   <div class="shell header-inner">
-    {/* Interim Montserrat-set TechSafeAI wordmark (Founder ruling, 31 Aug 2026):
-        implementation-only, not a new canonical logo. Replaced when Brand
-        workstream 01 supplies the governed TechSafeAI-first lockup. */}
+    {/* LOCKED TechSafeAI lockup per Founder logo specification (31 Aug 2026):
+        hex-cube network mark (#00E5FF) + TechSafe (medium) / AI (ultra-light).
+        Do not restyle without Founder authority. */}
     <a class="brand" href="/" aria-label="TechSafeAI home">
-      <BrandMark size={30} />
-      <span class="wordmark">TechSafeAI</span>
+      <BrandMark size={34} />
+      <span class="wordmark">TechSafe<span class="wordmark-ai">AI</span></span>
     </a>
     <nav class="desktop-nav" aria-label="Primary navigation">
       {navigation.map((item) => <a href={item.href}>{item.label}</a>)}

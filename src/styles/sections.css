@@ -58,7 +58,8 @@
 /* ==== S4 — remaining homepage sections ==== */
 
 /* Interim TechSafeAI wordmark (implementation-only; not a canonical logo) */
-.wordmark{font-family:Montserrat,Arial,sans-serif;font-weight:600;font-size:20px;letter-spacing:-0.008em;color:#F2F3F5}
+.wordmark{font-family:Montserrat,Arial,sans-serif;font-weight:500;font-size:20px;letter-spacing:-0.005em;color:#FFFFFF}
+.wordmark-ai{font-weight:200}
 
 /* Support Functions (light icon-tile grid per reference) */
 .support-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:36px;background:var(--surface-50);border:1px solid var(--hairline-light);border-radius:4px;padding:12px}
