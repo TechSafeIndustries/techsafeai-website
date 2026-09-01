@@ -22,8 +22,12 @@ const stages = [
     <div class="shell">
       <div class="section-title"><div><div class="eyebrow">Service areas</div><h2>Ten ways to work with TechSafeAI consultants.</h2></div></div>
       <div class="route-grid" style="margin-top:24px">
-        {consultingServices.map((service)=>(
-          <div class="route-card"><h3>{service.title}</h3><p>{service.summary}</p></div>
+        {consultingServices.map((service,i)=>(
+          <div class="route-card">
+            <span class="route-index" aria-hidden="true">{String(i+1).padStart(2,'0')}</span>
+            <h3>{service.title}</h3>
+            <p>{service.summary}</p>
+          </div>
         ))}
       </div>
     </div>
@@ -36,7 +40,7 @@ const stages = [
         <h2>A governed route through complex work.</h2>
         <p>The method is staged because public context, formal assessment, remediation and verified value are different activities with different authority.</p>
       </div>
-      <div class="indexed-list">
+      <div class="indexed-list method-panel">
         {stages.map(([stage,copy],i)=>(
           <div class="indexed-item"><span class="index">0{i+1}</span><div><h3>{stage}</h3><p>{copy}</p></div></div>
         ))}
@@ -44,3 +48,69 @@ const stages = [
     </div>
   </section>
 </ContentPage>
+
+<style>
+  /* Consulting-specific material pass (claude/92) — presentation only,
+     no copy/claims/structure/service-count change. Every selector below
+     targets markup authored directly in THIS file, so Astro's per-file
+     style scoping isolates it automatically (no :global() needed, unlike
+     PageHero's shared .technical-panel) — .route-card/.indexed-item on
+     any other page (there are none sharing this exact markup) are
+     unaffected either way. Reuses the Stage 1 light-surface tokens
+     (--panel-light-1/2, --bevel-light-raised/-recessed, --illum-line,
+     --mono-label-font) built for exactly this case: material quality on
+     a section that stays light. Section background colours (white /
+     #e8e5dd) are unchanged — only the cards and list panel inside them
+     are upgraded. Deliberately does not reuse .sys-graphic/.sys-glass/
+     .sys-hub — no smoked-glass chamber, no embedded node, no diagram —
+     so this reads as a distinct, Consulting-specific treatment rather
+     than a copy of the Product subsystem panel. */
+
+  /* Service areas — engineered surface cards instead of flat white
+     SaaS-grid tiles. Subtle raised bevel + one restrained cyan seam per
+     card; a small mono index tag continues the numbering convention
+     already used by the methodology list below on this same page. */
+  .route-grid{gap:14px;background:transparent;border:0}
+  .route-card{
+    position:relative;overflow:hidden;
+    background:linear-gradient(155deg,var(--panel-light-1) 0%,var(--panel-light-2) 100%);
+    border:1px solid rgba(19,39,58,.10);border-radius:6px;
+    padding:26px 26px 24px 30px;
+    box-shadow:var(--bevel-light-raised);
+    transition:box-shadow .15s ease-out,transform .15s ease-out;
+  }
+  .route-card::before{content:"";position:absolute;left:0;top:16px;bottom:16px;width:2px;
+    background:linear-gradient(180deg,transparent,var(--illum-line),transparent);opacity:.5}
+  .route-card:hover{box-shadow:var(--bevel-light-raised),0 16px 28px -20px rgba(19,39,58,.30);transform:translateY(-1px)}
+  .route-index{display:inline-flex;align-items:center;justify-content:center;
+    min-width:28px;height:20px;padding:0 6px;margin-bottom:14px;
+    font:700 10px/1 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.04em;color:#3E5566;
+    background:var(--panel-light-2);border-radius:3px;box-shadow:var(--bevel-light-recessed)}
+  .route-card h3{margin:0 0 8px;font-size:20px}
+  .route-card p{margin:0;font-size:13px;color:var(--text-secondary)}
+
+  /* Methodology — the eight-stage list becomes one bevelled, recessed
+     panel (a structured sequence, not a flat divider list); index
+     numbers become small graphite/mono chips rather than plain text. */
+  .method-panel{
+    border:1px solid rgba(19,39,58,.10);border-radius:8px;
+    background:linear-gradient(180deg,var(--panel-light-1) 0%,var(--panel-light-2) 100%);
+    box-shadow:var(--bevel-light-raised);
+    padding:2px 28px;position:relative;overflow:hidden;
+  }
+  .method-panel::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;
+    background:linear-gradient(180deg,transparent,var(--illum-line) 15%,var(--illum-line) 85%,transparent);opacity:.45}
+  .method-panel .indexed-item{border-bottom:1px solid rgba(19,39,58,.08);align-items:center}
+  .method-panel .indexed-item:last-child{border-bottom:0}
+  .method-panel .indexed-item .index{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:34px;height:34px;border-radius:50%;
+    font:700 10px/1 var(--mono-label-font,ui-monospace,monospace);color:#3E5566;
+    background:var(--panel-light-2);box-shadow:var(--bevel-light-recessed)}
+  .method-panel .indexed-item h3{font-size:19px}
+
+  @media (max-width:767px){
+    .route-card{padding:22px 20px 20px 26px}
+    .method-panel{padding:2px 18px}
+  }
+</style>
