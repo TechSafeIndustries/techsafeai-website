@@ -2,66 +2,57 @@
 import ContentPage from '../../components/ContentPage.astro';
 import Icon from '../../components/Icon.astro';
 
-// claude/103 — FOUNDER DIRECTIVE: Insights page, same compression rule
-// now established across Why TechSafeAI (claude/101/102), Consulting
-// (846c4de) and Industries (07c46b6/claude/99-100).
+// claude/104 — FOUNDER CORRECTION on claude/103: the page read as
+// inward-looking (publishing philosophy) rather than visitor-facing
+// (what can be learned here). Structure/visual language unchanged;
+// copy rewritten to the Founder's own plain-language purpose lines
+// (verbatim per section below), and the "Publishing standard /
+// Substance before volume" editorial-process section is removed
+// outright (see REMOVED note near the old section's former location).
 //
-// EVIDENCE NOTE (read before touching this file): this repo holds no
-// published insight/article content anywhere — no content collection,
-// no article routes, no slugs. The previous version of this page said
-// so explicitly ("Planned insight theme. Publication requires a
-// governed source...") and that remains true. The Founder brief for
-// this page assumed a "Featured Insight" and a "Recent / Selected
-// Insights" grid built from "existing approved content" — that
-// content does not exist yet, so those two sections are NOT built
-// here (a fabricated title/summary/"read more" link would be
-// unsupported content with nowhere real to land, which this project's
-// standing rules forbid). What IS built: Hero, the three insight
-// themes (a reclassification of the eight topics this page already
-// carried — nothing added, nothing dropped, see THEMES below), the
-// page's own existing "Publishing standard" note (moved, not
-// reworded), and the standard CTA. Flagged in the return evidence for
-// this reason — see chat.
+// EVIDENCE NOTE (still true, carried from claude/103): this repo
+// holds no published insight/article content anywhere — no content
+// collection, no article routes, no slugs. Per this correction's own
+// instruction, the "Selected / Future Insights" area below is a
+// neutral placeholder statement, not a fabricated article list — no
+// invented titles, dates, authors or counts.
 const heroThemeIcons = ['nodes', 'cite', 'person-check'] as const;
 
-// THEMES — claude/103. The three groups the Founder specified
-// (Operational Intelligence / Governance & Evidence / Human + AI /
-// Operational Decision Support) are exactly the three the brief
-// suggested. Every topic string below is verbatim from this page's
-// own previous eight-topic list (nothing invented, nothing dropped —
-// all eight are accounted for across the three groups); the one-line
-// theme summaries are a compression of those same topic strings, not
-// a new claim.
+// THEMES — claude/104. Titles and one-line purposes are verbatim from
+// the Founder's own "REVISED STRUCTURE" brief (section 2, items A/B/C).
+// Icons unchanged from claude/103 (same three, same page-scoped
+// meaning). The previous per-theme "topics" tag line (verbatim
+// fragments of this page's old eight-topic list) is dropped here —
+// the Founder's correction asks for one concise plain-language purpose
+// per theme, not a sourced-fragment list; nothing from those eight
+// topic strings is presented elsewhere on this page.
 const themes = [
   {
     icon: 'nodes',
     title: 'Operational Intelligence',
-    summary: 'How operational effectiveness is proven and assured — from critical controls to contractor performance and verified value.',
-    topics: ['Proving critical controls work', 'Contractor assurance', 'Verified value and DRIVER-6']
+    summary: 'Practical guidance on controls, evidence, performance and operational visibility.'
   },
   {
     icon: 'cite',
     title: 'Governance & Evidence',
-    summary: 'How assurance, evidence and AI governance stay defensible — from audit readiness to information protection.',
-    topics: ['Audit readiness and evidence traceability', 'AI readiness and governance', 'AI information protection']
+    summary: 'How organisations can build defensible evidence, assurance and AI governance.'
   },
   {
     icon: 'person-check',
-    title: 'Human + AI / Operational Decision Support',
-    summary: 'How AI and human accountability work together in operational decisions — and the internal capability that requires.',
-    topics: ['Operational AI and human accountability', 'Internal AI capability']
+    title: 'Human + AI',
+    summary: 'How governed AI can support people without replacing human judgement.'
   }
 ] as const;
 ---
 <ContentPage
   title="Insights"
   eyebrow="Evidence-led thinking"
-  intro="TechSafeAI insights will explain practical safety, assurance, evidence and governed-AI problems without turning the site into a content farm."
+  intro="Practical thinking on Operational Intelligence, governance, evidence and responsible AI in high-risk operations."
 >
   <Fragment slot="hero-graphic">
     <div class="ins-graphic">
       <div class="ins-glass">
-        <span class="ins-title">Evidence-led.<br/>Not a content farm.</span>
+        <span class="ins-title">Practical thinking.<br/>Evidence-led.</span>
         <span class="ins-seam" aria-hidden="true"></span>
         <div class="ins-tiles">
           {heroThemeIcons.map((icon)=>(
@@ -81,16 +72,19 @@ const themes = [
             <span class="theme-icon" aria-hidden="true"><Icon name={t.icon} size={22} /></span>
             <h3>{t.title}</h3>
             <p>{t.summary}</p>
-            <p class="theme-topics">{t.topics.join(' · ')}</p>
           </div>
         ))}
       </div>
     </div>
   </section>
 
-  <section class="content-section standard-section">
-    <div class="shell content-grid">
-      <div><div class="eyebrow">Publishing standard</div><h2>Substance before volume.</h2><p>Articles must support client understanding, thought leadership or a real search need. No mass-generated sector pages and no invented case evidence.</p></div>
+  <!-- claude/104 — Selected / Future Insights: no published items exist
+       in this repo (see evidence note above), so per the Founder's own
+       instruction this is a neutral placeholder, not a fabricated
+       article list. No titles, dates, authors or counts. -->
+  <section class="content-section future-section">
+    <div class="shell">
+      <div class="section-title"><div><div class="eyebrow">Selected insights</div><h2>Selected Insights will appear here as they are published.</h2></div></div>
     </div>
   </section>
 </ContentPage>
@@ -122,16 +116,13 @@ const themes = [
     box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -3px 6px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.05)}
   .theme-card h3{margin:0 0 8px;font-size:16px}
   .theme-card p{margin:0;font-size:13px;line-height:1.5;color:var(--text-secondary)}
-  .theme-topics{margin-top:10px !important;padding-top:10px;border-top:1px solid rgba(19,39,58,.08);
-    font:700 11px/1.4 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.01em;color:#4A6472 !important}
 
-  /* Publishing standard — the page's own pre-existing trust note,
-     compact single-column placement (no card, no dark band — this is
-     a footnote-weight statement, not a fourth headline section). */
-  .standard-section{padding-top:8px}
-  .standard-section .content-grid{grid-template-columns:1fr;max-width:640px}
-  .standard-section h2{margin:6px 0 10px}
-  .standard-section p{color:var(--text-secondary);margin:0}
+  /* Selected insights placeholder (claude/104) — compact dark band,
+     one neutral line, no card/grid: there is nothing to list yet, so
+     this is a statement, not a section pretending to hold content. */
+  .future-section{background:var(--atmo-dark);padding-top:40px;padding-bottom:40px}
+  .future-section .eyebrow{color:var(--illum)}
+  .future-section .section-title h2{color:#C7DAE3;font-size:19px;font-weight:700}
 
   @media (max-width:900px){
     .theme-grid{grid-template-columns:1fr}
