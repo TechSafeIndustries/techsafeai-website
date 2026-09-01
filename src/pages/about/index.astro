@@ -1,6 +1,192 @@
 ---
 import ContentPage from '../../components/ContentPage.astro';
+import Icon from '../../components/Icon.astro';
+import BrandMark from '../../components/BrandMark.astro';
+
+// claude/106 — FOUNDER DIRECTIVE: About page, same compression rule
+// established across Why TechSafeAI (1ff6644), Consulting (846c4de),
+// Industries (07c46b6) and Insights (1c33ff1).
+//
+// EVIDENCE NOTE: this repo carries no founder name, biography or
+// leadership content anywhere (checked — no matches beyond "Founder"
+// used as a role/authority word in code comments, e.g. "Founder-
+// approved", "Founder directive"). The brief's own section 5 is
+// conditional ("If current approved About content includes Founder
+// context, keep it brief and factual") — it doesn't, so no Founder/
+// Leadership section is built. Nothing invented in its place.
+//
+// Every other section below is sourced from already-published,
+// governed copy — cited inline per line. The previous version of this
+// page also carried a "Mining & Resources / Construction &
+// Infrastructure sector depth" notice; that's dropped here as a
+// duplicate of the Industries page (locked, 07c46b6) rather than
+// re-stated a third time, consistent with "do not repeat Product,
+// Consulting or Why TechSafeAI" (and, in spirit, Industries).
+const heroTiles = ['person-check', 'doc-check', 'shield-check', 'gauge'] as const;
+
+// HOW WE WORK — claude/106. Titles are the Founder's own suggested
+// set (all four are pre-existing approved phrases, not new labels).
+// "Human authority retained" and "Evidence before assumption" plus
+// their summaries are verbatim from Why TechSafeAI's differentiator
+// cards (locked, 1ff6644). "Governed intelligence" summary reuses
+// Why TechSafeAI's own first differentiator summary verbatim.
+// "Practical operational application" summary is this page's own
+// pre-existing sentence, trimmed from "consulting work" to "the
+// work" since this page isn't consulting-specific.
+const principles = [
+  {
+    icon: 'person-check', title: 'Human authority retained',
+    // src/pages/why-techsafeai/index.astro differentiator, verbatim
+    summary: 'SAI explains and assists. Consequential decisions and professional accountability stay with people.'
+  },
+  {
+    icon: 'doc-check', title: 'Evidence before assumption',
+    // src/pages/why-techsafeai/index.astro differentiator, verbatim
+    summary: "Where evidence exists, its provenance stays visible. Where it doesn't, the gap is shown, not filled."
+  },
+  {
+    icon: 'shield-check', title: 'Governed intelligence',
+    // src/pages/why-techsafeai/index.astro differentiator, verbatim
+    summary: 'A governed Operational Intelligence platform — not a dashboard, not a generic AI tool.'
+  },
+  {
+    icon: 'gauge', title: 'Practical operational application',
+    // this page's own former sentence, trimmed (was "supports
+    // consulting work"); same meaning, no new claim
+    summary: 'Technology is used where it improves retrieval, organisation, analysis support, workflow or repeatability.'
+  }
+] as const;
 ---
-<ContentPage title="About TechSafeAI" eyebrow="Governed Operational Intelligence" intro="TechSafeAI is a governed Operational Intelligence platform for high-risk industries, delivered through Product Services and Consultancy Services.">
-<section class="content-section"><div class="shell content-grid"><div><div class="eyebrow">Operating position</div><h2>Serious industrial problems. Governed technology.</h2></div><div class="content-copy"><p>TechSafeAI starts with the client problem, operating context and accountable people. Technology supports consulting work where it improves retrieval, organisation, analysis support, workflow or repeatability.</p><p>Human accountability remains visible at consequential decision points. Security boundaries are established before protected information is requested.</p><p class="notice">Initial sector depth is Mining & Resources and Construction & Infrastructure. Other risk-intensive and regulated organisations have a legitimate problem-led route without unsupported claims of sector specialism.</p></div></div></section>
+<ContentPage
+  title="About TechSafeAI"
+  eyebrow="Governed Operational Intelligence"
+  intro="TechSafeAI combines operational expertise with governed Operational Intelligence for high-risk industries."
+>
+  <Fragment slot="hero-graphic">
+    <div class="abt-graphic">
+      <div class="abt-glass">
+        <span class="abt-title">Operational expertise.<br/>Governed intelligence.</span>
+        <span class="abt-seam" aria-hidden="true"></span>
+        <div class="abt-tiles">
+          {heroTiles.map((icon)=>(
+            <span class="abt-tile" aria-hidden="true"><Icon name={icon} size={18} /></span>
+          ))}
+          <div class="abt-hub" aria-hidden="true"><BrandMark size={26} compact={true} /></div>
+        </div>
+      </div>
+    </div>
+  </Fragment>
+
+  <section class="content-section why-section">
+    <div class="shell content-grid">
+      <div>
+        <div class="eyebrow">Why we exist</div>
+        <h2>Better understanding, evidence and judgement in high-risk operations.</h2>
+      </div>
+      <div class="content-copy">
+        <!-- sentence 1: src/pages/index.astro hero lead, adapted to a
+             company statement (same meaning, third person); sentence
+             2: this page's own pre-existing sentence, verbatim -->
+        <p>TechSafeAI exists to bring governed operational information into context — helping people see what needs attention, understand the evidence behind it and make better-informed decisions.</p>
+        <p>Human accountability remains visible at consequential decision points.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section principles-section">
+    <div class="shell">
+      <div class="section-title"><div><div class="eyebrow">How we work</div><h2>Four principles, applied consistently.</h2></div></div>
+      <div class="principle-grid" style="margin-top:24px">
+        {principles.map((p)=>(
+          <div class="principle-card">
+            <span class="principle-icon" aria-hidden="true"><Icon name={p.icon} size={22} /></span>
+            <h3>{p.title}</h3>
+            <p>{p.summary}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- claude/106 — one short relationship statement only, verbatim
+       from the site footer (src/components/Footer.astro), no
+       diagram, TechSafeAI stays the sentence's subject. -->
+  <section class="content-section tsi-section">
+    <div class="shell">
+      <div class="section-title"><div><div class="eyebrow">TechSafeAI + TechSafe Industries</div><h2>TechSafeAI is part of the TechSafe Industries group.</h2></div></div>
+    </div>
+  </section>
 </ContentPage>
+
+<style>
+  /* claude/106 — About, built to the same compact-density rule as
+     Why TechSafeAI/Consulting/Industries/Insights. */
+  .content-section{padding:56px 0}
+
+  /* Why we exist — reuses the site's standard two-column content-grid
+     (same markup shape as this page's own previous version), text
+     only, no card. */
+  .why-section .content-grid{align-items:start}
+  .why-section h2{margin:12px 0 0}
+
+  /* How we work — four engineered light cards, same material
+     language (bevel + inset hairline, graphite icon tile) now
+     established across the site's other locked pages. */
+  .principle-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .principle-card{
+    position:relative;overflow:hidden;
+    background:linear-gradient(155deg,var(--panel-light-1) 0%,var(--panel-light-2) 100%);
+    border:1px solid rgba(19,39,58,.10);border-radius:8px;
+    padding:22px 20px 20px;box-shadow:var(--bevel-light-raised),inset 0 0 0 1px rgba(19,39,58,.05);
+  }
+  .principle-card::before{content:"";position:absolute;left:0;top:16px;bottom:16px;width:2px;
+    background:linear-gradient(180deg,transparent,var(--illum-line),transparent);opacity:.5}
+  .principle-icon{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;
+    background:linear-gradient(180deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,0) 45%),var(--graphite-light-3);
+    border:1px solid var(--graphite-edge);color:#6FCEFB;margin-bottom:12px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -3px 6px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.05)}
+  .principle-card h3{margin:0 0 8px;font-size:16px;color:var(--text-primary)}
+  .principle-card p{margin:0;font-size:13px;line-height:1.5;color:var(--text-secondary)}
+
+  /* TechSafeAI + TechSafe Industries — compact dark band, one line,
+     no card/grid/diagram: this is a footnote-weight statement. */
+  .tsi-section{background:var(--atmo-dark);padding-top:40px;padding-bottom:40px}
+  .tsi-section .eyebrow{color:var(--illum)}
+  .tsi-section .section-title h2{color:#C7DAE3;font-size:19px;font-weight:700}
+
+  @media (max-width:900px){
+    .principle-grid{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:480px){
+    .principle-grid{grid-template-columns:1fr}
+  }
+
+  /* About hero graphic — same graphite/smoked-glass + icon-tile
+     construction as Why TechSafeAI's .why-graphic, fresh .abt-* class
+     names so nothing here touches any other page. Four tiles + hub
+     previewing the four "How we work" principles below. */
+  :global(.technical-panel:has(.abt-graphic))::after{display:none}
+  .abt-graphic{position:relative;z-index:2;width:100%;height:100%;min-height:300px;
+    padding:16px;border-radius:6px;border:1px solid var(--graphite-edge);
+    background:var(--key-light),radial-gradient(160% 120% at 50% -20%,rgba(110,165,200,.07),transparent 62%),linear-gradient(180deg,var(--graphite-1) 0%,var(--graphite-2) 46%,var(--graphite-3) 100%);
+    box-shadow:var(--bevel-raised),inset 0 0 0 1px rgba(255,255,255,.06);
+    display:flex;align-items:center;justify-content:center}
+  .abt-glass{position:relative;width:100%;height:100%;border-radius:4px;
+    padding:22px 20px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+    background:radial-gradient(130% 100% at 50% -14%,rgba(255,255,255,.08),transparent 58%),linear-gradient(165deg,#1B222A 0%,#171C22 60%,#15191E 100%);
+    box-shadow:var(--bevel-recessed),inset 0 1px 0 rgba(255,255,255,.05)}
+  .abt-title{max-width:220px;text-align:center;font:700 15px/1.35 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.02em;text-transform:none;color:#C7DAE3}
+  .abt-seam{width:34px;height:1px;background:linear-gradient(90deg,transparent,var(--illum-line),transparent)}
+  .abt-tiles{position:relative;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:16px;width:100%;max-width:190px}
+  .abt-tile{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:8px;
+    background:linear-gradient(180deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,0) 45%),var(--graphite-light-3);
+    border:1px solid var(--graphite-edge);color:#A8ECFA;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -3px 6px rgba(0,0,0,.48),0 0 0 1px rgba(255,255,255,.08)}
+  .abt-hub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:50px;height:50px;border-radius:50%;
+    background:radial-gradient(120% 120% at 34% 24%,rgba(255,255,255,.11),transparent 55%),var(--lvl0,#04090F);
+    display:flex;align-items:center;justify-content:center;box-shadow:var(--bevel-recessed-illum);z-index:2}
+  @media (max-width:520px){
+    .abt-tiles{max-width:160px;gap:12px}
+    .abt-hub{width:42px;height:42px}
+  }
+</style>
