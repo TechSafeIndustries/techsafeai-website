@@ -28,30 +28,34 @@ const HUB = { x: 280, y: 120 };
   intro="TechSafeAI connects, structures and explains governed operational information from the systems you already run. It does not replace them."
 >
   <Fragment slot="hero-graphic">
-    <!-- Replaces the previous decorative dot/line/"Industrial Authority"
-         graphic (claude/86) — that treatment implied an unexplained
-         metric/trend and communicated nothing about the product. This
-         reinforces the hero copy at left: generic system categories
-         (no named vendors) connecting into a central TechSafeAI node.
-         Scoped to this page only via PageHero's optional "graphic" slot —
-         every other page keeps the prior default, untouched. -->
+    <!-- Presentation-only material upgrade (claude/89) — same content,
+         structure and data as claude/86-88 (see SYSTEM_NODES/HUB above,
+         unchanged). The graphic is now a recessed TechSafeAI instrument
+         module in the locked hero's material language (satin graphite
+         housing + smoked-glass inner panel + machined bevels + restrained
+         cyan seams — see the CSS block below for the exact token
+         mapping back to hero.css's .bay-frame/.laptop-screen). Scoped to
+         this page only via PageHero's optional "graphic" slot — every
+         other page keeps the prior default, untouched. -->
     <div class="sys-graphic">
-      <div class="technical-lines" aria-hidden="true"></div>
-      <span class="sys-title">Works with your existing IMS &amp; systems</span>
-      <div class="sys-diagram" style={`aspect-ratio:${VIEW_W}/${VIEW_H}`}>
-        <svg class="sys-lines" viewBox={`0 0 ${VIEW_W} ${VIEW_H}`} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <div class="sys-glass">
+        <span class="sys-title">Works with your existing IMS &amp; systems</span>
+        <span class="sys-seam" aria-hidden="true"></span>
+        <div class="sys-diagram" style={`aspect-ratio:${VIEW_W}/${VIEW_H}`}>
+          <svg class="sys-lines" viewBox={`0 0 ${VIEW_W} ${VIEW_H}`} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            {SYSTEM_NODES.map((n) => (
+              <line x1={n.x} y1={n.y} x2={HUB.x} y2={HUB.y} />
+            ))}
+          </svg>
+          <div class="sys-hub" style={`left:${(HUB.x / VIEW_W) * 100}%;top:${(HUB.y / VIEW_H) * 100}%`}>
+            <BrandMark size={30} compact={true} />
+          </div>
           {SYSTEM_NODES.map((n) => (
-            <line x1={n.x} y1={n.y} x2={HUB.x} y2={HUB.y} />
+            <div class="sys-node" style={`left:${(n.x / VIEW_W) * 100}%;top:${(n.y / VIEW_H) * 100}%`}>{n.label}</div>
           ))}
-        </svg>
-        <div class="sys-hub" style={`left:${(HUB.x / VIEW_W) * 100}%;top:${(HUB.y / VIEW_H) * 100}%`}>
-          <BrandMark size={30} compact={true} />
         </div>
-        {SYSTEM_NODES.map((n) => (
-          <div class="sys-node" style={`left:${(n.x / VIEW_W) * 100}%;top:${(n.y / VIEW_H) * 100}%`}>{n.label}</div>
-        ))}
+        <span class="sys-footer">API · MCP · Adapters</span>
       </div>
-      <span class="sys-footer">API · MCP · Adapters</span>
     </div>
   </Fragment>
   <section class="content-section">
@@ -117,10 +121,12 @@ const HUB = { x: 280, y: 120 };
   .asset-crop img{display:block;width:100%;height:auto}
   .asset-figure figcaption{margin-top:12px}
 
-  /* Hero systems-connectivity graphic (claude/86, refined claude/87,
-     claude/88) — lives inside the shared .technical-panel (background/
-     border/min-height unchanged, from components.css); everything below
-     is scoped to this page.
+  /* Hero systems-connectivity graphic (claude/86, refined claude/87-88,
+     material upgrade claude/89) — lives inside the shared .technical-panel
+     (border/min-height unchanged, from components.css); everything below
+     is scoped to this page. .sys-graphic (the outer housing) fully covers
+     .technical-panel's own flat background, so this page reads as a
+     distinct instrument module without editing that shared rule.
      The line below removes .technical-panel's own ::after (the legacy
      diagonal "trend line" from the old dots/line graphic, defined in
      components.css) — but ONLY on a .technical-panel that contains
@@ -128,21 +134,52 @@ const HUB = { x: 280, y: 120 };
      .technical-panel is authored in PageHero.astro, not here, so Astro's
      automatic per-file scoping can't reach it; :has(.sys-graphic) keeps
      the effect scoped to this page in practice, since .sys-graphic exists
-     nowhere else. z-index:2 additionally lifts this graphic above that
-     pseudo-element's paint order for defense in depth (it doesn't by
-     itself hide the line where this graphic has transparent gaps, hence
-     the :has() rule above being the actual fix). Every other page's
-     .technical-panel::after is completely untouched. */
+     nowhere else. Every other page's .technical-panel::after is completely
+     untouched.
+     Material language is pulled from the Stage 1 reconciled tokens
+     (tokens.css) rather than re-derived — those tokens are the same
+     values the locked hero's .bay-frame/.laptop-screen use in hero.css,
+     so this panel reads as the same manufactured family without copying
+     hero-specific markup (no cowl, no side towers, no screen-glass glare
+     — deliberately not a cockpit, just a housed sub-panel). */
   :global(.technical-panel:has(.sys-graphic))::after{display:none}
-  .sys-graphic{position:relative;z-index:2;width:100%;height:100%;min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px 20px 16px;gap:10px}
+
+  /* Outer housing — satin graphite, raking key-light, raised bevel. */
+  .sys-graphic{position:relative;z-index:2;width:100%;height:100%;min-height:300px;
+    padding:16px;border-radius:6px;border:1px solid var(--graphite-edge);
+    background:var(--key-light),linear-gradient(180deg,var(--graphite-1) 0%,var(--graphite-2) 46%,var(--graphite-3) 100%);
+    box-shadow:var(--bevel-raised);
+    display:flex;align-items:center;justify-content:center}
+
+  /* Inner smoked-glass panel — recessed (shallow inset bevel, no cyan
+     ring here; the ring is reserved for the hub so the cyan stays a
+     restrained accent, not a screen edge). Diagram content lives inside. */
+  .sys-glass{position:relative;width:100%;height:100%;border-radius:4px;
+    padding:20px 18px 14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;
+    background:radial-gradient(130% 100% at 50% -14%,rgba(255,255,255,.05),transparent 55%),linear-gradient(165deg,#0C131B 0%,#080D13 60%,#060A0F 100%);
+    box-shadow:var(--bevel-recessed)}
   .sys-title{max-width:260px;text-align:center;font:700 10px/1.35 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.12em;text-transform:uppercase;color:#9DB4C4}
+  /* single restrained cyan seam beneath the title — echoes the hero's
+     cyan-lit cut-lines without any glow/bloom */
+  .sys-seam{width:34px;height:1px;background:linear-gradient(90deg,transparent,var(--illum-line),transparent)}
   .sys-diagram{position:relative;width:100%;max-width:460px}
   .sys-lines{position:absolute;inset:0;width:100%;height:100%}
-  .sys-lines line{stroke:rgba(0,229,255,.42);stroke-width:1.5;stroke-dasharray:5 5}
-  .sys-hub{position:absolute;transform:translate(-50%,-50%);width:68px;height:68px;border-radius:50%;background:var(--lvl0,#04090F);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 1.5px rgba(0,229,255,.55),0 0 26px rgba(0,229,255,.30),inset 0 1px 0 rgba(255,255,255,.10)}
-  .sys-node{position:absolute;transform:translate(-50%,-50%);width:138px;min-height:34px;display:flex;align-items:center;justify-content:center;text-align:center;font-family:Montserrat,Arial,sans-serif;font-weight:700;font-size:11px;line-height:1.25;letter-spacing:.02em;color:#EAF4FA;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.16);border-radius:4px;padding:6px 10px}
-  .sys-footer{font:700 9px/1.3 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.12em;text-transform:uppercase;color:rgba(0,229,255,.65)}
+  .sys-lines line{stroke:rgba(0,229,255,.30);stroke-width:1.25;stroke-dasharray:4 5}
+  /* embedded central node — the one deliberately illuminated element,
+     using the same recessed+cyan-ring token as the hero's screen chamber */
+  .sys-hub{position:absolute;transform:translate(-50%,-50%);width:68px;height:68px;border-radius:50%;
+    background:radial-gradient(120% 120% at 34% 24%,rgba(255,255,255,.08),transparent 55%),var(--lvl0,#04090F);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:var(--bevel-recessed-illum)}
+  /* inset machined chips — shallow recess + top highlight, not flat */
+  .sys-node{position:absolute;transform:translate(-50%,-50%);width:138px;min-height:34px;display:flex;align-items:center;justify-content:center;text-align:center;font-family:Montserrat,Arial,sans-serif;font-weight:700;font-size:11px;line-height:1.25;letter-spacing:.02em;color:#DCE8EE;
+    background:linear-gradient(180deg,rgba(255,255,255,.05) 0%,rgba(255,255,255,0) 45%),var(--graphite-light-3);
+    border:1px solid var(--graphite-edge);border-radius:4px;padding:6px 10px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.10),inset 0 -3px 6px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.04)}
+  .sys-footer{font:700 9px/1.3 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.12em;text-transform:uppercase;color:rgba(0,229,255,.60)}
   @media (max-width:520px){
+    .sys-graphic{padding:12px}
+    .sys-glass{padding:16px 14px 12px}
     .sys-node{width:110px;font-size:9.5px;padding:5px 7px}
     .sys-hub{width:56px;height:56px}
   }
