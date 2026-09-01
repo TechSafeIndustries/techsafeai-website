@@ -1,12 +1,53 @@
 ---
 import ContentPage from '../../components/ContentPage.astro';
+import BrandMark from '../../components/BrandMark.astro';
 import { productTiers } from '../../data/site';
+
+// Generic system categories only — no named vendors/products (Founder
+// ruling, claude/86: real vendor logos require separate governed evidence
+// before they can appear anywhere on the site).
+const SYSTEM_NODES = [
+  { label: 'ERP', x: 90, y: 30 },
+  { label: 'HRIS / LMS', x: 260, y: 30 },
+  { label: 'EHS', x: 430, y: 30 },
+  { label: 'CMMS / EAM', x: 90, y: 170 },
+  { label: 'Documents', x: 260, y: 170 },
+  { label: 'BI', x: 430, y: 170 },
+];
+const HUB = { x: 260, y: 100 };
 ---
 <ContentPage
   title="Product"
   eyebrow="Governed Operational Intelligence"
   intro="TechSafeAI connects, structures and explains governed operational information from the systems you already run. It does not replace them."
 >
+  <Fragment slot="hero-graphic">
+    <!-- Replaces the previous decorative dot/line/"Industrial Authority"
+         graphic (claude/86) — that treatment implied an unexplained
+         metric/trend and communicated nothing about the product. This
+         reinforces the hero copy at left: generic system categories
+         (no named vendors) connecting into a central TechSafeAI node.
+         Scoped to this page only via PageHero's optional "graphic" slot —
+         every other page keeps the prior default, untouched. -->
+    <div class="sys-graphic">
+      <div class="technical-lines" aria-hidden="true"></div>
+      <span class="sys-title">Works with your systems</span>
+      <div class="sys-diagram">
+        <svg class="sys-lines" viewBox="0 0 520 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          {SYSTEM_NODES.map((n) => (
+            <line x1={n.x} y1={n.y} x2={HUB.x} y2={HUB.y} />
+          ))}
+        </svg>
+        <div class="sys-hub" style={`left:${(HUB.x / 520) * 100}%;top:${(HUB.y / 200) * 100}%`}>
+          <BrandMark size={26} compact={true} />
+        </div>
+        {SYSTEM_NODES.map((n) => (
+          <div class="sys-node" style={`left:${(n.x / 520) * 100}%;top:${(n.y / 200) * 100}%`}>{n.label}</div>
+        ))}
+      </div>
+      <span class="sys-footer">API · MCP · Adapters</span>
+    </div>
+  </Fragment>
   <section class="content-section">
     <div class="shell">
       <div class="section-title"><div><div class="eyebrow">Core</div><h2>The governed Operational Intelligence platform.</h2></div><p>Available now, built around your existing systems and human review.</p></div>
@@ -69,4 +110,19 @@ import { productTiers } from '../../data/site';
   .asset-crop{overflow:hidden;aspect-ratio:1506/580;border:1px solid var(--border);background:var(--surface-0)}
   .asset-crop img{display:block;width:100%;height:auto}
   .asset-figure figcaption{margin-top:12px}
+
+  /* Hero systems-connectivity graphic (claude/86) — lives inside the
+     shared .technical-panel (background/border/min-height unchanged,
+     from components.css); everything below is scoped to this page. */
+  .sys-graphic{position:relative;width:100%;height:100%;min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px 20px 16px;gap:10px}
+  .sys-title{font:700 10px/1.3 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.14em;text-transform:uppercase;color:#9DB4C4}
+  .sys-diagram{position:relative;width:100%;max-width:420px;aspect-ratio:520/200}
+  .sys-lines{position:absolute;inset:0;width:100%;height:100%}
+  .sys-lines line{stroke:rgba(0,229,255,.42);stroke-width:1.5;stroke-dasharray:5 5}
+  .sys-hub{position:absolute;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%;background:var(--lvl0,#04090F);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 1px rgba(0,229,255,.45),0 0 20px rgba(0,229,255,.24),inset 0 1px 0 rgba(255,255,255,.08)}
+  .sys-node{position:absolute;transform:translate(-50%,-50%);font-family:Montserrat,Arial,sans-serif;font-weight:700;font-size:11px;letter-spacing:.02em;color:#EAF4FA;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.16);border-radius:4px;padding:7px 11px;white-space:nowrap;text-align:center}
+  .sys-footer{font:700 9px/1.3 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.12em;text-transform:uppercase;color:rgba(0,229,255,.65)}
+  @media (max-width:520px){
+    .sys-node{font-size:9.5px;padding:6px 8px}
+  }
 </style>

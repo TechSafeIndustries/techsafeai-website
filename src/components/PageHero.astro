@@ -17,11 +17,17 @@ const { eyebrow, title, intro, backHref, backLabel } = Astro.props;
       <p class="lead">{intro}</p>
     </div>
     <div class="technical-panel" aria-hidden="true">
-      <span class="technical-label">Industrial Authority</span>
-      <div class="technical-lines"></div>
-      <div class="technical-node node-a"></div>
-      <div class="technical-node node-b"></div>
-      <div class="technical-node node-c"></div>
+      <!-- Default content below renders on every page that doesn't pass a
+           "graphic" slot — unchanged, zero visual effect on any page until
+           a page opts in (see product/index.astro for the first override,
+           claude/86). -->
+      <slot name="graphic">
+        <span class="technical-label">Industrial Authority</span>
+        <div class="technical-lines"></div>
+        <div class="technical-node node-a"></div>
+        <div class="technical-node node-b"></div>
+        <div class="technical-node node-c"></div>
+      </slot>
     </div>
   </div>
 </section>

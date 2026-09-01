@@ -13,9 +13,20 @@ interface Props {
   noindex?: boolean;
 }
 const { title, eyebrow, intro, description, backHref, backLabel, noindex = false } = Astro.props;
+// Only forward a "graphic" override into PageHero when a page actually
+// supplies a hero-graphic slot — an always-rendered empty <slot slot="graphic" />
+// counts as "content provided" to Astro and would suppress PageHero's own
+// default technical-panel content on every page that doesn't opt in.
+const hasHeroGraphic = Astro.slots.has('hero-graphic');
 ---
 <BaseLayout title={title} description={description ?? intro} noindex={noindex}>
-  <PageHero {eyebrow} {title} {intro} {backHref} {backLabel} />
+  {hasHeroGraphic ? (
+    <PageHero {eyebrow} {title} {intro} {backHref} {backLabel}>
+      <slot name="hero-graphic" slot="graphic" />
+    </PageHero>
+  ) : (
+    <PageHero {eyebrow} {title} {intro} {backHref} {backLabel} />
+  )}
   <slot />
   <CtaBand />
 </BaseLayout>
