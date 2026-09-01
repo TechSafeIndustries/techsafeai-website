@@ -8,10 +8,20 @@
    The governed SAI-UI-016 capture remains the flat truthful screen plane;
    all dimensionality is the website-owned device, stage and light. */
 
-/* ---- LEVEL 0 — deep page atmosphere (charcoal → navy → near-black blue) ---- */
+/* ---- LEVEL 0 — layered atmosphere: far navy/charcoal field, mid-field lift
+       behind the console for silhouette separation, faint cyan horizon,
+       atmospheric haze, vignette held to the outer edges only ---- */
 .hero{min-height:704px;padding-top:64px;overflow:hidden;position:relative;background:
-  radial-gradient(1100px 560px at 70% 28%,rgba(0,229,255,.12),rgba(0,229,255,0) 62%),
-  linear-gradient(172deg,#17232B 0%,#0A1626 30%,#0B1B31 64%,#0D2038 100%)}
+  /* edge vignette — outer frame only, centre stays readable */
+  radial-gradient(130% 105% at 50% 44%,rgba(2,6,12,0) 56%,rgba(2,6,12,.52) 100%),
+  /* faint cyan horizon band behind the console */
+  linear-gradient(180deg,rgba(0,229,255,0) 63%,rgba(0,229,255,.085) 67.5%,rgba(0,229,255,0) 72%),
+  /* mid-field — lifted navy volume the console silhouettes against */
+  radial-gradient(940px 560px at 66% 40%,rgba(31,62,98,.85),rgba(31,62,98,0) 68%),
+  /* cyan atmosphere haze */
+  radial-gradient(1100px 560px at 70% 28%,rgba(0,229,255,.10),rgba(0,229,255,0) 62%),
+  /* far field — charcoal high, deepening navy low (never near-black) */
+  linear-gradient(170deg,#1B2830 0%,#0F2035 34%,#102644 66%,#122B4C 100%)}
 .hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:180px;pointer-events:none;background:
   radial-gradient(56% 130px at 64% 100%,rgba(0,229,255,.15),rgba(0,229,255,0) 70%)}
 .hero-env{position:absolute;inset:0;z-index:0;pointer-events:none}
@@ -33,8 +43,8 @@
 /* instrumentation detail beneath the actions */
 .hero-copy::after{content:"";margin-top:36px;width:100%;max-width:300px;height:1px;background:linear-gradient(90deg,rgba(0,229,255,.4),rgba(0,229,255,0))}
 
-/* ---- Stage ---- */
-.cockpit-stage{position:relative;max-width:100%;perspective:1900px;perspective-origin:40% 34%;z-index:1;padding:20px 0 112px}
+/* ---- Stage: tighter perspective + off-axis origin = cinematic 3/4 camera ---- */
+.cockpit-stage{position:relative;max-width:100%;perspective:1500px;perspective-origin:32% 30%;z-index:1;padding:20px 0 112px}
 
 /* oversized environmental type — spatial, not decorative */
 .env-type{position:absolute;right:-2%;top:-8px;z-index:0;pointer-events:none;user-select:none;font-family:Montserrat,Arial,sans-serif;font-weight:700;font-size:clamp(72px,7.5vw,116px);line-height:.92;letter-spacing:-0.05em;text-transform:uppercase;text-align:right;color:transparent;-webkit-text-stroke:1px rgba(159,196,214,.10)}
@@ -42,15 +52,30 @@
 /* restrained continuum topology — evidence paths originating at the cockpit */
 .hero-topology{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;opacity:.9}
 
-/* ---- LEVEL 4 — the Operational Intelligence Cockpit (signature object) ---- */
-.laptop{position:relative;transform-style:preserve-3d;transform:rotateY(-13deg) rotateX(6deg);will-change:transform;z-index:2}
+/* ---- LEVEL 4 — the Operational Intelligence Cockpit (signature object).
+       Engineered shell: rear plate, left sidewall and top face are real
+       planes in the laptop's preserve-3d space (depth 22px), so the console
+       reads as a manufactured object, not a tilted screenshot. ---- */
+.laptop{position:relative;transform-style:preserve-3d;transform:rotateY(-20deg) rotateX(8deg);will-change:transform;z-index:2}
+/* rear shell plate — closes the object at z = -22 */
+.shell-back{position:absolute;left:0;right:0;top:-2px;bottom:42px;transform:translateZ(-22px);border-radius:14px;background:linear-gradient(160deg,#0F2238 0%,#081527 55%,#050D18 100%);border:1px solid rgba(0,229,255,.16);box-shadow:0 30px 60px rgba(2,7,14,.55)}
+/* near (right) sidewall — spans front rim (z0) to rear plate; the front
+   edge carries the cyan rim light, the rear falls into shade */
+.shell-side.r{position:absolute;right:0;top:0;bottom:44px;width:22px;transform-origin:right center;transform:rotateY(-90deg);background:linear-gradient(180deg,#153048 0%,#0B1D33 60%,#071322 100%);border-right:1.5px solid rgba(0,229,255,.55);box-shadow:inset 6px 0 10px rgba(2,7,14,.5)}
+/* top face — visible because the camera looks slightly down onto the machine */
+.shell-top{position:absolute;left:1px;right:1px;top:-1px;height:22px;transform-origin:top center;transform:rotateX(-90deg);background:linear-gradient(90deg,#1A3A5A 0%,#122C48 45%,#0B1D33 100%);border-top:1px solid rgba(255,255,255,.26);border-radius:10px 10px 0 0;box-shadow:inset 0 -8px 12px rgba(2,7,14,.45)}
 .monolith-plate{position:absolute;left:50%;top:-32px;transform:translateX(-50%) translateZ(40px);z-index:6;white-space:nowrap;font:600 10px/1.3 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.15em;text-transform:uppercase;color:#CBE9F2;background:rgba(7,19,34,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(0,229,255,.35);border-radius:6px;padding:8px 18px}
 
-/* screen: material surface — depth from layered edges, not glow bloom */
-.laptop-screen{position:relative;transform-origin:bottom center;transform:rotateX(-3deg);background:linear-gradient(180deg,#1B3452,#12283F);border:1px solid rgba(0,229,255,.5);border-top-color:rgba(255,255,255,.22);border-radius:12px 12px 5px 5px;padding:12px 12px 17px;box-shadow:
+/* screen: material surface — thicker engineered frame (heavier top + chin),
+   modelling light: lit left/top, shaded rear-right, no glow bloom */
+.laptop-screen{position:relative;transform-origin:bottom center;transform:rotateX(-2deg);background:
+  linear-gradient(105deg,rgba(2,8,16,0) 62%,rgba(2,8,16,.28) 100%),
+  linear-gradient(180deg,#1E3A5B,#132A42);border:1px solid rgba(0,229,255,.5);border-top:2px solid rgba(255,255,255,.24);border-radius:12px 12px 6px 6px;padding:14px 13px 34px;box-shadow:
   0 0 0 1px rgba(2,7,14,.95),
   inset 0 1px 0 rgba(255,255,255,.10),
-  0 0 56px -8px rgba(0,229,255,.30)}
+  inset -1px 0 0 rgba(2,7,14,.5),
+  inset 1px 0 0 rgba(0,229,255,.14),
+  0 0 56px -8px rgba(0,229,255,.26)}
 /* rim light along the screen's top edge (sweep driven by --rim via GSAP) */
 .laptop-screen::before{content:"";position:absolute;left:6%;right:6%;top:-1px;height:1.5px;border-radius:2px;background:linear-gradient(90deg,rgba(0,229,255,0),rgba(0,229,255,.9) calc(var(--rim,50%) - 14%),rgba(0,229,255,.9) calc(var(--rim,50%) + 14%),rgba(0,229,255,0));filter:drop-shadow(0 0 6px rgba(0,229,255,.5))}
 .laptop{--rim:50%}
@@ -64,6 +89,14 @@
 .cockpit-crop{overflow:hidden;border-radius:4px;aspect-ratio:1506/575}
 .cockpit-crop img{display:block;width:100%;height:auto}
 .cockpit-reflection{display:none}
+/* glass: one controlled diagonal glare over the panel — low opacity, the
+   governed UI stays fully readable; also carries the rear-right shade */
+.screen-glass{position:absolute;inset:14px 13px 34px;border-radius:7px;pointer-events:none;z-index:3;background:
+  linear-gradient(118deg,rgba(255,255,255,.10) 0%,rgba(255,255,255,.03) 14%,rgba(255,255,255,0) 30%,rgba(255,255,255,0) 74%,rgba(0,229,255,.045) 100%)}
+/* manufacturer mark — backlit etch in the lower bezel chin, centred */
+.cockpit-mark{position:absolute;left:50%;bottom:5px;transform:translateX(-50%);display:flex;align-items:center;z-index:4;opacity:.85;filter:drop-shadow(0 0 4px rgba(0,229,255,.5))}
+/* machining seam separating panel from the bezel chin */
+.bezel-seam{position:absolute;left:12px;right:12px;bottom:29px;height:1px;z-index:4;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.13) 22%,rgba(255,255,255,.13) 78%,rgba(255,255,255,0))}
 .cockpit-caption{position:absolute;left:2px;bottom:-92px;font:600 9.5px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.10em;text-transform:uppercase;color:#7E97A6;z-index:6;transform:translateZ(30px)}
 
 /* hinge + deck: engineered material, minimal glow */
@@ -76,18 +109,27 @@
   repeating-linear-gradient(180deg,rgba(255,255,255,.045) 0 20px,rgba(0,0,0,0) 20px 24px),
   linear-gradient(180deg,rgba(0,229,255,.07),rgba(0,229,255,.02));box-shadow:inset 0 0 0 1px rgba(0,229,255,.12)}
 .laptop-pad{position:absolute;left:50%;bottom:14px;width:26%;height:42px;transform:translateX(-50%);border-radius:5px;background:rgba(255,255,255,.035);box-shadow:inset 0 0 0 1px rgba(0,229,255,.14)}
+/* machined front edge of the chassis under the hinge — underside geometry */
+.deck-front{display:block;position:relative;height:9px;width:97%;margin:-176px auto 0;border-radius:0 0 6px 6px;transform:translateZ(1px);background:linear-gradient(180deg,#0E2036 0%,#050D18 80%);border-bottom:1px solid rgba(0,229,255,.30);box-shadow:0 6px 14px rgba(2,7,14,.5)}
 
-/* environment contact: restrained under-light, thin ring, faint reflection */
+/* environment contact: physical stage — contact shadow + underlight pool.
+   The console is planted, not floating. */
 .monolith-underglow{position:absolute;left:0;right:0;bottom:-168px;height:56px;pointer-events:none;background:radial-gradient(52% 100% at 50% 0%,rgba(0,229,255,.30),rgba(0,229,255,.06) 55%,rgba(0,229,255,0) 80%);filter:blur(7px);z-index:0}
-.monolith-ring{position:absolute;left:50%;bottom:2px;width:100%;height:100px;transform:translateX(-50%);border-radius:50%;pointer-events:none;z-index:0;border:1px solid rgba(0,229,255,.30);background:radial-gradient(50% 46% at 50% 50%,rgba(0,229,255,.07),rgba(0,229,255,0) 72%);-webkit-mask-image:linear-gradient(180deg,transparent 0 32%,#000 52%);mask-image:linear-gradient(180deg,transparent 0 32%,#000 52%)}
-.monolith-reflection{position:absolute;left:12%;right:12%;bottom:-58px;height:104px;overflow:hidden;pointer-events:none;z-index:0;opacity:.22;filter:blur(3px) saturate(1.1);-webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.7),transparent 72%);mask-image:linear-gradient(180deg,rgba(0,0,0,.7),transparent 72%)}
+.stage-shadow{position:absolute;left:4%;right:4%;bottom:-14px;height:132px;pointer-events:none;z-index:0;background:
+  radial-gradient(46% 34% at 47% 40%,rgba(2,8,16,.58),rgba(2,8,16,0) 72%),
+  radial-gradient(58% 46% at 48% 44%,rgba(2,8,16,.34),rgba(2,8,16,0) 76%),
+  radial-gradient(34% 18% at 47% 38%,rgba(0,229,255,.14),rgba(0,229,255,0) 70%)}
+.monolith-reflection{position:absolute;left:12%;right:12%;bottom:-58px;height:104px;overflow:hidden;pointer-events:none;z-index:0;opacity:.26;filter:blur(3px) saturate(1.1);transform:skewX(14deg);-webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.7),transparent 72%);mask-image:linear-gradient(180deg,rgba(0,0,0,.7),transparent 72%)}
 .monolith-reflection img{display:block;width:100%;height:auto;transform:scaleY(-1);transform-origin:top center}
 
-/* ---- Flanking governed label (bottom-right) ---- */
+/* ---- Governed SAI label — physically tied to the console by node + leader ---- */
 .cockpit-callout{display:none}
+.sai-tag{display:none}
 @media (min-width:1400px){
-  .cockpit-callout{display:block;position:absolute;z-index:6;font:600 10px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.12em;text-transform:uppercase;color:#CBE9F2;background:rgba(7,19,34,.7);border:1px solid rgba(0,229,255,.30);border-radius:6px;padding:8px 12px}
-  .cockpit-callout.b{right:0;bottom:40px}
+  .sai-tag{display:flex;align-items:center;position:absolute;right:-14px;bottom:168px;z-index:6}
+  .sai-node{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 3px rgba(0,229,255,.18),0 0 10px rgba(0,229,255,.7);flex:0 0 auto}
+  .sai-line{width:46px;height:1px;background:linear-gradient(90deg,rgba(0,229,255,.75),rgba(0,229,255,.25));flex:0 0 auto}
+  .sai-tag .cockpit-callout{display:block;position:static;font:600 10px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.12em;text-transform:uppercase;color:#CBE9F2;background:rgba(7,19,34,.7);border:1px solid rgba(0,229,255,.30);border-radius:6px;padding:8px 12px}
 }
 
 /* ---- Entrance (GSAP on desktop; JS-only staged class; static complete
@@ -96,9 +138,9 @@
 .hero-staged .laptop,
 .hero-staged .hero-topology,
 .hero-staged .env-type,
-.hero-staged .monolith-ring,
+.hero-staged .stage-shadow,
 .hero-staged .monolith-reflection,
-.hero-staged .cockpit-callout{opacity:0}
+.hero-staged .sai-tag{opacity:0}
 @keyframes monolith-in-flat{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:no-preference) and (max-width:1250px){
   .laptop{animation:monolith-in-flat var(--dur-entrance) var(--ease-reveal) both}
@@ -110,16 +152,22 @@
   .hero h1{font-size:clamp(32px,5vw,44px)}
   .cockpit-stage{width:100%;perspective:none;padding:10px 0 68px}
   .laptop{transform:none}
-  .laptop-screen{transform:none}
+  .laptop-screen{transform:none;padding:12px 12px 30px}
   .laptop-base{height:24px;transform:none;border-radius:0 0 12px 12px}
   .laptop-kb,.laptop-pad{display:none}
-  .hero-topology,.env-type,.monolith-ring,.monolith-reflection{display:none}
+  .shell-back,.shell-side,.shell-top,.deck-front,.sai-tag{display:none}
+  .screen-glass{inset:12px 12px 30px}
+  .bezel-seam{bottom:25px}
+  .hero-topology,.env-type,.stage-shadow,.monolith-reflection{display:none}
   .cockpit-caption{bottom:-56px;transform:none}
 }
 @media (max-width:767px){
   .hero{padding-top:60px;min-height:auto}
   .hero-wrap{width:min(100% - 32px,1440px);padding:28px 0 36px;gap:26px}
-  .laptop-screen{padding:10px 10px 14px;border-radius:10px 10px 4px 4px}
+  .laptop-screen{padding:10px 10px 26px;border-radius:10px 10px 4px 4px}
+  .screen-glass{inset:10px 10px 26px}
+  .bezel-seam{bottom:22px}
+  .cockpit-mark{bottom:4px}
   .laptop-hinge{display:none}
   .laptop-base{display:none}
   .monolith-plate{font-size:9px;padding:6px 12px;letter-spacing:.12em;top:-12px}

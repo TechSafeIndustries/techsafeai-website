@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Cockpit from '../components/Cockpit.astro';
 import Icon from '../components/Icon.astro';
 import CtaBand from '../components/CtaBand.astro';
+import BrandMark from '../components/BrandMark.astro';
 import { site } from '../data/site';
 
 const productCards = [
@@ -100,34 +101,41 @@ const industryLinks = [
       </div>
       <div class="cockpit-stage">
         <span class="env-type" aria-hidden="true">Operational<br/>Intelligence</span>
-        <svg class="hero-topology" viewBox="0 0 900 620" aria-hidden="true">
-          <g stroke="rgba(0,229,255,.28)" stroke-width="1" fill="none">
-            <path class="tp" d="M120 512 H320 L392 440"/>
-            <path class="tp" d="M818 170 H700 L648 222"/>
-            <path class="tp" d="M836 420 H736 L688 372"/>
-            <path class="tp" d="M96 128 H252 L318 194"/>
+        <svg class="hero-topology" viewBox="0 0 900 620" preserveAspectRatio="none" aria-hidden="true">
+          <g stroke="rgba(0,229,255,.30)" stroke-width="1" fill="none">
+            <path class="tp" d="M118 96 H236 L294 148"/>
+            <path class="tp" d="M842 128 H744 L700 172"/>
+            <path class="tp" d="M64 486 H244 L330 428 H418"/>
+            <path class="tp" d="M852 452 H760 L706 404"/>
           </g>
           <g fill="none" stroke="rgba(0,229,255,.55)" stroke-width="1.2">
-            <circle class="tn" cx="120" cy="512" r="3.5"/>
-            <circle class="tn" cx="818" cy="170" r="3.5"/>
-            <circle class="tn" cx="836" cy="420" r="3.5"/>
-            <circle class="tn" cx="96" cy="128" r="3.5"/>
+            <circle class="tn" cx="118" cy="96" r="3.5"/>
+            <circle class="tn" cx="842" cy="128" r="3.5"/>
+            <circle class="tn" cx="64" cy="486" r="3.5"/>
+            <circle class="tn" cx="852" cy="452" r="3.5"/>
           </g>
         </svg>
         <div class="laptop">
           <span class="monolith-plate">Operational Intelligence Cockpit</span>
+          <i class="shell-back" aria-hidden="true"></i>
+          <i class="shell-side r" aria-hidden="true"></i>
+          <i class="shell-top" aria-hidden="true"></i>
           <div class="laptop-screen">
             <i class="laptop-cam" aria-hidden="true"></i>
             <Cockpit />
+            <i class="screen-glass" aria-hidden="true"></i>
+            <span class="cockpit-mark" aria-hidden="true"><BrandMark size={15} compact={true} /></span>
+            <i class="bezel-seam" aria-hidden="true"></i>
           </div>
           <i class="laptop-hinge" aria-hidden="true"></i>
           <div class="laptop-base" aria-hidden="true">
             <i class="laptop-kb"></i>
             <i class="laptop-pad"></i>
           </div>
+          <i class="deck-front" aria-hidden="true"></i>
           <div class="monolith-underglow" aria-hidden="true"></div>
         </div>
-        <div class="monolith-ring" aria-hidden="true"></div>
+        <div class="stage-shadow" aria-hidden="true"></div>
         <div class="monolith-reflection" aria-hidden="true">
           <img
             src="/assets/sai/website-handoff/sai-ui-016/HERO-COCKPIT-37a6918.png"
@@ -138,7 +146,7 @@ const industryLinks = [
             decoding="async"
           />
         </div>
-        <span class="cockpit-callout b">SAI assists the human.</span>
+        <span class="sai-tag"><i class="sai-node" aria-hidden="true"></i><i class="sai-line" aria-hidden="true"></i><span class="cockpit-callout b">SAI assists the human.</span></span>
       </div>
     </div>
   </section>

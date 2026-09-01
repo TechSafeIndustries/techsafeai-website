@@ -132,16 +132,16 @@ function heroHandoff(gsap: Gsap, _st: STType): void {
   if (!laptop) return;
   const screen = laptop.querySelector<HTMLElement>('.laptop-screen');
   const copyKids = document.querySelectorAll('.hero-copy > *');
-  const callout = document.querySelector('.cockpit-callout.b');
+  const callout = document.querySelector('.sai-tag');
   const topology = document.querySelector<SVGSVGElement>('.hero-topology');
   const envType = document.querySelector('.env-type');
-  const ring = document.querySelector('.monolith-ring');
+  const ring = document.querySelector('.stage-shadow');
   const underglow = document.querySelector('.monolith-underglow');
   const reflection = document.querySelector('.monolith-reflection');
 
-  const BASE_Y = -13;
-  const BASE_X = 6;
-  const SCREEN_X = -3;
+  const BASE_Y = -20;
+  const BASE_X = 8;
+  const SCREEN_X = -2;
   const sway = { y: 0 }; // idle rotation offset, composed with cursor rig
 
   /* Entrance (desktop): the laptop rises and its screen opens. */
