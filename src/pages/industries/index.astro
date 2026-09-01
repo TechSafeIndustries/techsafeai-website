@@ -1,7 +1,273 @@
 ---
 import ContentPage from '../../components/ContentPage.astro';
-import { broaderContexts, featuredSectors } from '../../data/site';
+import Icon from '../../components/Icon.astro';
+import BrandMark from '../../components/BrandMark.astro';
+import { featuredSectors, broaderContexts } from '../../data/site';
+
+// claude/98 — FOUNDER DIRECTIVE: Industries page, same compression rule
+// as the Consulting baseline (846c4de). Structure: Hero -> industry
+// groups -> common operational challenges -> People/Property/Planet
+// application -> CTA. Uses ONLY existing approved sector content
+// (featuredSectors + broaderContexts from src/data/site.ts — the same
+// data the previous Industries page and the homepage's own Industries
+// section already use) — no sector is invented. Every other string is
+// sourced from already-published, governed copy — cited inline.
+//
+// claude/99 — Founder language/presentation refinement, structure
+// unchanged: (1) the Industry Groups heading is simplified to "Built
+// for high-risk operations."; (2) the third group card's tag list is
+// replaced with one concise supporting line — reusing the exact
+// `broaderContexts.join(' · ')` pattern the ORIGINAL (pre-claude/98)
+// version of this page already used for this same card, so the two
+// featured cards and the broader-pathway card are visually balanced
+// (icon, title, one paragraph, link — all three now share the same
+// shape); (3) the People/Property/Planet cards get a stronger
+// engineered-material treatment: the icon tile now uses the same
+// graphite/inset-bevel construction as the Product and Consulting
+// hero tiles (.sys-node / .gov-tile) instead of a flat tinted box,
+// and the oversized watermark "P" is replaced with a small recessed
+// mono index tag (same token family as .route-index / .method-step-
+// index elsewhere on the site) — no new colours or components
+// introduced, only reuse of the site's own existing engineered-panel
+// vocabulary; (4) hero graphic geometry and content are unchanged —
+// reviewed for consistency and no change was needed.
+
+// Hero instrument-panel diagram — same construction technique as the
+// Product page's sys-graphic (system nodes -> hub) and Consulting's
+// gov-graphic, repurposed here as sector groups -> hub. Node labels
+// are compact diagram-only abbreviations of the full, approved sector
+// titles below (featuredSectors[].title / the broader-pathway card);
+// the full names appear in the Industry Groups section underneath.
+const VIEW_W = 560;
+const VIEW_H = 200;
+const SECTOR_NODES = [
+  { label: 'Mining', x: 100, y: 55 },
+  { label: 'Construction', x: 280, y: 55 },
+  { label: 'Other Regulated', x: 460, y: 55 }
+];
+const HUB = { x: 280, y: 155 };
+
+// Common operational challenges (claude/98) — Founder-specified concept
+// set, each grounded in already-published site content (not new
+// claims): sources noted per item.
+const challenges = [
+  // src/pages/index.astro `threePs` People: 'Capability, readiness and human performance.'
+  { icon: 'person', label: 'Workforce risk' },
+  // src/pages/index.astro `supportFunctions`: 'Contractor Management'
+  { icon: 'id-badge', label: 'Contractor management' },
+  // src/data/site.ts `painPoints` CONTROL_VERIFICATION: 'Prove critical controls actually work'
+  { icon: 'target', label: 'Critical controls' },
+  // src/pages/index.astro `supportFunctions`: 'Incident Learning'
+  { icon: 'loop', label: 'Incidents' },
+  // src/data/site.ts `painPoints` SYSTEM_EVIDENCE_FRAGMENTATION: 'Fix fragmented systems, records or evidence'
+  { icon: 'doc-check', label: 'Evidence' },
+  // src/pages/index.astro `supportFunctions`: 'Governance & Compliance' — 'Obligations and governance context, kept visible.'
+  { icon: 'shield-check', label: 'Compliance obligations' },
+  // src/pages/index.astro `valueOutcomes`: 'Improved evidence visibility'
+  { icon: 'eye', label: 'Operational visibility' }
+] as const;
+
+// People + Property + Planet — verbatim from src/pages/index.astro
+// `threePs` (homepage), same icons. Not a new framework; this is the
+// existing 3Ps operational-coverage model applied to why the platform
+// spans multiple high-risk sectors, per project standing instructions.
+const threePs = [
+  { title: 'People', summary: 'Capability, readiness and human performance.', icon: 'person' },
+  { title: 'Property', summary: 'Assets, infrastructure and operational capability.', icon: 'building' },
+  { title: 'Planet', summary: 'Environmental conditions, obligations and constraints.', icon: 'globe' }
+] as const;
 ---
-<ContentPage title="Industries" eyebrow="Featured depth + broader route" intro="TechSafeAI works with risk-intensive and regulated organisations, with initial sector depth in Mining & Resources and Construction & Infrastructure.">
-<section class="content-section"><div class="shell"><div class="section-title"><div><div class="eyebrow">Featured initial sector depth</div><h2>Two sectors lead the initial content depth.</h2></div><p>Other regulated organisations are not excluded. They enter through a problem-led route and are assessed for fit without unsupported specialist claims.</p></div><div class="route-grid" style="margin-top:42px">{featuredSectors.map((sector,index)=><a class="route-card" href={`/industries/${sector.slug}`}><div class="eyebrow">Featured 0{index+1}</div><h3>{sector.title}</h3><p>{sector.summary}</p><span class="route-link">View sector depth →</span></a>)}<a class="route-card" href="/industries/other-regulated-operations"><div class="eyebrow">Broader pathway</div><h3>Other Risk-Intensive & Regulated Operations</h3><p>{broaderContexts.join(' · ')}</p><span class="route-link">Check fit from the problem →</span></a></div></div></section>
+<ContentPage
+  title="Industries"
+  eyebrow="Sector application"
+  intro="TechSafeAI works with risk-intensive and regulated organisations across high-risk operating environments."
+>
+  <Fragment slot="hero-graphic">
+    <div class="ind-graphic">
+      <div class="ind-glass">
+        <!-- Verbatim tail of the homepage's own Industries heading:
+             "Featured depth, and a route for every high-risk operation." -->
+        <span class="ind-title">A route for every<br/>high-risk operation.</span>
+        <span class="ind-seam" aria-hidden="true"></span>
+        <div class="ind-diagram" style={`aspect-ratio:${VIEW_W}/${VIEW_H}`}>
+          <svg class="ind-lines" viewBox={`0 0 ${VIEW_W} ${VIEW_H}`} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            {SECTOR_NODES.map((n) => (
+              <line x1={n.x} y1={n.y} x2={HUB.x} y2={HUB.y} />
+            ))}
+          </svg>
+          <div class="ind-hub" style={`left:${(HUB.x / VIEW_W) * 100}%;top:${(HUB.y / VIEW_H) * 100}%`}>
+            <BrandMark size={28} compact={true} />
+          </div>
+          {SECTOR_NODES.map((n) => (
+            <div class="ind-node" style={`left:${(n.x / VIEW_W) * 100}%;top:${(n.y / VIEW_H) * 100}%`}>{n.label}</div>
+          ))}
+        </div>
+        <span class="ind-footer">Sector depth · Problem-led fit</span>
+      </div>
+    </div>
+  </Fragment>
+
+  <section class="content-section groups-section">
+    <div class="shell">
+      <div class="section-title"><div><div class="eyebrow">Industry groups</div><h2>Built for high-risk operations.</h2></div></div>
+      <div class="group-grid" style="margin-top:24px">
+        {featuredSectors.map((sector,index)=>(
+          <a class="group-card" href={`/industries/${sector.slug}`}>
+            <span class="group-icon" aria-hidden="true"><Icon name={index === 0 ? 'pick' : 'crane'} size={22} /></span>
+            <h3>{sector.title}</h3>
+            <p>{sector.summary}</p>
+            <span class="group-link">View sector depth →</span>
+          </a>
+        ))}
+        <a class="group-card" href="/industries/other-regulated-operations">
+          <span class="group-icon" aria-hidden="true"><Icon name="shield-check" size={22} /></span>
+          <h3>Other Risk-Intensive &amp; Regulated Operations</h3>
+          <p>{broaderContexts.join(' · ')}</p>
+          <span class="group-link">Check fit from the problem →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section challenges-section">
+    <div class="shell">
+      <div class="section-title"><div><div class="eyebrow">Common operational challenges</div><h2>The same problems, across every sector.</h2></div></div>
+      <div class="challenge-row" style="margin-top:24px">
+        {challenges.map((c)=>(
+          <span class="challenge-chip"><Icon name={c.icon} size={16} /><span>{c.label}</span></span>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section ppp-section">
+    <div class="shell">
+      <div class="section-title"><div><div class="eyebrow">One model, every sector</div><h2>People, Property and Planet.</h2></div></div>
+      <div class="ppp-grid" style="margin-top:24px">
+        {threePs.map((p)=>(
+          <div class="ppp-card">
+            <div class="ppp-head">
+              <span class="ppp-icon" aria-hidden="true"><Icon name={p.icon} size={20} /></span>
+              <span class="ppp-tag" aria-hidden="true">P</span>
+            </div>
+            <h3>{p.title}</h3>
+            <p>{p.summary}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
 </ContentPage>
+
+<style>
+  /* claude/98 — Industries page, built to the Consulting-established
+     density rule: compact sections, page-scoped padding reduction,
+     locked graphite/smoked-glass hero material, alternating dark/light
+     rhythm (dark hero -> light groups -> dark challenges -> light
+     People/Property/Planet -> dark CTA), same as the Consulting
+     baseline. Every class below is scoped to this file. */
+  .content-section{padding:56px 0}
+
+  /* Industry groups — three engineered light cards (same material
+     language as Consulting's .pillar-card), two linking to featured
+     sector pages, the third holding the broader-pathway context chips
+     already used by the previous version of this page. */
+  .group-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:stretch}
+  .group-card{
+    position:relative;overflow:hidden;display:flex;flex-direction:column;gap:10px;
+    background:linear-gradient(155deg,var(--panel-light-1) 0%,var(--panel-light-2) 100%);
+    border:1px solid rgba(19,39,58,.10);border-radius:8px;
+    padding:26px 24px 24px;box-shadow:var(--bevel-light-raised);
+    text-decoration:none;color:inherit;
+    transition:box-shadow .15s ease-out,transform .15s ease-out;
+  }
+  .group-card::before{content:"";position:absolute;left:0;top:16px;bottom:16px;width:2px;
+    background:linear-gradient(180deg,transparent,var(--illum-line),transparent);opacity:.5}
+  .group-card:hover{box-shadow:var(--bevel-light-raised),0 16px 28px -20px rgba(19,39,58,.30);transform:translateY(-1px)}
+  .group-icon{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:8px;
+    background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.28);color:#0F7FA0}
+  .group-card h3{margin:0;font-size:18px}
+  .group-card p{margin:0;font-size:13.5px;line-height:1.5;color:var(--text-secondary);flex:1}
+  .group-link{font-weight:750;font-size:12.5px;color:#176f98}
+
+  /* Common operational challenges — one wrapped row of compact chips,
+     dark band to break rhythm from the light groups section above. */
+  .challenges-section{background:var(--atmo-dark)}
+  .challenges-section .eyebrow{color:var(--illum)}
+  .challenges-section .section-title h2{color:#FFFFFF}
+  .challenge-row{display:flex;flex-wrap:wrap;gap:12px}
+  .challenge-chip{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:6px;
+    background:linear-gradient(180deg,rgba(255,255,255,.05) 0%,rgba(255,255,255,0) 45%),var(--graphite-light-3);
+    border:1px solid var(--graphite-edge);color:#C7DAE3;
+    font:700 12.5px/1 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.02em}
+  .challenge-chip :global(svg){color:#6FCEFB;flex-shrink:0}
+
+  /* People / Property / Planet (claude/99) — stronger engineered-
+     material treatment: the icon tile now reuses the exact graphite +
+     inset-bevel construction the Product/Consulting hero tiles use
+     (.sys-node / .gov-tile — graphite-light-3 fill, inset highlight,
+     inset shadow, graphite-edge border) instead of a flat tinted box,
+     and the previous oversized watermark "P" is replaced with a small
+     recessed mono index tag (same token family as .route-index /
+     .method-step-index used elsewhere on this site). */
+  .ppp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .ppp-card{
+    position:relative;overflow:hidden;
+    background:linear-gradient(155deg,var(--panel-light-1) 0%,var(--panel-light-2) 100%);
+    border:1px solid rgba(19,39,58,.10);border-radius:8px;
+    padding:24px 22px;box-shadow:var(--bevel-light-raised),inset 0 0 0 1px rgba(19,39,58,.04);
+  }
+  .ppp-card::before{content:"";position:absolute;left:0;top:16px;bottom:16px;width:2px;
+    background:linear-gradient(180deg,transparent,var(--illum-line),transparent);opacity:.5}
+  .ppp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .ppp-icon{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:8px;
+    background:linear-gradient(180deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,0) 45%),var(--graphite-light-3);
+    border:1px solid var(--graphite-edge);color:#6FCEFB;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -3px 6px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.05)}
+  .ppp-tag{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:20px;padding:0 5px;
+    font:700 10px/1 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.02em;color:#3E5566;
+    background:var(--panel-light-2);border-radius:3px;box-shadow:var(--bevel-light-recessed)}
+  .ppp-card h3{margin:0 0 6px;font-size:17px}
+  .ppp-card p{margin:0;font-size:13px;line-height:1.5;color:var(--text-secondary)}
+
+  @media (max-width:900px){
+    .group-grid{grid-template-columns:1fr}
+    .ppp-grid{grid-template-columns:1fr}
+  }
+
+  /* Industries hero graphic — same graphite/smoked-glass + SVG node
+     diagram construction as the Product page's .sys-graphic (system
+     nodes -> hub), repurposed here as sector groups -> hub. Fresh
+     class names (.ind-*) so nothing here touches product/index.astro
+     or consulting/index.astro. */
+  :global(.technical-panel:has(.ind-graphic))::after{display:none}
+  .ind-graphic{position:relative;z-index:2;width:100%;height:100%;min-height:300px;
+    padding:16px;border-radius:6px;border:1px solid var(--graphite-edge);
+    background:var(--key-light),radial-gradient(160% 120% at 50% -20%,rgba(110,165,200,.07),transparent 62%),linear-gradient(180deg,var(--graphite-1) 0%,var(--graphite-2) 46%,var(--graphite-3) 100%);
+    box-shadow:var(--bevel-raised),inset 0 0 0 1px rgba(255,255,255,.06);
+    display:flex;align-items:center;justify-content:center}
+  .ind-glass{position:relative;width:100%;height:100%;border-radius:4px;
+    padding:20px 18px 14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;
+    background:radial-gradient(130% 100% at 50% -14%,rgba(255,255,255,.08),transparent 58%),linear-gradient(165deg,#1B222A 0%,#171C22 60%,#15191E 100%);
+    box-shadow:var(--bevel-recessed),inset 0 1px 0 rgba(255,255,255,.05)}
+  .ind-title{max-width:260px;text-align:center;font:700 13px/1.35 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.02em;text-transform:none;color:#C7DAE3}
+  .ind-seam{width:34px;height:1px;background:linear-gradient(90deg,transparent,var(--illum-line),transparent)}
+  .ind-diagram{position:relative;width:100%;max-width:460px}
+  .ind-lines{position:absolute;inset:0;width:100%;height:100%}
+  .ind-lines line{stroke:rgba(0,229,255,.30);stroke-width:1.25;stroke-dasharray:4 5}
+  .ind-hub{position:absolute;transform:translate(-50%,-50%);width:60px;height:60px;border-radius:50%;
+    background:radial-gradient(120% 120% at 34% 24%,rgba(255,255,255,.11),transparent 55%),var(--lvl0,#04090F);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:var(--bevel-recessed-illum)}
+  .ind-node{position:absolute;transform:translate(-50%,-50%);width:140px;min-height:34px;display:flex;align-items:center;justify-content:center;text-align:center;font-family:Montserrat,Arial,sans-serif;font-weight:700;font-size:11px;line-height:1.25;letter-spacing:.02em;color:#DCE8EE;
+    background:linear-gradient(180deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,0) 45%),var(--graphite-light-3);
+    border:1px solid var(--graphite-edge);border-radius:4px;padding:6px 10px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -3px 6px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.07)}
+  .ind-footer{font:700 9px/1.3 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.12em;text-transform:uppercase;color:rgba(0,229,255,.60)}
+  @media (max-width:520px){
+    .ind-graphic{padding:12px}
+    .ind-glass{padding:16px 14px 12px}
+    .ind-node{width:96px;font-size:9px;padding:5px 6px}
+    .ind-hub{width:48px;height:48px}
+  }
+</style>
