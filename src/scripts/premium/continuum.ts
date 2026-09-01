@@ -133,7 +133,6 @@ function heroHandoff(gsap: Gsap, _st: STType): void {
   const copyKids = document.querySelectorAll('.hero-copy > *');
   const callout = document.querySelector('.sai-tag');
   const topology = document.querySelector<SVGSVGElement>('.hero-topology');
-  const envType = document.querySelector('.env-type');
   const ring = document.querySelector('.stage-shadow');
   const underglow = document.querySelector('.monolith-underglow');
   const reflection = document.querySelector('.monolith-reflection');
@@ -150,7 +149,6 @@ function heroHandoff(gsap: Gsap, _st: STType): void {
     gsap.set(copyKids, { autoAlpha: 0, y: 16, filter: 'blur(4px)' });
     gsap.set(laptop, { autoAlpha: 0, y: 34, rotationY: BASE_Y, rotationX: BASE_X });
     if (callout) gsap.set(callout, { autoAlpha: 0, y: 10 });
-    if (envType) gsap.set(envType, { autoAlpha: 0, x: 24 });
     if (topology) {
       gsap.set(topology, { autoAlpha: 1 });
       topology.querySelectorAll<SVGPathElement>('.tp').forEach((p) => {
@@ -171,7 +169,6 @@ function heroHandoff(gsap: Gsap, _st: STType): void {
     tl.to(laptop, { '--rim': '112%', duration: 1.0, ease: 'power2.inOut' }, 0.9)
       .set(laptop, { '--rim': '-12%' }, '>')
       .to(laptop, { '--rim': '50%', duration: 0.8, ease: 'power2.out' }, '>');
-    if (envType) tl.to(envType, { autoAlpha: 1, x: 0, duration: 1.2 }, 0.5);
     if (topology) {
       tl.to(topology.querySelectorAll('.tp'), { strokeDashoffset: 0, duration: 1.0, stagger: 0.12, ease: 'power2.inOut' }, 1.0)
         .to(topology.querySelectorAll('.tn'), { autoAlpha: 1, scale: 1, duration: 0.4, stagger: 0.1, ease: 'back.out(2)' }, 1.4);
