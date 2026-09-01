@@ -1,42 +1,104 @@
 ---
 /**
- * TechSafeAI mark — LOCKED per Founder logo specification (31 Aug 2026):
- * wireframe hexagon enclosing a 3D isometric cube, with a delicate
- * connected-network line running from a left node, down and under the
- * bottom vertex, up to a right node. Neon cyan #00E5FF, traced from the
- * supplied master asset. Do not restyle without Founder authority.
+ * TechSafeAI mark — geometry LOCKED per Founder logo specification
+ * (31 Aug 2026): wireframe hexagon enclosing a 3D isometric cube, with a
+ * delicate connected-network line from a left node, under the bottom
+ * vertex, up to a right node. Neon cyan #00E5FF, traced from the supplied
+ * master asset. Do not restyle without Founder authority.
+ *
+ * MOTION LOCKED per Founder directive (1 Sep 2026) — Variant B "Balanced"
+ * ("the system is quietly thinking"). Implemented verbatim in
+ * src/styles/emblem.css. Approved scope: website header + hero brand
+ * placement. `animated` defaults to false so no other placement (footer
+ * etc.) picks up motion. Wordmark always sits OUTSIDE this component.
+ * Do not retime, simplify or create variants.
+ *
+ * When Project 01 supplies the canonical separated SVG master, split that
+ * exact geometry into frame / cube / nodes and apply this same motion
+ * specification unchanged.
  */
 interface Props {
   size?: number;
   class?: string;
   /** Render without the extended node-network (tiny sizes). */
   compact?: boolean;
+  /** Locked Variant B motion (header + hero brand placement only). */
+  animated?: boolean;
 }
-const { size = 28, class: cls = '', compact = false } = Astro.props;
+const { size = 28, class: cls = '', compact = false, animated = false } = Astro.props;
+/* Square viewBoxes centred on the hexagon centre (30,33) so rotation
+   wrappers rotate the geometry around its true centre. */
+const vb = compact ? '-3 0 66 66' : '-7 -4 74 74';
+const svgAttrs = {
+  fill: 'none',
+  stroke: '#00E5FF',
+  'stroke-linecap': 'round',
+  'stroke-linejoin': 'round',
+  'aria-hidden': 'true',
+  focusable: 'false'
+} as const;
 ---
-<svg
-  class={`brand-mark ${cls}`.trim()}
-  width={size}
-  height={Math.round(size * (compact ? 1.1 : 1.02))}
-  viewBox={compact ? '0 0 60 66' : '-8 0 74 72.5'}
-  fill="none"
-  stroke="#00E5FF"
-  stroke-linecap="round"
-  stroke-linejoin="round"
-  aria-hidden="true"
-  focusable="false"
->
-  <!-- outer hexagon -->
-  <path stroke-width="3.1" d="M30 3.6 54.4 17.7c.4.23.6.65.6 1.1v28.4c0 .45-.2.87-.6 1.1L30 62.4 5.6 48.3c-.4-.23-.6-.65-.6-1.1V18.8c0-.45.2-.87.6-1.1z"/>
-  <!-- isometric cube -->
-  <path stroke-width="2.4" d="M30 20 41.3 26.5v13L30 46 18.7 39.5v-13z"/>
-  <path stroke-width="2.4" d="M18.7 26.5 30 33l11.3-6.5M30 33v13"/>
-  {!compact && (
-    <g stroke-width="1.3">
-      <!-- connected network: left node → drop → under the vertex → right node -->
-      <circle cx="-3.2" cy="27.3" r="2.4"/>
-      <path d="M-3.2 29.7v18.4L31.5 66.2 54.6 53.5"/>
-      <circle cx="56.8" cy="52.3" r="2.4"/>
-    </g>
-  )}
-</svg>
+{animated ? (
+  <span class={`emb ${cls}`.trim()} style={`font-size:${size}px`} aria-hidden="true">
+    <span class="emb-tilt">
+      <span class="emb-frame">
+        <span class="emb-d1">
+          <span class="emb-r1">
+            <svg class="emb-svg" viewBox={vb} {...svgAttrs}>
+              <path stroke-width="3.1" d="M30 3.6 54.4 17.7c.4.23.6.65.6 1.1v28.4c0 .45-.2.87-.6 1.1L30 62.4 5.6 48.3c-.4-.23-.6-.65-.6-1.1V18.8c0-.45.2-.87.6-1.1z"/>
+            </svg>
+          </span>
+        </span>
+      </span>
+      {!compact && (
+        <svg class="emb-svg emb-nodes" viewBox={vb} {...svgAttrs}>
+          <g class="na" stroke-width="1.3">
+            <circle cx="-3.2" cy="27.3" r="2.4"/>
+            <path d="M-3.2 29.7v18.4L31.5 66.2 54.6 53.5"/>
+          </g>
+          <g class="nb" stroke-width="1.3">
+            <circle cx="56.8" cy="52.3" r="2.4"/>
+          </g>
+        </svg>
+      )}
+      <span class="emb-core">
+        <span class="emb-z">
+          <span class="emb-t2">
+            <span class="emb-d2">
+              <span class="emb-r2">
+                <svg class="emb-svg" viewBox={vb} {...svgAttrs}>
+                  <path stroke-width="2.4" d="M30 20 41.3 26.5v13L30 46 18.7 39.5v-13z"/>
+                  <path stroke-width="2.4" d="M18.7 26.5 30 33l11.3-6.5M30 33v13"/>
+                </svg>
+              </span>
+            </span>
+          </span>
+        </span>
+      </span>
+    </span>
+  </span>
+) : (
+  <svg
+    class={`brand-mark ${cls}`.trim()}
+    width={size}
+    height={Math.round(size * (compact ? 1.1 : 1.02))}
+    viewBox={compact ? '0 0 60 66' : '-8 0 74 72.5'}
+    fill="none"
+    stroke="#00E5FF"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path stroke-width="3.1" d="M30 3.6 54.4 17.7c.4.23.6.65.6 1.1v28.4c0 .45-.2.87-.6 1.1L30 62.4 5.6 48.3c-.4-.23-.6-.65-.6-1.1V18.8c0-.45.2-.87.6-1.1z"/>
+    <path stroke-width="2.4" d="M30 20 41.3 26.5v13L30 46 18.7 39.5v-13z"/>
+    <path stroke-width="2.4" d="M18.7 26.5 30 33l11.3-6.5M30 33v13"/>
+    {!compact && (
+      <g stroke-width="1.3">
+        <circle cx="-3.2" cy="27.3" r="2.4"/>
+        <path d="M-3.2 29.7v18.4L31.5 66.2 54.6 53.5"/>
+        <circle cx="56.8" cy="52.3" r="2.4"/>
+      </g>
+    )}
+  </svg>
+)}

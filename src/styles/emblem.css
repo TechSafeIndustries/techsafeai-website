@@ -1,0 +1,103 @@
+/* ============================================================
+   TechSafeAI LOCKED LOGO MOTION — Variant B "Balanced"
+   Founder directive 1 Sep 2026: "the system is quietly thinking".
+   Do not reinterpret, retime, simplify or create variants.
+   Canonical variables, durations, keyframes, easings, layer tree
+   and reduced-motion rule implemented verbatim from the locked
+   specification. Wordmark sits OUTSIDE all animated wrappers.
+   Motion is compositor-only: transform + opacity.
+   ============================================================ */
+
+.emb{
+  /* canonical variables — verbatim */
+  --rot:210s;
+  --crot:145s;
+  --dd1:27s;
+  --dd2:35s;
+  --ph:-.33;
+  --a1:2.2;
+  --a2:1.6;
+  --tx:1.4;
+  --ty:2;
+  --tdur:41s;
+  --t2dur:53s;
+  --ty2:1.2;
+  --pd:9s;
+  --pz:900px;
+  --cz:.06em;
+  position:relative;display:inline-block;flex:0 0 auto;
+  width:1em;height:1.07em;             /* emblem root scales via font-size */
+  perspective:var(--pz);               /* perspective root */
+}
+
+/* tilt wrapper — frame / whole-assembly tilt, 41s */
+.emb-tilt{position:absolute;inset:0;transform-style:preserve-3d;
+  animation:emb-tilt var(--tdur) cubic-bezier(.6,.05,.2,.95) infinite}
+
+/* structural layers (full emblem height, so drift %s = % of emblem height) */
+.emb-frame,.emb-core,.emb-z,.emb-t2,.emb-d1,.emb-d2{position:absolute;inset:0;transform-style:preserve-3d}
+
+/* core Z separation */
+.emb-z{transform:translateZ(var(--cz))}
+
+/* inner core tilt, 53s */
+.emb-t2{animation:emb-tilt2 var(--t2dur) cubic-bezier(.45,.1,.3,.9) infinite}
+
+/* outer vertical drift, 27s */
+.emb-d1{animation:emb-d1 var(--dd1) cubic-bezier(.6,.05,.2,.95) infinite;will-change:transform}
+
+/* inner vertical drift, 35s, phase offset -33% (delay = 35s x -.33) */
+.emb-d2{animation:emb-d2 var(--dd2) cubic-bezier(.45,.1,.3,.9) infinite;
+  animation-delay:calc(var(--dd2) * var(--ph));will-change:transform}
+
+/* rotation wrappers — square elements rotating around their true centre */
+.emb-r1,.emb-r2{position:absolute;left:0;top:.035em;width:1em;height:1em}
+.emb-r1{animation:emb-rot var(--rot) linear infinite;will-change:transform}   /* outer hex: CW 360/210s */
+.emb-r2{animation:emb-crot var(--crot) linear infinite;will-change:transform} /* cube: CCW 360/145s */
+
+/* layer SVGs — square viewBoxes centred on the hex centre */
+.emb-svg{position:absolute;inset:0;width:100%;height:100%;display:block;
+  transform-box:fill-box;transform-origin:center}
+.emb-nodes{inset:auto;left:0;top:.035em;width:1em;height:1em}
+
+/* network detail — opacity breath 0.55 -> 0.90, 9s; second group -3.9s.
+   No travelling signals, no line drawing, no glow animation, no extra pulses. */
+.emb-nodes .na,.emb-nodes .nb{animation:emb-breath var(--pd) cubic-bezier(.6,.05,.2,.95) infinite}
+.emb-nodes .nb{animation-delay:-3.9s}
+
+@keyframes emb-rot{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes emb-crot{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
+
+@keyframes emb-d1{
+  0%{transform:translateY(calc(var(--a1) * -1%))}
+  33%{transform:translateY(.9%)}
+  58%{transform:translateY(calc(var(--a1) * 1%))}
+  81%{transform:translateY(-.55%)}
+  100%{transform:translateY(calc(var(--a1) * -1%))}
+}
+@keyframes emb-d2{
+  0%{transform:translateY(calc(var(--a2) * 1%))}
+  29%{transform:translateY(-.5%)}
+  54%{transform:translateY(calc(var(--a2) * -1%))}
+  83%{transform:translateY(.55%)}
+  100%{transform:translateY(calc(var(--a2) * 1%))}
+}
+@keyframes emb-tilt{
+  0%,100%{transform:rotateX(calc(var(--tx) * 1deg)) rotateY(calc(var(--ty) * -1deg))}
+  47%{transform:rotateX(-.98deg) rotateY(calc(var(--ty) * 1deg))}
+}
+@keyframes emb-tilt2{
+  0%,100%{transform:rotateY(calc(var(--ty2) * 1deg))}
+  44%{transform:rotateY(calc(var(--ty2) * -1deg))}
+}
+@keyframes emb-breath{
+  0%,100%{opacity:.55}
+  50%{opacity:.9}
+}
+
+/* reduced motion — verbatim from the locked specification */
+@media (prefers-reduced-motion: reduce) {
+  .emb * {
+    animation: none !important;
+  }
+}
