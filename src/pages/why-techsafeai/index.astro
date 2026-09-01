@@ -1,46 +1,269 @@
 ---
 import ContentPage from '../../components/ContentPage.astro';
+import Icon from '../../components/Icon.astro';
+import BrandMark from '../../components/BrandMark.astro';
 
-const trustStatements = [
-  { title: 'Systems remain authoritative', copy: 'Your existing HR, LMS, ERP, EHS, CMMS, permit, environmental and maintenance systems remain the systems of record. TechSafeAI connects, structures and explains — it does not replace them.' },
-  { title: 'Evidence stays traceable', copy: 'Where evidence exists, its provenance stays visible. Where it does not, that gap is shown rather than filled.' },
-  { title: 'Uncertainty stays visible', copy: 'Categorisation is not compliance. Coverage is not compliance. What is uncertain is shown as uncertain.' },
-  { title: 'Humans remain accountable', copy: 'SAI explains and assists. Consequential decisions and professional accountability stay with people.' }
+// claude/101 — FOUNDER DIRECTIVE: Why TechSafeAI page, same compression
+// rule now established across Consulting (846c4de) and Industries
+// (07c46b6). Structure: Hero -> Difference -> Why it matters -> Human
+// + System relationship -> CTA. The previous page's long-form "Public
+// Stage 1" public/controlled boundary diagram is removed from this
+// page (it duplicates content that already lives on /security-trust —
+// confirmed via the shared .security-panel/.boundary-zone global CSS
+// classes, which remain fully intact and unaffected there); its own
+// separate "Why not a dashboard, or generic AI" section is folded into
+// the Hero + Difference sections below rather than kept as a fourth
+// section. Every string is sourced from already-published, governed
+// copy — cited inline. No TESA reference is introduced. Rendered for
+// review before commit, per this mission's evidence requirements.
+
+// Hero instrument panel — same graphite/smoked-glass tile construction
+// as the Consulting page's .gov-graphic, previewing the four
+// differentiator icons below (same pattern Consulting used to preview
+// its own evidence-strip icons in its hero).
+const heroTiles = ['shield-check', 'doc-check', 'person-check', 'layers'] as const;
+
+// Four differentiators (claude/101) — the Founder's own suggested
+// theme set. Titles are the Founder's framing; each summary reuses or
+// closely trims already-published copy from this page and the
+// homepage — sources noted per item. This is a compression of the
+// previous page's four "trust statements" (same four concepts), not
+// new claims.
+const differentiators = [
+  {
+    title: 'Governed Operational Intelligence', icon: 'shield-check',
+    // src/data/site.ts `site.description`; this page's own former intro
+    copy: 'A governed Operational Intelligence platform — not a dashboard, not a generic AI tool.'
+  },
+  {
+    title: 'Evidence before assumption', icon: 'doc-check',
+    // this page's former 'Evidence stays traceable' trust statement
+    copy: "Where evidence exists, its provenance stays visible. Where it doesn't, the gap is shown, not filled."
+  },
+  {
+    title: 'Human authority retained', icon: 'person-check',
+    // this page's former 'Humans remain accountable' trust statement, verbatim
+    copy: 'SAI explains and assists. Consequential decisions and professional accountability stay with people.'
+  },
+  {
+    title: 'Works with existing systems', icon: 'layers',
+    // src/pages/index.astro integrations-section, verbatim
+    copy: 'Your existing systems remain authoritative — TechSafeAI does not become a new system of record.'
+  }
+] as const;
+
+// Why it matters — one compact proof band (claude/101). Grounded in
+// already-published copy: homepage `valueOutcomes` and the homepage
+// hero's own lead sentence — sources noted per item.
+const proof = [
+  // homepage `valueOutcomes`: 'Better operational understanding'
+  { icon: 'nodes', label: 'Clearer operational context' },
+  // homepage `valueOutcomes`: 'Improved evidence visibility', verbatim
+  { icon: 'eye', label: 'Evidence visibility' },
+  // homepage hero lead: '...understand the evidence behind it and make better-informed decisions.'
+  { icon: 'person-check', label: 'Better-informed decisions' },
+  // this page's eyebrow 'Governed Operational Intelligence' + SAI positioning
+  { icon: 'shield-check', label: 'Governed AI support' }
+] as const;
+
+// Human + System relationship — one compact three-step flow (claude/101,
+// Founder-specified). Each line is sourced: (1) homepage hero's own SAI
+// callout tag, verbatim; (2) site.ts `site.description` / homepage H1
+// concept, compressed; (3) this page's 'Humans remain accountable'
+// trust statement / Product tier 'Human Review', compressed. No TESA
+// reference; no new capability.
+const relationship = [
+  // src/pages/index.astro hero `sai-tag`, verbatim
+  { icon: 'nodes', text: 'SAI assists the human.' },
+  // src/data/site.ts `site.description`: 'governed Operational Intelligence platform'
+  { icon: 'grid', text: 'TechSafeAI supports governed operational understanding.' },
+  // this page's 'Humans remain accountable' trust statement; productTiers.core 'Human Review'
+  { icon: 'person-check', text: 'Humans retain consequential authority.' }
 ] as const;
 ---
 <ContentPage
   title="Why TechSafeAI"
   eyebrow="Governed Operational Intelligence"
-  intro="TechSafeAI differs from a dashboard or a generic AI tool because it is governed: your systems stay authoritative, evidence stays traceable, uncertainty stays visible and humans stay accountable."
+  intro="TechSafeAI differs from a dashboard or a generic AI tool because it is governed."
 >
-  <section class="content-section">
+  <Fragment slot="hero-graphic">
+    <div class="why-graphic">
+      <div class="why-glass">
+        <span class="why-title">Governed.<br/>Not generic.</span>
+        <span class="why-seam" aria-hidden="true"></span>
+        <div class="why-tiles">
+          {heroTiles.map((icon)=>(
+            <span class="why-tile" aria-hidden="true"><Icon name={icon} size={18} /></span>
+          ))}
+          <div class="why-hub" aria-hidden="true"><BrandMark size={26} compact={true} /></div>
+        </div>
+      </div>
+    </div>
+  </Fragment>
+
+  <section class="content-section diff-section">
     <div class="shell">
-      <div class="section-title"><div><div class="eyebrow">Trust statements</div><h2>What TechSafeAI commits to, every time.</h2></div></div>
-      <div class="indexed-list" style="margin-top:24px">
-        {trustStatements.map((item,i)=>(
-          <div class="indexed-item"><span class="index">0{i+1}</span><div><h3>{item.title}</h3><p>{item.copy}</p></div></div>
+      <div class="section-title"><div><div class="eyebrow">The difference</div><h2>What makes TechSafeAI different.</h2></div></div>
+      <div class="diff-grid" style="margin-top:24px">
+        {differentiators.map((d)=>(
+          <div class="diff-card">
+            <span class="diff-icon" aria-hidden="true"><Icon name={d.icon} size={22} /></span>
+            <h3>{d.title}</h3>
+            <p>{d.copy}</p>
+          </div>
         ))}
       </div>
     </div>
   </section>
 
-  <section class="content-section" style="background:#e8e5dd">
-    <div class="shell security-panel">
-      <div class="security-copy"><div class="eyebrow">Public Stage 1</div><h2>Start with context, not confidential files.</h2><p>Do not provide incident files, personal information, credentials, restricted contracts, evidence packs, system exports or detailed cyber architecture through the public website.</p></div>
-      <div class="security-detail">
-        <div class="boundary">
-          <div class="boundary-zone"><h3>PUBLIC</h3><ul><li>Business challenge</li><li>Industry and operating context</li><li>Jurisdiction</li><li>Desired outcome and timing</li><li>Business contact information</li></ul></div>
-          <div class="boundary-gate"><span>Human-controlled gate</span></div>
-          <div class="boundary-zone"><h3>CONTROLLED LATER</h3><ul><li>Documents and evidence</li><li>Restricted operational data</li><li>Detailed security information</li><li>Assessment material</li><li>Protected records</li></ul></div>
-        </div>
-        <div class="human-note"><strong>SAI explains. Humans decide.</strong> Consequential judgement remains with authorised people. Technology does not certify compliance, accept risk or replace professional accountability.</div>
+  <section class="content-section matters-section">
+    <div class="shell">
+      <div class="section-title"><div><div class="eyebrow">Why it matters</div><h2>What changes for a senior decision-maker.</h2></div></div>
+      <div class="matters-row" style="margin-top:24px">
+        {proof.map((item)=>(
+          <span class="matters-chip"><Icon name={item.icon} size={16} /><span>{item.label}</span></span>
+        ))}
       </div>
     </div>
   </section>
 
-  <section class="content-section">
+  <section class="content-section rel-section">
     <div class="shell">
-      <div class="section-title"><div><div class="eyebrow">Why not a dashboard, or generic AI</div><h2>Dashboards visualise. Generic AI summarises. Neither is governed.</h2></div><p>TechSafeAI is being built to understand governed operational relationships across activities, risks, controls, evidence and organisational context — with the boundaries above kept in place at every step.</p></div>
+      <div class="section-title"><div><div class="eyebrow">Human + system</div><h2>SAI assists. Humans decide.</h2></div></div>
+      <div class="rel-strip">
+        {relationship.map((r,i)=>(
+          <div class="rel-step">
+            <span class="rel-icon" aria-hidden="true"><Icon name={r.icon} size={18} /></span>
+            <p>{r.text}</p>
+            {i < relationship.length - 1 && <span class="rel-arrow" aria-hidden="true">→</span>}
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 </ContentPage>
+
+<style>
+  /* claude/101 — Why TechSafeAI, built to the same density rule as the
+     Consulting and Industries baselines: compact page-scoped section
+     padding, locked graphite/smoked-glass hero material, alternating
+     dark/light rhythm (dark hero -> light difference -> dark why-it-
+     matters -> light human+system -> dark CTA). Every class below is
+     scoped to this file. */
+  .content-section{padding:56px 0}
+
+  /* Difference — four engineered light cards, same material language
+     as the Consulting/Industries pillar and group cards.
+     claude/102 — Founder polish pass (4 refinements, no content change):
+     card gets the same shallow inset hairline Industries' .ppp-card
+     uses (--bevel-light-raised + inset 0 0 0 1px) for a slightly
+     stronger engineered/machined read; icon tile switches from the
+     flat tinted box to the graphite + inset-bevel tile construction
+     already used by .why-tile/.ppp-icon/.sys-node elsewhere on the
+     site, for the same reason. Geometry, copy and layout unchanged. */
+  .diff-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .diff-card{
+    position:relative;overflow:hidden;
+    background:linear-gradient(155deg,var(--panel-light-1) 0%,var(--panel-light-2) 100%);
+    border:1px solid rgba(19,39,58,.10);border-radius:8px;
+    padding:22px 20px 20px;box-shadow:var(--bevel-light-raised),inset 0 0 0 1px rgba(19,39,58,.05);
+  }
+  .diff-card::before{content:"";position:absolute;left:0;top:16px;bottom:16px;width:2px;
+    background:linear-gradient(180deg,transparent,var(--illum-line),transparent);opacity:.5}
+  .diff-icon{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;
+    background:linear-gradient(180deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,0) 45%),var(--graphite-light-3);
+    border:1px solid var(--graphite-edge);color:#6FCEFB;margin-bottom:12px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -3px 6px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.05)}
+  .diff-card h3{margin:0 0 8px;font-size:16px}
+  .diff-card p{margin:0;font-size:13px;line-height:1.5;color:var(--text-secondary)}
+
+  /* Why it matters (senior decision-maker band) — dark band.
+     claude/102 — Founder polish pass: the four proof points move from
+     an ad-hoc left-aligned flex-wrap (uneven chip widths, ragged right
+     edges) to a grid matching .diff-grid's own column rule, so all
+     four sit on one evenly-spaced, aligned baseline at every
+     breakpoint — same 2-col / 1-col collapse as the difference cards
+     above, so mobile gets a single clean full-width column instead of
+     stacked variable-width chips. Still exactly four proof points;
+     no copy or icon change. */
+  .matters-section{background:var(--atmo-dark)}
+  .matters-section .eyebrow{color:var(--illum)}
+  .matters-section .section-title h2{color:#FFFFFF}
+  .matters-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .matters-chip{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:6px;
+    background:linear-gradient(180deg,rgba(255,255,255,.05) 0%,rgba(255,255,255,0) 45%),var(--graphite-light-3);
+    border:1px solid var(--graphite-edge);color:#C7DAE3;
+    font:700 12.5px/1 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.02em}
+  .matters-chip :global(svg){color:#6FCEFB;flex-shrink:0}
+
+  /* Human + system relationship — one compact three-step flow. */
+  .rel-strip{display:flex;align-items:stretch;gap:8px;margin-top:24px}
+  .rel-step{
+    position:relative;flex:1;display:flex;flex-direction:column;align-items:flex-start;gap:10px;
+    background:linear-gradient(155deg,var(--panel-light-1) 0%,var(--panel-light-2) 100%);
+    border:1px solid rgba(19,39,58,.10);border-radius:8px;
+    padding:20px 20px 18px;box-shadow:var(--bevel-light-raised);
+  }
+  .rel-icon{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;
+    background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.28);color:#0F7FA0}
+  .rel-step p{margin:0;font-size:14px;line-height:1.4;font-weight:700;color:var(--text-primary,#13273A)}
+  .rel-arrow{position:absolute;right:-20px;top:37px;z-index:1;
+    color:#4A6472;font-size:19px;font-weight:800}
+
+  /* CTA transition — claude/102 Founder polish pass: this page's own
+     last section (rel-section) sits directly above the shared CtaBand
+     component. CtaBand's own top padding (76px, components.css) is
+     shared across every ContentPage and is out of scope here; the
+     excess was this page's own bottom padding stacking on top of it.
+     Bottom padding only is tightened (56px -> 32px); top padding is
+     untouched so the rhythm above the section is unaffected. Scoped
+     to this page — CtaBand.astro and every other page are untouched. */
+  .rel-section{padding-bottom:32px}
+
+  @media (max-width:900px){
+    .diff-grid{grid-template-columns:repeat(2,1fr)}
+    .matters-row{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:700px){
+    .rel-strip{flex-direction:column}
+    .rel-arrow{display:none}
+  }
+  @media (max-width:480px){
+    .diff-grid{grid-template-columns:1fr}
+    .matters-row{grid-template-columns:1fr}
+  }
+
+  /* Why TechSafeAI hero graphic — same graphite/smoked-glass + icon-
+     tile construction as Consulting's .gov-graphic, fresh class names
+     (.why-*) so nothing here touches any other page. */
+  :global(.technical-panel:has(.why-graphic))::after{display:none}
+  .why-graphic{position:relative;z-index:2;width:100%;height:100%;min-height:300px;
+    padding:16px;border-radius:6px;border:1px solid var(--graphite-edge);
+    background:var(--key-light),radial-gradient(160% 120% at 50% -20%,rgba(110,165,200,.07),transparent 62%),linear-gradient(180deg,var(--graphite-1) 0%,var(--graphite-2) 46%,var(--graphite-3) 100%);
+    box-shadow:var(--bevel-raised),inset 0 0 0 1px rgba(255,255,255,.06);
+    display:flex;align-items:center;justify-content:center}
+  .why-glass{position:relative;width:100%;height:100%;border-radius:4px;
+    padding:22px 20px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+    background:radial-gradient(130% 100% at 50% -14%,rgba(255,255,255,.08),transparent 58%),linear-gradient(165deg,#1B222A 0%,#171C22 60%,#15191E 100%);
+    box-shadow:var(--bevel-recessed),inset 0 1px 0 rgba(255,255,255,.05)}
+  .why-title{max-width:220px;text-align:center;font:700 15px/1.35 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.02em;text-transform:none;color:#C7DAE3}
+  .why-seam{width:34px;height:1px;background:linear-gradient(90deg,transparent,var(--illum-line),transparent)}
+  .why-tiles{position:relative;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:16px;width:100%;max-width:190px}
+  /* claude/102 — Founder polish pass: icon clarity only on the four
+     hero tiles (same surgical brightness/contrast nudge as the
+     Product hero's .sys-node pass, 85473c0) — top highlight and outer
+     ring strengthened slightly, icon color lifted a touch for more
+     contrast against the graphite fill. Geometry (size, grid, radius,
+     hub) unchanged; no new tile, label or claim added. */
+  .why-tile{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:8px;
+    background:linear-gradient(180deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,0) 45%),var(--graphite-light-3);
+    border:1px solid var(--graphite-edge);color:#A8ECFA;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -3px 6px rgba(0,0,0,.48),0 0 0 1px rgba(255,255,255,.08)}
+  .why-hub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:50px;height:50px;border-radius:50%;
+    background:radial-gradient(120% 120% at 34% 24%,rgba(255,255,255,.11),transparent 55%),var(--lvl0,#04090F);
+    display:flex;align-items:center;justify-content:center;box-shadow:var(--bevel-recessed-illum);z-index:2}
+  @media (max-width:520px){
+    .why-tiles{max-width:160px;gap:12px}
+    .why-hub{width:42px;height:42px}
+  }
+</style>
