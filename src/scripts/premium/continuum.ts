@@ -139,9 +139,9 @@ function heroHandoff(gsap: Gsap, _st: STType): void {
   const underglow = document.querySelector('.monolith-underglow');
   const reflection = document.querySelector('.monolith-reflection');
 
-  const BASE_Y = -22;
-  const BASE_X = 12;
-  const SCREEN_X = -6;
+  const BASE_Y = -13;
+  const BASE_X = 6;
+  const SCREEN_X = -3;
   const sway = { y: 0 }; // idle rotation offset, composed with cursor rig
 
   /* Entrance (desktop): the laptop rises and its screen opens. */
@@ -186,7 +186,7 @@ function heroHandoff(gsap: Gsap, _st: STType): void {
 
   /* Continuous 3D rotation: a slow showcase sway (composed with the cursor
      rig below via the shared sway offset). */
-  gsap.to(sway, { y: 9, duration: 5.5, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: staged ? 1.8 : 0 });
+  gsap.to(sway, { y: 5, duration: 6.5, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: staged ? 1.8 : 0 });
 
   /* Scroll: the laptop settles flatter and the glow dims into the seam. */
   const scroll = { p: 0 };
@@ -219,7 +219,7 @@ function heroHandoff(gsap: Gsap, _st: STType): void {
     eased.y += (cursor.y - eased.y) * 0.04;
     const flat = scroll.p;
     gsap.set(laptop, {
-      rotationY: (BASE_Y + sway.y + eased.x * 3.2) * (1 - flat * 0.75),
+      rotationY: (BASE_Y + sway.y + eased.x * 2.4) * (1 - flat * 0.75),
       rotationX: (BASE_X + eased.y * -2.2) * (1 - flat * 0.6),
       y: flat * -16,
       scale: 1 - flat * 0.03

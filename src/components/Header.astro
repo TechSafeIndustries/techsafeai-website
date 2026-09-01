@@ -1,14 +1,15 @@
 ---
 import { navigation } from '../data/navigation';
+import BrandMark from './BrandMark.astro';
 ---
 <header class="site-header">
   <div class="shell header-inner">
-    {/* TEMPORARY PLACEHOLDER — awaiting canonical LOGO-TAI-003 from
-        01 — TechSafe Brand Identity & Design System (asset not yet delivered
-        to this workspace; dependency recorded in claude/73). Founder directive
-        31 Aug 2026: do not use the old TSI lockup; do not recreate the logo. */}
+    {/* Founder-supplied TechSafeAI lockup (hex-cube network mark + TechSafe/AI
+        wordmark, Founder spec 31 Aug 2026). Vector implementation consumes the
+        Founder's supplied asset; canonical files remain owed by Project 01. */}
     <a class="brand" href="/" aria-label="TechSafeAI home">
-      <span class="wordmark wordmark-temp">TechSafeAI</span>
+      <BrandMark size={30} />
+      <span class="wordmark">TechSafe<span class="wordmark-ai">AI</span></span>
     </a>
     <nav class="desktop-nav" aria-label="Primary navigation">
       {navigation.map((item) => <a href={item.href}>{item.label}</a>)}
