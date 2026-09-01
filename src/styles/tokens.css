@@ -38,6 +38,70 @@
   --space-8:64px;
   --space-9:80px;
   --space-10:104px;
+
+  /* ================================================================
+     SITE-WIDE VISUAL PRECEDENCE — token reconciliation (claude/83, 1 Sep 2026)
+     Founder-approved migration policy:
+       1. --accent / --accent-soft / --navy-* / --surface-* / --text-* above
+          are PRESERVED, UNCHANGED, PERMANENT compatibility aliases. They
+          are not deleted or redefined by this pass. intake.css consumes
+          them permanently — the intake route is excluded from this
+          rollout by Founder directive and must never be repainted by a
+          change to these values.
+       2. New semantic/material tokens below are ADDITIVE ONLY. Nothing
+          existing was renamed, retyped or removed to create them.
+       3. Downstream stages migrate one file at a time (base primitives →
+          sub-page hero bands → homepage sections → content pages →
+          evidence/human-review → integrations), each verified before the
+          next. A file is only switched onto the tokens below once that
+          stage's evidence has been rendered and returned.
+       4. Cyan (--cyan / --illum below) is illumination/system-signal by
+          default (borders, keylines, glows, node points) and may ALSO be
+          used as a controlled CTA/primary-action fill — but only in the
+          exact pattern the locked hero already established
+          (.hero .button-primary, .site-header .button-primary:hover):
+          see --action-fill / --action-fill-ink. It is never a general
+          decorative fill.
+     ================================================================ */
+
+  /* ---- Illumination / action (from locked hero 3046903) ---- */
+  --illum:var(--cyan);
+  --illum-soft:rgba(0,229,255,.35);
+  --illum-line:rgba(0,229,255,.55);
+  --action-fill:linear-gradient(92deg,var(--cyan),#8FF3FF);
+  --action-fill-ink:#04262B;
+  --action-fill-hover:brightness(1.06);
+
+  /* ---- Dark engineered surfaces (extracted verbatim from hero.css
+         .bay-frame / .bay-cowl / .bay-console material recipe) ---- */
+  --graphite-1:#39434E;--graphite-2:#28313A;--graphite-3:#1D242C;      /* structural panel (bay-frame) */
+  --graphite-light-1:#4A5765;--graphite-light-2:#2E3944;--graphite-light-3:#222A33; /* raised panel (bay-cowl/side) */
+  --graphite-edge:#0A0D11;                                             /* hairline border on dark panels */
+  --key-light:linear-gradient(103deg,rgba(255,255,255,.08) 0%,rgba(255,255,255,.02) 28%,rgba(255,255,255,0) 55%);
+  --groove-dark:linear-gradient(180deg,rgba(2,6,11,.58) 0 1px,rgba(255,255,255,.18) 1px 2px);
+  --bevel-raised:inset 0 1.5px 0 rgba(255,255,255,.24),inset 0 -9px 14px rgba(2,6,11,.48);
+  --bevel-recessed:inset 0 3px 10px rgba(0,0,0,.65),inset 0 0 0 1px rgba(255,255,255,.12),0 0 0 1px #04070A,0 0 0 3px #3A4650,0 0 0 4px rgba(255,255,255,.20);
+  --bevel-recessed-illum:inset 0 3px 10px rgba(0,0,0,.7),inset 0 0 0 1px rgba(0,229,255,.42),0 0 0 1px #04070A,0 0 0 4px #414D5A,0 0 0 5px rgba(255,255,255,.24);
+
+  /* ---- Atmosphere (dark section backgrounds, from .hero far-field) ---- */
+  --atmo-dark:linear-gradient(170deg,#26343F 0%,#1A3050 34%,#1B3A60 66%,#1E4270 100%);
+
+  /* ---- Light engineered surfaces — NEW, extrapolated from the hero's
+         material logic (bevel/groove/key-light) for sections that stay
+         light per Founder ruling 4 ("light sections may remain light,
+         but must inherit material quality, depth, engineered structure,
+         cyan discipline"). Not literal hero extractions — hero has no
+         light surfaces — kept deliberately subtle/restrained. ---- */
+  --panel-light-1:#FFFFFF;--panel-light-2:#F4F7F9;
+  --key-light-on-light:linear-gradient(103deg,rgba(255,255,255,.65) 0%,rgba(255,255,255,.15) 30%,rgba(255,255,255,0) 55%);
+  --groove-light:linear-gradient(180deg,rgba(19,39,58,.12) 0 1px,rgba(255,255,255,.75) 1px 2px);
+  --bevel-light-recessed:inset 0 2px 6px rgba(19,39,58,.08),inset 0 0 0 1px rgba(19,39,58,.07),0 0 0 1px rgba(19,39,58,.10);
+  --bevel-light-raised:0 1px 0 rgba(255,255,255,.8) inset,0 14px 30px rgba(13,39,72,.08);
+
+  /* ---- Instrumentation typography (from hero eyebrow / monolith-plate /
+         bay-badge / cockpit-caption / sai-tag label pattern) ---- */
+  --mono-label-font:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --label-eyebrow-size:11px;--label-eyebrow-weight:600;--label-eyebrow-track:.14em;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
