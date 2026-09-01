@@ -2,171 +2,103 @@
 import ContentPage from '../../components/ContentPage.astro';
 import Icon from '../../components/Icon.astro';
 import BrandMark from '../../components/BrandMark.astro';
-import { consultingServices } from '../../data/site';
+
+// claude/96 — FOUNDER CORRECTION #2: this page still read as a
+// capability document, not a website page. Cut further: the
+// methodology block collapses from a tall panel into one compact
+// horizontal 8-step strip (label only, no per-step description copy);
+// the two-column "Operational Intelligence backed by operational
+// expertise" explanatory section is replaced by a single slim proof
+// line (Human-led + Evidence-backed + Governed AI), matching the
+// homepage's own .trust-strip pattern; inter-section vertical spacing
+// is compressed page-wide. Final structure, exactly as directed:
+// Hero -> three pillars -> methodology strip -> proof line -> CTA.
+//
+// claude/97 — Founder approved v96 as the Consulting baseline, with
+// two small polish items: (1) the methodology heading read as
+// "slightly consulting-heavy" — changed to the Founder's own preferred
+// simpler alternative, "How TechSafeAI works"; (2) the hero graphic's
+// four icon tiles read as "slightly generic" with no explicit meaning
+// — each tile now carries a one-word caption (Evidence / Review /
+// Assurance / Judgement) so the same physical cockpit tiles read as
+// intended, without changing geometry, icons or adding new elements
+// ("do not overbuild it"). Every string is still sourced from
+// already-published, governed copy — sources noted inline.
 
 const stages = [
-  ['UNDERSTAND', 'Clarify pain, workflow, actors, information, cost/risk and desired outcome.'],
-  ['PROTECT', 'Set the public-versus-controlled information boundary.'],
-  ['AUTHORITY', 'Resolve what governs before declaring a requirement.'],
-  ['EVIDENCE', 'Review evidence only inside an authorised scope and controlled intake.'],
-  ['GAPS', 'Separate current-state findings from future actions.'],
-  ['TRANSFORM', 'Use DRIVER-6 to structure remediation and operating change.'],
-  ['VERIFY', 'Check control effectiveness and measured results.'],
-  ['VALUE', 'Make value claims only where baseline, method and evidence exist.']
+  'UNDERSTAND', 'PROTECT', 'AUTHORITY', 'EVIDENCE', 'GAPS', 'TRANSFORM', 'VERIFY', 'VALUE'
 ] as const;
 
-// claude/93 — Founder directive: Product/Consultancy split + evidence strip.
-// Every string below is copied verbatim from existing, already-published,
-// governed copy elsewhere on the site (not authored fresh) — sources noted
-// inline. Duplicated locally rather than imported, since engagementPaths/
-// productCapabilities are private consts inside index.astro (the locked
-// homepage), which this mission does not touch.
-
-// Verbatim from src/pages/index.astro `engagementPaths` (lines 34-45).
-const engagement = {
-  product: {
-    title: 'Product Services',
-    summary: 'Governed Operational Intelligence delivered through the TechSafeAI platform — Cockpit, SAI, Evidence Intelligence and Human Review.'
+// Three consulting capability pillars — unchanged from claude/95.
+// Grouping/pillar names are Founder-specified; each summary is reused
+// verbatim from src/data/site.ts `consultingServices` (closest-matching
+// existing service item per pillar) — no new capability or claim.
+const pillars = [
+  {
+    title: 'Operational Assurance', icon: 'shield-check',
+    // consultingServices: 'Operational Risk & Assurance'
+    copy: 'Structured review of operational risk exposure, controls and assurance activity.'
   },
-  consult: {
-    title: 'Consultancy Services',
-    summary: 'Human-led expertise: assurance, risk and operational reviews, control verification, incident investigation and implementation support.'
+  {
+    title: 'Operational Improvement', icon: 'loop',
+    // consultingServices: 'Operational Reviews'
+    copy: 'Independent review of workflow, ownership and operating effectiveness.'
+  },
+  {
+    title: 'Digital Transformation', icon: 'chip',
+    // consultingServices: 'Digital & AI Transformation'
+    copy: 'Move stalled digital or AI initiatives into governed, accountable operating change.'
   }
-} as const;
-
-// Verbatim from src/pages/index.astro `productCapabilities` (lines 65-68).
-const productCapabilities = [
-  'Operational Intelligence Cockpit', 'SAI Assistant', 'Risk & Activity Intelligence',
-  'Compliance & Evidence Adapters', 'Incident Learning', 'Contractor Management', 'Integrations & Connectors'
 ] as const;
 
-// Four proof themes named in the Founder directive. Each summary is an
-// existing governed sentence, reused verbatim (source noted per item) —
-// none of this copy is newly authored:
-const evidenceThemes = [
-  {
-    title: 'Evidence & Provenance', icon: 'doc-check',
-    // src/pages/index.astro trust-strip, line 161
-    copy: 'Evidence and provenance stay visible.'
-  },
-  {
-    title: 'Human Review', icon: 'person-check',
-    // src/data/site.ts productTiers.core, "Human Review" tier item
-    copy: 'Consequential judgement stays with accountable people. TechSafeAI supports the review, not the decision.'
-  },
-  {
-    title: 'Audit Ready', icon: 'seal-check',
-    // src/data/site.ts capabilities, "Safety & Compliance Readiness" (tag: "Audit / assurance / readiness")
-    copy: 'Prepare for scrutiny by clarifying obligations, scope, controls, evidence and ownership.'
-  },
-  {
-    title: 'Secure & Private', icon: 'shield-check',
-    // src/pages/security-trust/index.astro and src/pages/why-techsafeai/index.astro
-    copy: 'Protected information belongs behind a controlled classification, processing and human-review decision.'
-  }
+// One short proof line (claude/96) — replaces the claude/95 two-column
+// positioning section. Each phrase is grounded in this page's own
+// eyebrow ("Human-led expertise") and existing governed copy already
+// used elsewhere on this page/site: "Evidence-led. Human review."
+// (this page's hero) and "governed Operational Intelligence platform"
+// / "Contextual, evidence-grounded and human-supervised." (site.ts
+// description; src/pages/index.astro SAI section). Not new claims —
+// a compression of copy already on the site into three short labels.
+const proof = [
+  { icon: 'person', label: 'Human-led' },
+  { icon: 'doc-check', label: 'Evidence-backed' },
+  { icon: 'shield-check', label: 'Governed AI' }
 ] as const;
 ---
 <ContentPage
   title="Consulting"
   eyebrow="Human-led expertise"
-  intro="Consultancy Services are first-class, not secondary. Human-led expertise, assurance, review and implementation support for high-risk operations."
+  intro="Human-led expertise for high-risk operations."
 >
   <Fragment slot="hero-graphic">
-    <!-- claude/94 — replaces the old dots/line/"Industrial Authority"
-         default panel on this page (the same generic graphic Product's
-         hero carried before claude/86). Reuses the graphite-housing +
-         smoked-glass construction technique already established for the
-         Product hero graphic and this page's own split zones — same
-         material tokens, fresh markup, no diagram/hub content copied.
-         Content is this page's own already-established headline
-         ("Evidence-led. Human review.", used verbatim below in the
-         evidence strip) plus the same four icons the evidence strip
-         uses — a compact preview of that section, not new copy. -->
+    <!-- claude/97 — same tiles/geometry as claude/94/95; each now
+         carries a one-word caption per Founder direction so the
+         meaning (Evidence / Review / Assurance / Judgement) is
+         explicit rather than icon-only. -->
     <div class="gov-graphic">
       <div class="gov-glass">
         <span class="gov-title">Evidence-led.<br/>Human review.</span>
         <span class="gov-seam" aria-hidden="true"></span>
         <div class="gov-tiles">
-          <span class="gov-tile" aria-hidden="true"><Icon name="doc-check" size={18} /></span>
-          <span class="gov-tile" aria-hidden="true"><Icon name="person-check" size={18} /></span>
-          <span class="gov-tile" aria-hidden="true"><Icon name="seal-check" size={18} /></span>
-          <span class="gov-tile" aria-hidden="true"><Icon name="shield-check" size={18} /></span>
+          <span class="gov-tile" aria-hidden="true"><Icon name="doc-check" size={16} /><em>Evidence</em></span>
+          <span class="gov-tile" aria-hidden="true"><Icon name="person-check" size={16} /><em>Review</em></span>
+          <span class="gov-tile" aria-hidden="true"><Icon name="seal-check" size={16} /><em>Assurance</em></span>
+          <span class="gov-tile" aria-hidden="true"><Icon name="shield-check" size={16} /><em>Judgement</em></span>
           <div class="gov-hub" aria-hidden="true"><BrandMark size={26} compact={true} /></div>
         </div>
       </div>
     </div>
   </Fragment>
-  <section class="content-section split-zone-section">
-    <div class="shell">
-      <div class="section-title"><div><div class="eyebrow">Ways to engage</div><h2>Two ways to work with TechSafeAI.</h2></div></div>
-      <div class="split-zones" style="margin-top:32px">
-        <div class="split-zone zone-product">
-          <div class="zone-kicker"><span class="zone-icon-tile" aria-hidden="true"><Icon name="grid" size={16} /></span>{engagement.product.title}</div>
-          <p class="zone-copy">{engagement.product.summary}</p>
-          <div class="zone-glass">
-            <ul class="zone-chips">
-              {productCapabilities.map((name)=>(<li>{name}</li>))}
-            </ul>
-          </div>
-          <a class="zone-link" href="/product">View Product →</a>
-        </div>
-        <div class="split-zone zone-consult">
-          <div class="zone-kicker"><span class="zone-icon-tile" aria-hidden="true"><Icon name="person" size={16} /></span>{engagement.consult.title}</div>
-          <p class="zone-copy">{engagement.consult.summary}</p>
-          <div class="zone-glass zone-glass-photo">
-            <!-- Real industrial/field photograph (claude/94), replacing
-                 the abstract illustration substituted in claude/93. This
-                 repository has no owned/client photography, so this is a
-                 stock photo — sourced from Unsplash (unsplash.com/photos/
-                 hfj5CG9dvuU, photographer John Kakuk, Unsplash License —
-                 free for commercial use, no attribution required),
-                 cropped to frame out the excavator's legible "CAT"
-                 equipment-brand wordmark (a small decal on the helmet in
-                 the original frame is illegible/incidental). Two workers
-                 shown from behind only — not identifiable individuals.
-                 This is a placeholder for real TechSafeAI/client
-                 photography, not a depiction of an actual engagement;
-                 alt text and the caption below say so explicitly. Saved
-                 at public/assets/stock/consulting-field-context.jpg. -->
-            <img
-              src="/assets/stock/consulting-field-context.jpg"
-              width="1150"
-              height="862"
-              alt="Representative stock photograph of field operators at an industrial site — not a depiction of an actual TechSafeAI engagement."
-              loading="lazy"
-            />
-          </div>
-          <span class="zone-photo-notice">Representative field imagery — stock photograph.</span>
-          <a class="zone-link" href="#service-areas">See service areas ↓</a>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <section class="content-section evidence-strip">
+  <section class="content-section pillars-section">
     <div class="shell">
-      <div class="section-title"><div><div class="eyebrow">Evidence &amp; Human Review</div><h2>Evidence-led. Human review.</h2></div></div>
-      <div class="evidence-grid" style="margin-top:28px">
-        {evidenceThemes.map((theme)=>(
-          <div class="evidence-card">
-            <span class="evidence-icon" aria-hidden="true"><Icon name={theme.icon} size={20} /></span>
-            <h3>{theme.title}</h3>
-            <p>{theme.copy}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="content-section" id="service-areas">
-    <div class="shell">
-      <div class="section-title"><div><div class="eyebrow">Service areas</div><h2>Ten ways to work with TechSafeAI consultants.</h2></div></div>
-      <div class="route-grid" style="margin-top:24px">
-        {consultingServices.map((service,i)=>(
-          <div class="route-card">
-            <span class="route-index" aria-hidden="true">{String(i+1).padStart(2,'0')}</span>
-            <h3>{service.title}</h3>
-            <p>{service.summary}</p>
+      <div class="section-title"><div><div class="eyebrow">Consulting capability</div><h2>Three ways to work with TechSafeAI consultants.</h2></div></div>
+      <div class="pillar-grid" style="margin-top:24px">
+        {pillars.map((p)=>(
+          <div class="pillar-card">
+            <span class="pillar-icon" aria-hidden="true"><Icon name={p.icon} size={22} /></span>
+            <h3>{p.title}</h3>
+            <p>{p.copy}</p>
           </div>
         ))}
       </div>
@@ -174,151 +106,86 @@ const evidenceThemes = [
   </section>
 
   <section class="content-section method-section">
-    <div class="shell content-grid">
-      <div>
-        <div class="eyebrow">Consulting methodology</div>
-        <h2>A governed route through complex work.</h2>
-        <p>The method is staged because public context, formal assessment, remediation and verified value are different activities with different authority.</p>
-      </div>
-      <div class="indexed-list method-panel">
-        {stages.map(([stage,copy],i)=>(
-          <div class="indexed-item"><span class="index">0{i+1}</span><div><h3>{stage}</h3><p>{copy}</p></div></div>
+    <div class="shell">
+      <div class="section-title"><div><div class="eyebrow">Consulting methodology</div><h2>How TechSafeAI works.</h2></div></div>
+      <div class="method-strip">
+        {stages.map((stage,i)=>(
+          <div class="method-step">
+            <span class="method-step-index">0{i+1}</span>
+            <span class="method-step-label">{stage}</span>
+          </div>
         ))}
       </div>
+    </div>
+  </section>
+
+  <section class="content-section proof-strip">
+    <div class="shell proof-row">
+      {proof.map((item)=>(
+        <span class="proof-tag"><Icon name={item.icon} size={18} /><span>{item.label}</span></span>
+      ))}
     </div>
   </section>
 </ContentPage>
 
 <style>
-  /* Consulting-specific material pass (claude/92) — presentation only,
-     no copy/claims/structure/service-count change. Every selector below
-     targets markup authored directly in THIS file, so Astro's per-file
-     style scoping isolates it automatically (no :global() needed, unlike
-     PageHero's shared .technical-panel) — .route-card/.indexed-item on
-     any other page (there are none sharing this exact markup) are
-     unaffected either way. Reuses the Stage 1 light-surface tokens
-     (--panel-light-1/2, --bevel-light-raised/-recessed, --illum-line,
-     --mono-label-font) built for exactly this case: material quality on
-     a section that stays light. Section background colours (white /
-     #e8e5dd) are unchanged — only the cards and list panel inside them
-     are upgraded. Deliberately does not reuse .sys-graphic/.sys-glass/
-     .sys-hub — no smoked-glass chamber, no embedded node, no diagram —
-     so this reads as a distinct, Consulting-specific treatment rather
-     than a copy of the Product subsystem panel. */
+  /* claude/96 — further compression. Page-wide: base section padding
+     cut on this page only (scoped rule below overrides the global
+     .content-section{padding:88px 0} from components.css). Pillars
+     unchanged from claude/95. Methodology becomes a single-row strip
+     (label + index only, connected by one thin rail line) instead of
+     the previous full descriptive list panel. The old two-column
+     "positioning" band is gone entirely, replaced by .proof-strip — a
+     slim single-line band styled after the homepage's own
+     .trust-strip (icon + short label, minimal vertical padding). */
+  .content-section{padding:56px 0}
 
-  /* Service areas — engineered surface cards instead of flat white
-     SaaS-grid tiles. Subtle raised bevel + one restrained cyan seam per
-     card; a small mono index tag continues the numbering convention
-     already used by the methodology list below on this same page. */
-  .route-grid{gap:14px;background:transparent;border:0}
-  .route-card{
+  .pillar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .pillar-card{
     position:relative;overflow:hidden;
     background:linear-gradient(155deg,var(--panel-light-1) 0%,var(--panel-light-2) 100%);
-    border:1px solid rgba(19,39,58,.10);border-radius:6px;
-    padding:26px 26px 24px 30px;
-    box-shadow:var(--bevel-light-raised);
-    transition:box-shadow .15s ease-out,transform .15s ease-out;
-  }
-  .route-card::before{content:"";position:absolute;left:0;top:16px;bottom:16px;width:2px;
-    background:linear-gradient(180deg,transparent,var(--illum-line),transparent);opacity:.5}
-  .route-card:hover{box-shadow:var(--bevel-light-raised),0 16px 28px -20px rgba(19,39,58,.30);transform:translateY(-1px)}
-  .route-index{display:inline-flex;align-items:center;justify-content:center;
-    min-width:28px;height:20px;padding:0 6px;margin-bottom:14px;
-    font:700 10px/1 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.04em;color:#3E5566;
-    background:var(--panel-light-2);border-radius:3px;box-shadow:var(--bevel-light-recessed)}
-  .route-card h3{margin:0 0 8px;font-size:20px}
-  .route-card p{margin:0;font-size:13px;color:var(--text-secondary)}
-
-  /* Methodology — the eight-stage list becomes one bevelled, recessed
-     panel (a structured sequence, not a flat divider list); index
-     numbers become small graphite/mono chips rather than plain text. */
-  .method-panel{
     border:1px solid rgba(19,39,58,.10);border-radius:8px;
-    background:linear-gradient(180deg,var(--panel-light-1) 0%,var(--panel-light-2) 100%);
-    box-shadow:var(--bevel-light-raised);
-    padding:2px 28px;position:relative;overflow:hidden;
+    padding:26px 24px 24px;box-shadow:var(--bevel-light-raised);
   }
-  .method-panel::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;
-    background:linear-gradient(180deg,transparent,var(--illum-line) 15%,var(--illum-line) 85%,transparent);opacity:.45}
-  .method-panel .indexed-item{border-bottom:1px solid rgba(19,39,58,.08);align-items:center}
-  .method-panel .indexed-item:last-child{border-bottom:0}
-  .method-panel .indexed-item .index{
-    display:inline-flex;align-items:center;justify-content:center;
-    width:34px;height:34px;border-radius:50%;
-    font:700 10px/1 var(--mono-label-font,ui-monospace,monospace);color:#3E5566;
-    background:var(--panel-light-2);box-shadow:var(--bevel-light-recessed)}
-  .method-panel .indexed-item h3{font-size:19px}
+  .pillar-card::before{content:"";position:absolute;left:0;top:16px;bottom:16px;width:2px;
+    background:linear-gradient(180deg,transparent,var(--illum-line),transparent);opacity:.5}
+  .pillar-icon{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:8px;
+    background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.28);color:#0F7FA0;margin-bottom:14px}
+  .pillar-card h3{margin:0 0 8px;font-size:19px}
+  .pillar-card p{margin:0;font-size:13.5px;line-height:1.5;color:var(--text-secondary)}
 
-  @media (max-width:767px){
-    .route-card{padding:22px 20px 20px 26px}
-    .method-panel{padding:2px 18px}
-  }
+  .method-section{background:var(--atmo-dark);padding:48px 0}
+  .method-section .eyebrow{color:var(--illum)}
+  .method-section .section-title h2{color:#FFFFFF}
 
-  /* Product/Consultancy split + evidence strip (claude/93). Background
-     var(--atmo-dark) on the split section is the same dark navy/steel
-     token Stage 2 applies to .section-dark elsewhere — keeps this new
-     block in the hero's material family. Each zone is built from the
-     graphite-housing + smoked-glass tokens (as the locked Product module
-     is), but with no hub/diagram/node markup — a new, simpler instrument
-     panel, not a copy of the locked module. */
-  .split-zone-section{background:var(--atmo-dark)}
-  .split-zone-section .eyebrow{color:var(--illum)}
-  .split-zone-section .section-title h2{color:#FFFFFF}
-  .split-zones{display:grid;grid-template-columns:1fr 1fr;gap:28px}
-  .split-zone{
-    position:relative;padding:32px 30px;border-radius:8px;
-    border:1px solid var(--graphite-edge);
-    background:var(--key-light),linear-gradient(180deg,var(--graphite-1) 0%,var(--graphite-2) 46%,var(--graphite-3) 100%);
-    box-shadow:var(--bevel-raised);
-    display:flex;flex-direction:column;gap:16px;
-  }
-  .zone-kicker{display:flex;align-items:center;gap:10px;font:700 12px/1 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.08em;text-transform:uppercase;color:#CFE3EC}
-  .zone-icon-tile{display:flex;align-items:center;justify-content:center;flex-shrink:0;width:30px;height:30px;border-radius:6px;background:rgba(0,229,255,.10);border:1px solid rgba(0,229,255,.30);color:#6FCEFB}
-  .zone-copy{margin:0;color:#B9C9D2;font-size:14px;line-height:1.55}
-  .zone-glass{
-    flex:1;border-radius:6px;padding:18px;
-    background:linear-gradient(165deg,#0C131B 0%,#080D13 60%,#060A0F 100%);
-    box-shadow:var(--bevel-recessed);
-  }
-  .zone-chips{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start}
-  .zone-chips li{
-    font:700 10px/1 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.03em;color:#C7DAE3;
-    background:var(--graphite-light-3);border:1px solid var(--graphite-edge);border-radius:4px;padding:6px 9px;
-  }
-  .zone-glass-illustration{display:flex;align-items:center;justify-content:center;min-height:160px}
-  .zone-illustration{width:100%;max-width:210px;height:auto}
-  .zone-link{align-self:flex-start;font-weight:750;font-size:13px;color:#6FCEFB;text-decoration:none}
-  .zone-link:hover{color:#9FE3F7}
+  .method-strip{position:relative;display:flex;margin-top:36px;padding:0 4px}
+  .method-strip::before{content:"";position:absolute;top:15px;left:2%;right:2%;height:1px;
+    background:linear-gradient(90deg,transparent,var(--illum-line) 10%,var(--illum-line) 90%,transparent);opacity:.55}
+  .method-step{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;gap:10px;padding:0 4px;text-align:center}
+  .method-step-index{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;flex-shrink:0;
+    font:700 10px/1 var(--mono-label-font,ui-monospace,monospace);color:#0B1116;
+    background:linear-gradient(180deg,#DCE8EE 0%,#C7DAE3 100%);box-shadow:0 1px 2px rgba(0,0,0,.35)}
+  .method-step-label{font:700 10px/1.3 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.05em;text-transform:uppercase;color:#C7DAE3}
 
-  .evidence-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-  .evidence-card{
-    background:linear-gradient(155deg,var(--panel-light-1) 0%,var(--panel-light-2) 100%);
-    border:1px solid rgba(19,39,58,.10);border-radius:6px;padding:22px 20px;
-    box-shadow:var(--bevel-light-raised);
-  }
-  .evidence-icon{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:6px;
-    background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.28);color:#0F7FA0;margin-bottom:12px}
-  .evidence-card h3{margin:0 0 6px;font-size:16px}
-  .evidence-card p{margin:0;font-size:12.5px;color:var(--text-secondary);line-height:1.45}
-
-  .zone-glass-photo{padding:0;overflow:hidden}
-  .zone-glass-photo img{display:block;width:100%;height:100%;object-fit:cover;min-height:160px}
-  .zone-photo-notice{font-size:11px;color:#7E97A6;margin-top:-6px}
+  .proof-strip{padding:28px 0;background:var(--panel-light-2,#F4F7F9);border-top:1px solid rgba(19,39,58,.08);border-bottom:1px solid rgba(19,39,58,.08)}
+  .proof-row{display:flex;align-items:center;justify-content:center;gap:36px;flex-wrap:wrap}
+  .proof-tag{display:flex;align-items:center;gap:9px;font:700 13px/1 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.03em;color:#28313A;border:0}
+  .proof-tag :global(svg){color:#0F7FA0;flex-shrink:0}
 
   @media (max-width:900px){
-    .split-zones{grid-template-columns:1fr}
-    .evidence-grid{grid-template-columns:repeat(2,1fr)}
+    .pillar-grid{grid-template-columns:1fr}
   }
-  @media (max-width:600px){
-    .evidence-grid{grid-template-columns:1fr}
-    .split-zone{padding:24px 20px}
+  @media (max-width:700px){
+    .method-strip{flex-wrap:wrap;row-gap:24px;column-gap:12px}
+    .method-strip::before{display:none}
+    .method-step{flex:0 0 calc(25% - 9px)}
+  }
+  @media (max-width:480px){
+    .method-step{flex:0 0 calc(50% - 6px)}
+    .proof-row{gap:18px 28px}
   }
 
-  /* Consulting hero graphic (claude/94) — same housing/glass construction
-     as the split zones above and the locked Product hero graphic, fresh
-     class names (.gov-*) so nothing here touches product/index.astro.
-     Removes the shared legacy diagonal-line pseudo-element on this page's
-     panel only, exactly as the Product page does for its own graphic. */
+  /* Consulting hero graphic (claude/94, unchanged) */
   :global(.technical-panel:has(.gov-graphic))::after{display:none}
   .gov-graphic{position:relative;z-index:2;width:100%;height:100%;min-height:300px;
     padding:16px;border-radius:6px;border:1px solid var(--graphite-edge);
@@ -332,10 +199,11 @@ const evidenceThemes = [
   .gov-title{max-width:220px;text-align:center;font:700 15px/1.35 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.02em;text-transform:none;color:#C7DAE3}
   .gov-seam{width:34px;height:1px;background:linear-gradient(90deg,transparent,var(--illum-line),transparent)}
   .gov-tiles{position:relative;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:16px;width:100%;max-width:190px}
-  .gov-tile{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:8px;
+  .gov-tile{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-radius:8px;
     background:linear-gradient(180deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,0) 45%),var(--graphite-light-3);
     border:1px solid var(--graphite-edge);color:#8FE3F5;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -3px 6px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.05)}
+  .gov-tile em{font-style:normal;font:700 7.5px/1 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.04em;text-transform:uppercase;color:#B9DCE6;opacity:.9}
   .gov-hub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:50px;height:50px;border-radius:50%;
     background:radial-gradient(120% 120% at 34% 24%,rgba(255,255,255,.11),transparent 55%),var(--lvl0,#04090F);
     display:flex;align-items:center;justify-content:center;box-shadow:var(--bevel-recessed-illum);z-index:2}
@@ -343,19 +211,4 @@ const evidenceThemes = [
     .gov-tiles{max-width:160px;gap:12px}
     .gov-hub{width:42px;height:42px}
   }
-
-  /* Consulting methodology (claude/94) — Founder correction: the flat
-     beige section (#e8e5dd) was flagged as legacy styling that should
-     not remain dominant. Converted to the same var(--atmo-dark) steel-
-     blue/navy atmosphere the split section above uses; the light,
-     bevelled .method-panel from claude/92 is unchanged and now reads as
-     an instrument display lifted off a dark chassis, matching "stronger
-     depth". Left-column copy recoloured for contrast against the dark
-     background; the panel's own bevel is unchanged, plus one added
-     outer shadow so it visibly lifts off the darker section. */
-  .method-section{background:var(--atmo-dark)}
-  .method-section .eyebrow{color:var(--illum)}
-  .method-section .content-grid h2{color:#FFFFFF}
-  .method-section .content-grid > div:first-child p{color:#AABAC3}
-  .method-panel{box-shadow:var(--bevel-light-raised),0 24px 44px -24px rgba(2,8,16,.6)}
 </style>
