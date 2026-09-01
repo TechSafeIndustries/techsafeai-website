@@ -27,7 +27,7 @@
 .choice-card:has(input:checked){background:var(--navy-800);color:#fff}
 .choice-card input{margin:3px 0 0;accent-color:var(--accent);width:18px;height:18px}
 .choice-card:focus-within{outline:3px solid var(--focus-light);outline-offset:-3px;z-index:2}
-.choice-index{font:700 9px ui-monospace,monospace;color:#718792;padding-top:3px}
+.choice-index{font:700 9px ui-monospace,monospace;color:var(--text-secondary);padding-top:3px}
 .choice-card:has(input:checked) .choice-index{color:var(--accent-soft)}
 .field{display:grid;gap:7px;margin:0 0 22px}
 .field>span{font-weight:700;font-size:14px}
