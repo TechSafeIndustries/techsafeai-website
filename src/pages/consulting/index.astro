@@ -1,5 +1,6 @@
 ---
 import ContentPage from '../../components/ContentPage.astro';
+import Icon from '../../components/Icon.astro';
 import { consultingServices } from '../../data/site';
 
 const stages = [
@@ -12,13 +13,129 @@ const stages = [
   ['VERIFY', 'Check control effectiveness and measured results.'],
   ['VALUE', 'Make value claims only where baseline, method and evidence exist.']
 ] as const;
+
+// claude/93 — Founder directive: Product/Consultancy split + evidence strip.
+// Every string below is copied verbatim from existing, already-published,
+// governed copy elsewhere on the site (not authored fresh) — sources noted
+// inline. Duplicated locally rather than imported, since engagementPaths/
+// productCapabilities are private consts inside index.astro (the locked
+// homepage), which this mission does not touch.
+
+// Verbatim from src/pages/index.astro `engagementPaths` (lines 34-45).
+const engagement = {
+  product: {
+    title: 'Product Services',
+    summary: 'Governed Operational Intelligence delivered through the TechSafeAI platform — Cockpit, SAI, Evidence Intelligence and Human Review.'
+  },
+  consult: {
+    title: 'Consultancy Services',
+    summary: 'Human-led expertise: assurance, risk and operational reviews, control verification, incident investigation and implementation support.'
+  }
+} as const;
+
+// Verbatim from src/pages/index.astro `productCapabilities` (lines 65-68).
+const productCapabilities = [
+  'Operational Intelligence Cockpit', 'SAI Assistant', 'Risk & Activity Intelligence',
+  'Compliance & Evidence Adapters', 'Incident Learning', 'Contractor Management', 'Integrations & Connectors'
+] as const;
+
+// Four proof themes named in the Founder directive. Each summary is an
+// existing governed sentence, reused verbatim (source noted per item) —
+// none of this copy is newly authored:
+const evidenceThemes = [
+  {
+    title: 'Evidence & Provenance', icon: 'doc-check',
+    // src/pages/index.astro trust-strip, line 161
+    copy: 'Evidence and provenance stay visible.'
+  },
+  {
+    title: 'Human Review', icon: 'person-check',
+    // src/data/site.ts productTiers.core, "Human Review" tier item
+    copy: 'Consequential judgement stays with accountable people. TechSafeAI supports the review, not the decision.'
+  },
+  {
+    title: 'Audit Ready', icon: 'seal-check',
+    // src/data/site.ts capabilities, "Safety & Compliance Readiness" (tag: "Audit / assurance / readiness")
+    copy: 'Prepare for scrutiny by clarifying obligations, scope, controls, evidence and ownership.'
+  },
+  {
+    title: 'Secure & Private', icon: 'shield-check',
+    // src/pages/security-trust/index.astro and src/pages/why-techsafeai/index.astro
+    copy: 'Protected information belongs behind a controlled classification, processing and human-review decision.'
+  }
+] as const;
 ---
 <ContentPage
   title="Consulting"
   eyebrow="Human-led expertise"
   intro="Consultancy Services are first-class, not secondary. Human-led expertise, assurance, review and implementation support for high-risk operations."
 >
-  <section class="content-section">
+  <section class="content-section split-zone-section">
+    <div class="shell">
+      <div class="section-title"><div><div class="eyebrow">Ways to engage</div><h2>Two ways to work with TechSafeAI.</h2></div></div>
+      <div class="split-zones" style="margin-top:32px">
+        <div class="split-zone zone-product">
+          <div class="zone-kicker"><span class="zone-icon-tile" aria-hidden="true"><Icon name="grid" size={16} /></span>{engagement.product.title}</div>
+          <p class="zone-copy">{engagement.product.summary}</p>
+          <div class="zone-glass">
+            <ul class="zone-chips">
+              {productCapabilities.map((name)=>(<li>{name}</li>))}
+            </ul>
+          </div>
+          <a class="zone-link" href="/product">View Product →</a>
+        </div>
+        <div class="split-zone zone-consult">
+          <div class="zone-kicker"><span class="zone-icon-tile" aria-hidden="true"><Icon name="person" size={16} /></span>{engagement.consult.title}</div>
+          <p class="zone-copy">{engagement.consult.summary}</p>
+          <div class="zone-glass zone-glass-illustration">
+            <!-- Verbatim reuse of the homepage's existing consultancy
+                 illustration (src/pages/index.astro, .split-illustration,
+                 lines ~294-308) — an already-approved abstract line
+                 illustration, not a new asset. No photography asset for
+                 real field/industrial imagery exists in this repository;
+                 sourcing or generating one is outside this mission's
+                 authority (licensing/brand risk for photography, and
+                 project governance's "no synthetic proof" principle for
+                 anything generated) so this substitutes the existing
+                 approved illustration rather than fabricating a photo. -->
+            <svg class="zone-illustration" viewBox="0 0 260 200" aria-hidden="true">
+              <g stroke="rgba(111,206,251,.75)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M52 66a26 26 0 0152 0"/><path d="M48 66h60"/>
+                <circle cx="78" cy="86" r="16"/>
+                <path d="M50 160c2-32 12-46 28-46s26 14 28 46"/>
+                <path d="M150 46a24 24 0 0148 0"/><path d="M146 46h56"/>
+                <circle cx="174" cy="65" r="15"/>
+                <path d="M148 138c2-30 11-43 26-43s24 13 26 43"/>
+                <rect x="118" y="110" width="34" height="24" rx="3"/>
+                <path d="M106 118l12 4M152 120l14-6"/>
+              </g>
+              <g stroke="rgba(45,184,249,.30)" stroke-width="1.5" fill="none">
+                <path d="M20 176h220"/>
+              </g>
+            </svg>
+          </div>
+          <a class="zone-link" href="#service-areas">See service areas ↓</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section evidence-strip">
+    <div class="shell">
+      <div class="section-title"><div><div class="eyebrow">Evidence &amp; Human Review</div><h2>Evidence-led. Human review.</h2></div></div>
+      <div class="evidence-grid" style="margin-top:28px">
+        {evidenceThemes.map((theme)=>(
+          <div class="evidence-card">
+            <span class="evidence-icon" aria-hidden="true"><Icon name={theme.icon} size={20} /></span>
+            <h3>{theme.title}</h3>
+            <p>{theme.copy}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section" id="service-areas">
     <div class="shell">
       <div class="section-title"><div><div class="eyebrow">Service areas</div><h2>Ten ways to work with TechSafeAI consultants.</h2></div></div>
       <div class="route-grid" style="margin-top:24px">
@@ -112,5 +229,61 @@ const stages = [
   @media (max-width:767px){
     .route-card{padding:22px 20px 20px 26px}
     .method-panel{padding:2px 18px}
+  }
+
+  /* Product/Consultancy split + evidence strip (claude/93). Background
+     var(--atmo-dark) on the split section is the same dark navy/steel
+     token Stage 2 applies to .section-dark elsewhere — keeps this new
+     block in the hero's material family. Each zone is built from the
+     graphite-housing + smoked-glass tokens (as the locked Product module
+     is), but with no hub/diagram/node markup — a new, simpler instrument
+     panel, not a copy of the locked module. */
+  .split-zone-section{background:var(--atmo-dark)}
+  .split-zone-section .eyebrow{color:var(--illum)}
+  .split-zone-section .section-title h2{color:#FFFFFF}
+  .split-zones{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+  .split-zone{
+    position:relative;padding:32px 30px;border-radius:8px;
+    border:1px solid var(--graphite-edge);
+    background:var(--key-light),linear-gradient(180deg,var(--graphite-1) 0%,var(--graphite-2) 46%,var(--graphite-3) 100%);
+    box-shadow:var(--bevel-raised);
+    display:flex;flex-direction:column;gap:16px;
+  }
+  .zone-kicker{display:flex;align-items:center;gap:10px;font:700 12px/1 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.08em;text-transform:uppercase;color:#CFE3EC}
+  .zone-icon-tile{display:flex;align-items:center;justify-content:center;flex-shrink:0;width:30px;height:30px;border-radius:6px;background:rgba(0,229,255,.10);border:1px solid rgba(0,229,255,.30);color:#6FCEFB}
+  .zone-copy{margin:0;color:#B9C9D2;font-size:14px;line-height:1.55}
+  .zone-glass{
+    flex:1;border-radius:6px;padding:18px;
+    background:linear-gradient(165deg,#0C131B 0%,#080D13 60%,#060A0F 100%);
+    box-shadow:var(--bevel-recessed);
+  }
+  .zone-chips{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start}
+  .zone-chips li{
+    font:700 10px/1 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.03em;color:#C7DAE3;
+    background:var(--graphite-light-3);border:1px solid var(--graphite-edge);border-radius:4px;padding:6px 9px;
+  }
+  .zone-glass-illustration{display:flex;align-items:center;justify-content:center;min-height:160px}
+  .zone-illustration{width:100%;max-width:210px;height:auto}
+  .zone-link{align-self:flex-start;font-weight:750;font-size:13px;color:#6FCEFB;text-decoration:none}
+  .zone-link:hover{color:#9FE3F7}
+
+  .evidence-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .evidence-card{
+    background:linear-gradient(155deg,var(--panel-light-1) 0%,var(--panel-light-2) 100%);
+    border:1px solid rgba(19,39,58,.10);border-radius:6px;padding:22px 20px;
+    box-shadow:var(--bevel-light-raised);
+  }
+  .evidence-icon{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:6px;
+    background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.28);color:#0F7FA0;margin-bottom:12px}
+  .evidence-card h3{margin:0 0 6px;font-size:16px}
+  .evidence-card p{margin:0;font-size:12.5px;color:var(--text-secondary);line-height:1.45}
+
+  @media (max-width:900px){
+    .split-zones{grid-template-columns:1fr}
+    .evidence-grid{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:600px){
+    .evidence-grid{grid-template-columns:1fr}
+    .split-zone{padding:24px 20px}
   }
 </style>
