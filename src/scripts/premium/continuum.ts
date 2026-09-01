@@ -133,8 +133,8 @@ function heroHandoff(gsap: Gsap, _st: STType): void {
   const screen = laptop.querySelector<HTMLElement>('.laptop-screen');
   const copyKids = document.querySelectorAll('.hero-copy > *');
   const callout = document.querySelector('.cockpit-callout.b');
-  const floatChips = document.querySelectorAll('.float-chip');
-  const streaks = document.querySelector('.hero-streaks');
+  const topology = document.querySelector<SVGSVGElement>('.hero-topology');
+  const envType = document.querySelector('.env-type');
   const ring = document.querySelector('.monolith-ring');
   const underglow = document.querySelector('.monolith-underglow');
   const reflection = document.querySelector('.monolith-reflection');
@@ -152,8 +152,16 @@ function heroHandoff(gsap: Gsap, _st: STType): void {
     gsap.set(laptop, { autoAlpha: 0, y: 52, rotationY: BASE_Y - 8, rotationX: BASE_X });
     if (screen) gsap.set(screen, { rotationX: -68, transformOrigin: 'bottom center' });
     if (callout) gsap.set(callout, { autoAlpha: 0, y: 10 });
-    if (floatChips.length) gsap.set(floatChips, { autoAlpha: 0, scale: 0.5 });
-    if (streaks) gsap.set(streaks, { autoAlpha: 0 });
+    if (envType) gsap.set(envType, { autoAlpha: 0, x: 24 });
+    if (topology) {
+      gsap.set(topology, { autoAlpha: 1 });
+      topology.querySelectorAll<SVGPathElement>('.tp').forEach((p) => {
+        const len = p.getTotalLength();
+        p.style.strokeDasharray = `${len}`;
+        p.style.strokeDashoffset = `${len}`;
+      });
+      gsap.set(topology.querySelectorAll('.tn'), { autoAlpha: 0, scale: 0.4, transformOrigin: '50% 50%' });
+    }
     if (ring) gsap.set(ring, { autoAlpha: 0, scale: 0.85 });
     if (reflection) gsap.set(reflection, { autoAlpha: 0 });
     document.documentElement.classList.remove('hero-staged');
@@ -166,9 +174,12 @@ function heroHandoff(gsap: Gsap, _st: STType): void {
     tl.to(laptop, { '--rim': '112%', duration: 1.0, ease: 'power2.inOut' }, 1.2)
       .set(laptop, { '--rim': '-12%' }, '>')
       .to(laptop, { '--rim': '50%', duration: 0.8, ease: 'power2.out' }, '>');
-    if (streaks) tl.to(streaks, { autoAlpha: 0.8, duration: 1.1 }, 0.7);
+    if (envType) tl.to(envType, { autoAlpha: 1, x: 0, duration: 1.2 }, 0.5);
+    if (topology) {
+      tl.to(topology.querySelectorAll('.tp'), { strokeDashoffset: 0, duration: 1.0, stagger: 0.12, ease: 'power2.inOut' }, 1.1)
+        .to(topology.querySelectorAll('.tn'), { autoAlpha: 1, scale: 1, duration: 0.4, stagger: 0.1, ease: 'back.out(2)' }, 1.5);
+    }
     if (reflection) tl.to(reflection, { autoAlpha: 1, duration: 0.9 }, 1.3);
-    if (floatChips.length) tl.to(floatChips, { autoAlpha: 1, scale: 1, duration: 0.6, stagger: 0.12, ease: 'back.out(1.8)' }, 1.2);
     if (callout) tl.to(callout, { autoAlpha: 1, y: 0, duration: 0.6 }, 1.5);
     tl.to(copyKids, { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 0.85, stagger: 0.14 }, 0.25);
   }

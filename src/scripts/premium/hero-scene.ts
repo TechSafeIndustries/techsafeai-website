@@ -44,7 +44,7 @@ export function mountHeroScene(gsap: typeof GSAP, _st: typeof ST): void {
     new THREE.ShaderMaterial({
       transparent: true,
       depthWrite: false,
-      uniforms: { uColor: { value: new THREE.Color(0x2db8f9) } },
+      uniforms: { uColor: { value: new THREE.Color(0x00e5ff) } },
       vertexShader:
         'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
       fragmentShader:
@@ -54,7 +54,7 @@ export function mountHeroScene(gsap: typeof GSAP, _st: typeof ST): void {
         ' float line = smoothstep(0.055,0.010,min(g.x,g.y));' +
         ' float fade = smoothstep(0.0,0.42,vUv.y) * (1.0 - smoothstep(0.42,0.95,vUv.y));' +
         ' float cx = 1.0 - smoothstep(0.15,0.5,abs(vUv.x - 0.62));' +
-        ' gl_FragColor = vec4(uColor, line * fade * (0.018 + 0.055 * cx));' +
+        ' gl_FragColor = vec4(uColor, line * fade * (0.012 + 0.04 * cx));' +
         '}'
     })
   );
@@ -63,13 +63,13 @@ export function mountHeroScene(gsap: typeof GSAP, _st: typeof ST): void {
   scene.add(floor);
 
   // ---- Volumetric glow behind the monolith (right of centre) ----
-  const glowTex = radialTexture(256, 'rgba(45,184,249,0.42)');
+  const glowTex = radialTexture(256, 'rgba(0,229,255,0.30)');
   const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, transparent: true, opacity: 0.55, depthWrite: false }));
   glow.scale.set(11, 7, 1);
   glow.position.set(2.4, 0.3, -3);
   scene.add(glow);
 
-  const underTex = radialTexture(256, 'rgba(45,184,249,0.5)');
+  const underTex = radialTexture(256, 'rgba(0,229,255,0.36)');
   const under = new THREE.Sprite(new THREE.SpriteMaterial({ map: underTex, transparent: true, opacity: 0.5, depthWrite: false }));
   under.scale.set(8, 2.2, 1);
   under.position.set(2.2, -2.7, -2.5);
@@ -77,10 +77,10 @@ export function mountHeroScene(gsap: typeof GSAP, _st: typeof ST): void {
 
   // ---- Horizon line (thin luminous band where floor meets the dark) ----
   const horizonTex = gradientTexture(512, 6, (g) => {
-    g.addColorStop(0, 'rgba(45,184,249,0)');
-    g.addColorStop(0.35, 'rgba(45,184,249,0.5)');
-    g.addColorStop(0.65, 'rgba(111,206,251,0.6)');
-    g.addColorStop(1, 'rgba(45,184,249,0)');
+    g.addColorStop(0, 'rgba(0,229,255,0)');
+    g.addColorStop(0.35, 'rgba(0,229,255,0.36)');
+    g.addColorStop(0.65, 'rgba(0,229,255,0.45)');
+    g.addColorStop(1, 'rgba(0,229,255,0)');
   }, true);
   const horizon = new THREE.Mesh(
     new THREE.PlaneGeometry(30, 0.05),
@@ -91,9 +91,9 @@ export function mountHeroScene(gsap: typeof GSAP, _st: typeof ST): void {
 
   // ---- Vertical light shafts falling toward the console ----
   const shaftTex = gradientTexture(8, 256, (g) => {
-    g.addColorStop(0, 'rgba(111,206,251,0.28)');
-    g.addColorStop(0.7, 'rgba(45,184,249,0.05)');
-    g.addColorStop(1, 'rgba(45,184,249,0)');
+    g.addColorStop(0, 'rgba(0,229,255,0.18)');
+    g.addColorStop(0.7, 'rgba(0,229,255,0.04)');
+    g.addColorStop(1, 'rgba(0,229,255,0)');
   });
   const shafts: THREE.Mesh[] = [];
   [[1.1, 0.5], [2.9, 0.9], [4.4, 0.4]].forEach(([x, w]) => {
@@ -115,32 +115,6 @@ export function mountHeroScene(gsap: typeof GSAP, _st: typeof ST): void {
   streak.rotation.x = -Math.PI / 2.05;
   streak.position.set(2.1, -2.55, -2.2);
   scene.add(streak);
-
-  // ---- Drifting light particles ----
-  const COUNT = 46;
-  const pos = new Float32Array(COUNT * 3);
-  const drift: number[] = [];
-  for (let i = 0; i < COUNT; i++) {
-    pos[i * 3] = (Math.random() - 0.5) * 16;
-    pos[i * 3 + 1] = (Math.random() - 0.5) * 8;
-    pos[i * 3 + 2] = -2 - Math.random() * 6;
-    drift.push(0.02 + Math.random() * 0.05);
-  }
-  const pGeo = new THREE.BufferGeometry();
-  pGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  const points = new THREE.Points(
-    pGeo,
-    new THREE.PointsMaterial({
-      size: 0.055,
-      map: radialTexture(64, 'rgba(111,206,251,0.9)'),
-      color: 0x6fcefb,
-      transparent: true,
-      opacity: 0.33,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending
-    })
-  );
-  scene.add(points);
 
   const fit = () => {
     const r = hero.getBoundingClientRect();
@@ -176,13 +150,6 @@ export function mountHeroScene(gsap: typeof GSAP, _st: typeof ST): void {
     glow.position.x = 2.4 + sway.x;
     glow.position.y = 0.3 - sway.y;
     glow.material.opacity = 0.5 + Math.sin(t * 0.7) * 0.06;
-    const p = pGeo.getAttribute('position') as THREE.BufferAttribute;
-    for (let i = 0; i < COUNT; i++) {
-      let y = p.getY(i) + drift[i] * 0.016;
-      if (y > 4.2) y = -4.2;
-      p.setY(i, y);
-    }
-    p.needsUpdate = true;
     shafts.forEach((sh, i) => {
       (sh.material as THREE.MeshBasicMaterial).opacity = 0.24 + Math.sin(t * (0.5 + i * 0.17) + i * 2.1) * 0.08;
       sh.position.x += (([1.1, 2.9, 4.4][i] + sway.x * (0.5 + i * 0.2)) - sh.position.x) * 0.04;
@@ -266,7 +233,7 @@ function radialTexture(size: number, color: string): THREE.CanvasTexture {
   const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
   g.addColorStop(0, color);
   g.addColorStop(0.55, color.replace(/[\d.]+\)$/, '0.10)'));
-  g.addColorStop(1, 'rgba(45,184,249,0)');
+  g.addColorStop(1, 'rgba(0,229,255,0)');
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, size, size);
   return new THREE.CanvasTexture(c);

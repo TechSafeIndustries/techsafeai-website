@@ -3,10 +3,12 @@ import { navigation } from '../data/navigation';
 ---
 <header class="site-header">
   <div class="shell header-inner">
-    {/* Project 03 governed lockup (canonical brand asset ingest, claude/10).
-        Website consumes approved brand assets; brand authority is Project 01. */}
+    {/* TEMPORARY PLACEHOLDER — awaiting canonical LOGO-TAI-003 from
+        01 — TechSafe Brand Identity & Design System (asset not yet delivered
+        to this workspace; dependency recorded in claude/73). Founder directive
+        31 Aug 2026: do not use the old TSI lockup; do not recreate the logo. */}
     <a class="brand" href="/" aria-label="TechSafeAI home">
-      <img class="brand-lockup" src="/brand/techsafeai/lockup_header_64px_dark.png" alt="TechSafeAI" width="380" height="64" />
+      <span class="wordmark wordmark-temp">TechSafeAI</span>
     </a>
     <nav class="desktop-nav" aria-label="Primary navigation">
       {navigation.map((item) => <a href={item.href}>{item.label}</a>)}
