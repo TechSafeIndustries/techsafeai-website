@@ -125,13 +125,33 @@ const principles = [
 
   /* Why we exist — reuses the site's standard two-column content-grid
      (same markup shape as this page's own previous version), text
-     only, no card. */
+     only, no card. claude/107 — Founder polish: desktop-only bottom
+     padding tightened (56px -> 32px, top padding untouched so the
+     gap under the hero is unaffected) — this section's own content is
+     two short paragraphs, and the full 56px on both edges read as
+     excess air beneath it before "How we work" begins. Mobile keeps
+     the full 56px (the stacked single-column layout doesn't have the
+     same excess — .content-grid itself only goes two-column above
+     1100px, see responsive.css). */
   .why-section .content-grid{align-items:start}
   .why-section h2{margin:12px 0 0}
+  @media (min-width:1101px){
+    .why-section{padding-bottom:32px}
+  }
 
   /* How we work — four engineered light cards, same material
      language (bevel + inset hairline, graphite icon tile) now
-     established across the site's other locked pages. */
+     established across the site's other locked pages.
+     claude/107 — Founder polish requested a slight strengthening here
+     "not heavier than the Why TechSafeAI cards": checked against
+     src/pages/why-techsafeai/index.astro's post-polish .diff-card /
+     .diff-icon (claude/102) and every value below — bevel, inset
+     hairline, icon-tile construction, illum accent — is already
+     identical (this page was built from that exact treatment from the
+     start). That's already the stated ceiling, so no change is made
+     here: strengthening further would exceed the Why TechSafeAI
+     cards, which the brief explicitly rules out. Flagged in the
+     return evidence. */
   .principle-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
   .principle-card{
     position:relative;overflow:hidden;
@@ -148,11 +168,24 @@ const principles = [
   .principle-card h3{margin:0 0 8px;font-size:16px;color:var(--text-primary)}
   .principle-card p{margin:0;font-size:13px;line-height:1.5;color:var(--text-secondary)}
 
-  /* TechSafeAI + TechSafe Industries — compact dark band, one line,
-     no card/grid/diagram: this is a footnote-weight statement. */
-  .tsi-section{background:var(--atmo-dark);padding-top:40px;padding-bottom:40px}
+  /* TechSafeAI + TechSafe Industries — claude/107 Founder polish:
+     slightly more visual presence so this reads as an intentional
+     relationship statement rather than an afterthought — still one
+     line, still no card/grid/diagram, wording unchanged. Framing
+     devices only: a top+bottom hairline (--hairline-dark, already
+     used for this exact purpose on other dark bands sitewide, e.g.
+     .how-section/.split-section in sections.css) and the same
+     illum-line accent bar every engineered card on this site already
+     carries (.principle-card::before, above) — reused here as a
+     vertical rule beside the text instead of inside a card. Padding
+     and heading size nudged up slightly for weight. */
+  .tsi-section{background:var(--atmo-dark);padding-top:48px;padding-bottom:48px;
+    border-top:1px solid var(--hairline-dark);border-bottom:1px solid var(--hairline-dark)}
   .tsi-section .eyebrow{color:var(--illum)}
-  .tsi-section .section-title h2{color:#C7DAE3;font-size:19px;font-weight:700}
+  .tsi-section .section-title{position:relative;padding-left:18px}
+  .tsi-section .section-title::before{content:"";position:absolute;left:0;top:2px;bottom:2px;width:2px;
+    background:linear-gradient(180deg,transparent,var(--illum-line),transparent);opacity:.7}
+  .tsi-section .section-title h2{color:#C7DAE3;font-size:21px;font-weight:700}
 
   @media (max-width:900px){
     .principle-grid{grid-template-columns:repeat(2,1fr)}
