@@ -59,6 +59,15 @@
        viewports (hero clips, so no page overflow) ---- */
 .cockpit-stage{position:relative;max-width:100%;perspective:1700px;perspective-origin:44% 38%;z-index:1;padding:12px 0 74px}
 @media (min-width:1500px){.cockpit-stage{margin-right:-52px}}
+/* claude/110 — Founder final polish (1): reduce cockpit dominance in the
+   desktop hero split so the homepage reads as Product + Consulting +
+   governed Operational Intelligence, not "dashboard software". Scoped to
+   the desktop side-by-side layout only (mobile bay stays full presence,
+   per the existing 767px comment below); a uniform scale on the stage
+   container only — GSAP's heroHandoff() never targets .cockpit-stage
+   (only .laptop and named children), so this doesn't fight the locked
+   entrance/scroll motion, materials or cockpit architecture. */
+@media (min-width:1251px){.cockpit-stage{transform:scale(.91);transform-origin:center center}}
 /* FOREGROUND plane — atmospheric mist the bay stands behind; sits over the
    stage only, so the copy column stays crisp */
 .cockpit-stage::after{content:"";position:absolute;left:-24%;right:-24%;bottom:-40px;height:200px;pointer-events:none;z-index:4;background:
