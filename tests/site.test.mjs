@@ -47,15 +47,26 @@ test('homepage carries the Phase 9 governed Operational Intelligence narrative',
   // files." security line no longer live on the homepage; the security
   // boundary statement remains live on /security-trust and inside the
   // Start with your challenge intake itself.
+  //
+  // Superseded again by claude/109 (Homepage Downstream Mission, 2026-09-01):
+  // downstream sections consolidated to the site's compact baseline density
+  // (Consulting/Industries/Why TechSafeAI/Insights/About pattern). The
+  // standalone "Product story" capability-card section and the standalone
+  // SAI explainer section were folded into "How TechSafeAI works" and the
+  // compact Product/Consultancy split respectively — their assertion lines
+  // below are updated to the surviving headline copy. Hero, trust strip,
+  // 3Ps headline, SAI hero callout, CTA and industry names are unchanged.
   const home = read('src/pages/index.astro');
   assert.match(home, /Operational information is everywhere\./);
   assert.match(home, /Operational understanding isn't\./);
   assert.match(home, /Your existing systems.*remain authoritative/s);
   assert.match(home, /Evidence and provenance.*stay visible/s);
   assert.match(home, /Human decisions.*remain human/s);
-  assert.match(home, /Operational Intelligence without replacing the systems that own your data\./);
+  assert.match(home, /From existing systems to better-informed decisions\./);
   assert.match(home, /One operation\. Three connected perspectives\./);
   assert.match(home, /SAI assists the human\./);
+  assert.match(home, /Works with your existing IMS &amp; systems\./);
+  assert.match(home, /Evidence &amp; Provenance.*Audit Ready.*Human Review.*Secure &amp; Private/s);
   assert.match(home, /Operational Intelligence backed by operational expertise\./);
   assert.match(home, /Mining & Resources/);
   assert.match(home, /Construction & Infrastructure/);

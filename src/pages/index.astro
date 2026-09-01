@@ -6,25 +6,6 @@ import CtaBand from '../components/CtaBand.astro';
 import BrandMark from '../components/BrandMark.astro';
 import { site } from '../data/site';
 
-const productCards = [
-  {
-    title: 'Operational Intelligence',
-    summary: 'Connects activities, risks, controls and evidence from your existing systems into governed operational context.'
-  },
-  {
-    title: 'Control & Evidence Intelligence',
-    summary: 'Surfaces what evidence exists, what is missing and where a control claim is not yet supported.'
-  },
-  {
-    title: 'SAI',
-    summary: 'Helps people ask better questions of governed operational information. SAI assists the human — it does not decide for them.'
-  },
-  {
-    title: 'Portfolio & Trend Intelligence',
-    summary: 'Shows change and pattern across sites and time, so attention goes where it is actually needed.'
-  }
-] as const;
-
 const threePs = [
   { title: 'People', summary: 'Capability, readiness and human performance.', icon: 'person' },
   { title: 'Property', summary: 'Assets, infrastructure and operational capability.', icon: 'building' },
@@ -44,32 +25,25 @@ const engagementPaths = [
   }
 ] as const;
 
-// WEB-PHASE-10 S4 — names below are Founder-supplied governed lists (WEB-PHASE-10
-// mission / S4 directive). No availability, maturity or compliance status is stated.
+// claude/109 — HOMEPAGE DOWNSTREAM MISSION: 8 support functions grouped into
+// 4 clusters (max per brief). Cluster copy recombines the original governed
+// phrase fragments only — no new capability claims introduced.
 const supportFunctions = [
-  ['Contractor Management', 'Contractor context alongside operational risk.', 'id-badge'],
-  ['Governance & Compliance', 'Obligations and governance context, kept visible.', 'shield-check'],
-  ['Risk & Control Verification', 'Controls and verification context, kept visible.', 'target'],
-  ['Quality Assurance', 'Quality context connected to operational activity.', 'seal-check'],
-  ['Data & Reporting', 'Reporting grounded in governed, cited information.', 'chart'],
-  ['Systems & Technology', 'Systems and technology connected to the operational picture.', 'chip'],
-  ['Incident Learning', 'What happened, what it touched, what changed after.', 'loop'],
-  ['Stakeholder & Communications', 'The people and parties affected by operational conditions.', 'people']
+  ['People & Contractor Assurance', 'Contractor context and stakeholder communications, connected to operational risk.', 'id-badge'],
+  ['Governance, Risk & Control', 'Obligations, controls and verification, kept visible and connected.', 'shield-check'],
+  ['Evidence, Data & Learning', 'Reporting grounded in governed, cited information — and what changed after.', 'chart'],
+  ['Systems & Technology', 'Systems and technology connected to the operational picture.', 'chip']
 ] as const;
 
+// claude/109 — compact split per brief: Product = platform / cockpit /
+// governed intelligence; Consulting = human-led expertise / assurance /
+// implementation support. Full lists stay on /product and /consulting.
 const productCapabilities = [
-  'Operational Intelligence Cockpit', 'SAI Assistant', 'Risk & Activity Intelligence',
-  'Compliance & Evidence Adapters', 'Incident Learning', 'Contractor Management', 'Integrations & Connectors'
+  'Operational Intelligence platform', 'Operational Intelligence Cockpit', 'SAI & governed intelligence'
 ] as const;
 
 const consultancyCapabilities = [
-  'Strategy and operational advisory', 'Operational reviews', 'Risk and assurance',
-  'System design and implementation', 'Capability uplift', 'Training', 'Change and adoption'
-] as const;
-
-const integrationCategories = [
-  'ERP', 'HR', 'LMS', 'Environmental systems', 'Inspection platforms',
-  'Document systems', 'Power BI', 'SharePoint', 'IoT / GIS'
+  'Human-led expertise', 'Assurance & operational reviews', 'TechSafeAI implementation support'
 ] as const;
 
 const valueOutcomes = [
@@ -187,62 +161,14 @@ const industryLinks = [
     </div>
   </section>
 
-  <section class="section how-section">
-    <div class="shell problem-grid">
-      <div class="section-title title-stack"><div class="eyebrow">The problem isn't another dashboard</div><h2>Existing systems can show what they contain.</h2><p>Dashboards can visualise it. Generic AI can summarise it. None of that is the same as understanding how it fits together.</p></div>
-      <div class="problem-list">
-        <div class="problem-row"><span class="code">01</span><div><h3>Existing systems</h3><p>Can show what they contain — inside their own boundary, in their own format.</p></div><span class="cause">Shows its own data</span></div>
-        <div class="problem-row"><span class="code">02</span><div><h3>Dashboards</h3><p>Can visualise it — a clearer picture of the same disconnected information.</p></div><span class="cause">Visualises, doesn't connect</span></div>
-        <div class="problem-row"><span class="code">03</span><div><h3>Generic AI</h3><p>Can summarise it — without knowing what is governed, evidenced or still uncertain.</p></div><span class="cause">Summarises, doesn't govern</span></div>
-      </div>
-      <p class="notice" style="grid-column:1/-1;margin-top:8px">TechSafeAI is being built to understand governed operational relationships across activities, risks, controls, evidence and organisational context — not to add another view of the same fragmented information.</p>
-    </div>
+  <section class="section how-section" id="operational-intelligence">
     <div class="shell">
-      <p class="flow-kicker">How TechSafeAI works</p>
+      <div class="section-title title-stack"><div class="eyebrow">How TechSafeAI works</div><h2>From existing systems to better-informed decisions.</h2><p>TechSafeAI connects, structures and explains governed information from the systems you already run — evidence stays visible, and the decision stays human.</p></div>
       <div class="flow-rail reveal-group">
-        <div class="flow-step"><span class="flow-top"><span class="flow-num">01</span><Icon name="compass" size={20} class="flow-icon" /></span><span class="flow-label">Challenge</span><p>Start with context, not confidential files.</p><i class="flow-arrow" aria-hidden="true"></i></div>
-        <div class="flow-step"><span class="flow-top"><span class="flow-num">02</span><Icon name="nodes" size={20} class="flow-icon" /></span><span class="flow-label">Context</span><p>TechSafeAI connects, structures and explains governed information from the systems you already run.</p><i class="flow-arrow" aria-hidden="true"></i></div>
-        <div class="flow-step"><span class="flow-top"><span class="flow-num">03</span><Icon name="doc-check" size={20} class="flow-icon" /></span><span class="flow-label">Evidence</span><p>Surfaces what evidence exists, what is missing and where a control claim is not yet supported.</p><i class="flow-arrow" aria-hidden="true"></i></div>
-        <div class="flow-step"><span class="flow-top"><span class="flow-num">04</span><Icon name="person-check" size={20} class="flow-icon" /></span><span class="flow-label">Human review</span><p>Human decisions remain human.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section section-muted" id="operational-intelligence">
-    <div class="shell">
-      <div class="section-title" style="display:block"><div class="eyebrow">Product story</div><h2>Operational Intelligence without replacing the systems that own your data.</h2><p>TechSafeAI connects, structures and explains governed information from the systems you already run. It does not become a new system of record.</p></div>
-      <div class="capability-grid grid-lead">
-        {productCards.map((card,index)=>(
-          <div class="capability">
-            <span class="capability-index">0{index+1}</span>
-            <h3>{card.title}</h3>
-            <p>{card.summary}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="section section-cool">
-    <div class="shell content-grid">
-      <div>
-        <div class="eyebrow">Systems Assistant Intelligence</div>
-        <h2>Ask better questions of your operational information.</h2>
-        <p class="lead">SAI assists the human.</p>
-      </div>
-      <div class="content-copy">
-        <p>SAI is contextual, evidence-grounded and human-supervised. It helps people explore governed operational information and understand the evidence behind it.</p>
-        <p class="notice">SAI does not manufacture operational truth, autonomously approve work, determine compliance, or replace a competent person's judgement.</p>
-        <figure class="sai-figure">
-          <img
-            src="/assets/sai/website-handoff/sai-ui-016/SAI-GROUNDED-INTERACTION-37a6918.png"
-            width="621"
-            height="547"
-            alt="SAI grounded explanation interface showing source-based operational context using synthetic demonstration data."
-            loading="lazy"
-          />
-          <figcaption class="notice">Product interface shown with synthetic demonstration data. SAI explains and cites its sources — it decides nothing.</figcaption>
-        </figure>
+        <div class="flow-step"><span class="flow-top"><span class="flow-num">01</span><Icon name="layers" size={20} class="flow-icon" /></span><span class="flow-label">Existing systems</span><p>Your systems keep the data — TechSafeAI doesn't replace them.</p><i class="flow-arrow" aria-hidden="true"></i></div>
+        <div class="flow-step"><span class="flow-top"><span class="flow-num">02</span><Icon name="nodes" size={20} class="flow-icon" /></span><span class="flow-label">Governed Operational Intelligence</span><p>Connects, structures and explains information from the systems you already run.</p><i class="flow-arrow" aria-hidden="true"></i></div>
+        <div class="flow-step"><span class="flow-top"><span class="flow-num">03</span><Icon name="doc-check" size={20} class="flow-icon" /></span><span class="flow-label">Evidence &amp; context</span><p>Surfaces what evidence exists, what's missing and where a claim isn't yet supported.</p><i class="flow-arrow" aria-hidden="true"></i></div>
+        <div class="flow-step"><span class="flow-top"><span class="flow-num">04</span><Icon name="person-check" size={20} class="flow-icon" /></span><span class="flow-label">Human review</span><p>Human decisions remain human — leading to better-informed decisions.</p></div>
       </div>
     </div>
   </section>
@@ -316,23 +242,24 @@ const industryLinks = [
   <section class="section section-light section-tight">
     <div class="shell">
       <div class="section-title title-stack"><div class="eyebrow">Evidence &amp; Human Review</div><h2>Evidence-led. Human review.</h2></div>
+      <p class="proof-themes">Evidence &amp; Provenance <i aria-hidden="true"></i> Audit Ready <i aria-hidden="true"></i> Human Review <i aria-hidden="true"></i> Secure &amp; Private</p>
       <div class="boundary-band grid-lead">
         <div class="boundary-side">
-          <span class="split-kicker"><Icon name="doc-check" size={18} /> SAI assists</span>
+          <span class="split-kicker"><Icon name="doc-check" size={18} /> Evidence &amp; Provenance</span>
           <ul>
-            <li>SAI explains and cites its sources — consequential decisions remain human.</li>
-            <li>Helps people ask better questions of governed operational information.</li>
+            <li>SAI explains and cites its sources — evidence and provenance stay visible.</li>
             <li>Contextual, evidence-grounded and human-supervised.</li>
+            <li>Built to help with audit and assurance review — obligations, scope, controls and evidence, clearly connected.</li>
           </ul>
         </div>
         <div class="boundary-divider" aria-hidden="true"></div>
         <div class="boundary-side">
-          <span class="split-kicker"><Icon name="person-check" size={18} /> Humans decide</span>
+          <span class="split-kicker"><Icon name="person-check" size={18} /> Human Review</span>
           <ul>
-            <li>TechSafeAI does not determine legal compliance.</li>
-            <li>It does not accept risk or authorise consequential work.</li>
-            <li>It does not make regulatory interpretations.</li>
-            <li>It does not create unsupported operational facts.</li>
+            <li>TechSafeAI does not determine legal compliance, accept risk or authorise consequential work.</li>
+            <li>It does not make regulatory interpretations or create unsupported operational facts.</li>
+            <li>Consequential judgement remains with accountable people.</li>
+            <li>Protected information stays behind a human-controlled gate — not the public website.</li>
           </ul>
         </div>
       </div>
@@ -347,35 +274,7 @@ const industryLinks = [
 
   <section class="section integrations-section">
     <div class="shell">
-      <div class="section-title title-stack"><div class="eyebrow">Integration-ready</div><h2>Built to sit beside the systems you already run.</h2><p>Your existing systems remain authoritative — TechSafeAI does not become a new system of record. Integrations are scoped per deployment.</p></div>
-      <div class="integration-chips grid-lead">
-        {integrationCategories.map((name)=>(<span class="integration-chip">{name}</span>))}
-      </div>
-      <div class="int-network" aria-label="System categories TechSafeAI is designed to connect to">
-        <svg class="int-links" viewBox="0 0 1100 520" aria-hidden="true">
-          <circle class="int-orbit" cx="550" cy="260" r="150" />
-          <circle class="int-orbit" cx="550" cy="260" r="235" />
-          <path d="M 550 96 L 550 178" />
-          <path d="M 762 128 L 618 210" />
-          <path d="M 858 260 L 636 260" />
-          <path d="M 780 408 L 622 316" />
-          <path d="M 550 448 L 550 342" />
-          <path d="M 320 410 L 480 318" />
-          <path d="M 242 260 L 464 260" />
-          <path d="M 318 116 L 482 206" />
-          <path d="M 688 62 L 594 190" />
-        </svg>
-        <div class="int-hub">TechSafeAI</div>
-        <span class="int-node" style="--x:50%;--y:14%">ERP</span>
-        <span class="int-node" style="--x:70.5%;--y:22%">HR</span>
-        <span class="int-node" style="--x:79%;--y:50%">LMS</span>
-        <span class="int-node" style="--x:71.5%;--y:80%">Environmental systems</span>
-        <span class="int-node" style="--x:50%;--y:88.5%">Inspection platforms</span>
-        <span class="int-node" style="--x:28.5%;--y:80.5%">Document systems</span>
-        <span class="int-node" style="--x:21%;--y:50%">Power BI</span>
-        <span class="int-node" style="--x:28.5%;--y:20.5%">SharePoint</span>
-        <span class="int-node" style="--x:63%;--y:9.5%">IoT / GIS</span>
-      </div>
+      <div class="section-title title-stack"><div class="eyebrow">Integration-ready</div><h2>Works with your existing IMS &amp; systems.</h2><p>Your existing systems remain authoritative — TechSafeAI does not become a new system of record. Integrations are scoped per deployment.</p></div>
     </div>
   </section>
 
@@ -417,7 +316,13 @@ const industryLinks = [
 </BaseLayout>
 
 <style>
-  .sai-figure{margin:20px 0 0;max-width:621px}
-  .sai-figure img{display:block;width:100%;height:auto;max-width:621px;border:1px solid var(--border)}
-  .sai-figure figcaption{margin-top:10px}
+  /* claude/109 — homepage downstream mission: compact 4-theme proof-band
+     label row above the Evidence & Human Review boundary band. Page-scoped
+     only; reuses the section's existing light/navy palette, no new tokens. */
+  .proof-themes{
+    margin:18px 0 0;text-align:center;
+    font:700 11px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    letter-spacing:.10em;text-transform:uppercase;color:#0b6e9a;
+  }
+  .proof-themes i{display:inline-block;width:3px;height:3px;margin:0 12px 2px;border-radius:50%;background:rgba(45,184,249,.55);vertical-align:middle}
 </style>
