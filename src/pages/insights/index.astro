@@ -1,7 +1,166 @@
 ---
 import ContentPage from '../../components/ContentPage.astro';
-const topics=['Proving critical controls work','Audit readiness and evidence traceability','Contractor assurance','AI readiness and governance','AI information protection','Operational AI and human accountability','Verified value and DRIVER-6','Internal AI capability'];
+import Icon from '../../components/Icon.astro';
+
+// claude/103 — FOUNDER DIRECTIVE: Insights page, same compression rule
+// now established across Why TechSafeAI (claude/101/102), Consulting
+// (846c4de) and Industries (07c46b6/claude/99-100).
+//
+// EVIDENCE NOTE (read before touching this file): this repo holds no
+// published insight/article content anywhere — no content collection,
+// no article routes, no slugs. The previous version of this page said
+// so explicitly ("Planned insight theme. Publication requires a
+// governed source...") and that remains true. The Founder brief for
+// this page assumed a "Featured Insight" and a "Recent / Selected
+// Insights" grid built from "existing approved content" — that
+// content does not exist yet, so those two sections are NOT built
+// here (a fabricated title/summary/"read more" link would be
+// unsupported content with nowhere real to land, which this project's
+// standing rules forbid). What IS built: Hero, the three insight
+// themes (a reclassification of the eight topics this page already
+// carried — nothing added, nothing dropped, see THEMES below), the
+// page's own existing "Publishing standard" note (moved, not
+// reworded), and the standard CTA. Flagged in the return evidence for
+// this reason — see chat.
+const heroThemeIcons = ['nodes', 'cite', 'person-check'] as const;
+
+// THEMES — claude/103. The three groups the Founder specified
+// (Operational Intelligence / Governance & Evidence / Human + AI /
+// Operational Decision Support) are exactly the three the brief
+// suggested. Every topic string below is verbatim from this page's
+// own previous eight-topic list (nothing invented, nothing dropped —
+// all eight are accounted for across the three groups); the one-line
+// theme summaries are a compression of those same topic strings, not
+// a new claim.
+const themes = [
+  {
+    icon: 'nodes',
+    title: 'Operational Intelligence',
+    summary: 'How operational effectiveness is proven and assured — from critical controls to contractor performance and verified value.',
+    topics: ['Proving critical controls work', 'Contractor assurance', 'Verified value and DRIVER-6']
+  },
+  {
+    icon: 'cite',
+    title: 'Governance & Evidence',
+    summary: 'How assurance, evidence and AI governance stay defensible — from audit readiness to information protection.',
+    topics: ['Audit readiness and evidence traceability', 'AI readiness and governance', 'AI information protection']
+  },
+  {
+    icon: 'person-check',
+    title: 'Human + AI / Operational Decision Support',
+    summary: 'How AI and human accountability work together in operational decisions — and the internal capability that requires.',
+    topics: ['Operational AI and human accountability', 'Internal AI capability']
+  }
+] as const;
 ---
-<ContentPage title="Insights" eyebrow="Evidence-led thinking" intro="TechSafeAI insights will explain practical safety, assurance, evidence and governed-AI problems without turning the site into a content farm.">
-<section class="content-section"><div class="shell content-grid"><div><div class="eyebrow">Publishing standard</div><h2>Substance before volume.</h2><p>Articles must support client understanding, thought leadership or a real search need. No mass-generated sector pages and no invented case evidence.</p></div><div class="indexed-list">{topics.map((topic,i)=><div class="indexed-item"><span class="index">0{i+1}</span><div><h3>{topic}</h3><p>Planned insight theme. Publication requires a governed source, useful point of view and evidence appropriate to the claim.</p></div></div>)}</div></div></section>
+<ContentPage
+  title="Insights"
+  eyebrow="Evidence-led thinking"
+  intro="TechSafeAI insights will explain practical safety, assurance, evidence and governed-AI problems without turning the site into a content farm."
+>
+  <Fragment slot="hero-graphic">
+    <div class="ins-graphic">
+      <div class="ins-glass">
+        <span class="ins-title">Evidence-led.<br/>Not a content farm.</span>
+        <span class="ins-seam" aria-hidden="true"></span>
+        <div class="ins-tiles">
+          {heroThemeIcons.map((icon)=>(
+            <span class="ins-tile" aria-hidden="true"><Icon name={icon} size={18} /></span>
+          ))}
+        </div>
+      </div>
+    </div>
+  </Fragment>
+
+  <section class="content-section themes-section">
+    <div class="shell">
+      <div class="section-title"><div><div class="eyebrow">Insight themes</div><h2>Three lines of thinking, not a catalogue.</h2></div></div>
+      <div class="theme-grid" style="margin-top:24px">
+        {themes.map((t)=>(
+          <div class="theme-card">
+            <span class="theme-icon" aria-hidden="true"><Icon name={t.icon} size={22} /></span>
+            <h3>{t.title}</h3>
+            <p>{t.summary}</p>
+            <p class="theme-topics">{t.topics.join(' · ')}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section standard-section">
+    <div class="shell content-grid">
+      <div><div class="eyebrow">Publishing standard</div><h2>Substance before volume.</h2><p>Articles must support client understanding, thought leadership or a real search need. No mass-generated sector pages and no invented case evidence.</p></div>
+    </div>
+  </section>
 </ContentPage>
+
+<style>
+  /* claude/103 — Insights, built to the same compact-density rule as
+     Why TechSafeAI/Consulting/Industries. Deliberately shorter than
+     those three (two body sections, not three) — there is no
+     published article inventory yet to justify a third "recent
+     insights" band (see the evidence note above); the page stays
+     honest about that rather than padded out to match. */
+  .content-section{padding:56px 0}
+
+  /* Insight themes — three engineered light cards, same material
+     language (bevel + inset hairline, graphite icon tile) now
+     established across the site's other locked pages. */
+  .theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .theme-card{
+    position:relative;overflow:hidden;
+    background:linear-gradient(155deg,var(--panel-light-1) 0%,var(--panel-light-2) 100%);
+    border:1px solid rgba(19,39,58,.10);border-radius:8px;
+    padding:22px 20px 20px;box-shadow:var(--bevel-light-raised),inset 0 0 0 1px rgba(19,39,58,.05);
+  }
+  .theme-card::before{content:"";position:absolute;left:0;top:16px;bottom:16px;width:2px;
+    background:linear-gradient(180deg,transparent,var(--illum-line),transparent);opacity:.5}
+  .theme-icon{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;
+    background:linear-gradient(180deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,0) 45%),var(--graphite-light-3);
+    border:1px solid var(--graphite-edge);color:#6FCEFB;margin-bottom:12px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -3px 6px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.05)}
+  .theme-card h3{margin:0 0 8px;font-size:16px}
+  .theme-card p{margin:0;font-size:13px;line-height:1.5;color:var(--text-secondary)}
+  .theme-topics{margin-top:10px !important;padding-top:10px;border-top:1px solid rgba(19,39,58,.08);
+    font:700 11px/1.4 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.01em;color:#4A6472 !important}
+
+  /* Publishing standard — the page's own pre-existing trust note,
+     compact single-column placement (no card, no dark band — this is
+     a footnote-weight statement, not a fourth headline section). */
+  .standard-section{padding-top:8px}
+  .standard-section .content-grid{grid-template-columns:1fr;max-width:640px}
+  .standard-section h2{margin:6px 0 10px}
+  .standard-section p{color:var(--text-secondary);margin:0}
+
+  @media (max-width:900px){
+    .theme-grid{grid-template-columns:1fr}
+  }
+
+  /* Insights hero graphic — same graphite/smoked-glass housing as the
+     other locked pages' hero panels, fresh .ins-* class names so
+     nothing here touches any other page. Three tiles (not four/2x2)
+     previewing the three themes above; no hub — three items reads
+     cleanly as a single row rather than forcing a fourth element. */
+  :global(.technical-panel:has(.ins-graphic))::after{display:none}
+  .ins-graphic{position:relative;z-index:2;width:100%;height:100%;min-height:300px;
+    padding:16px;border-radius:6px;border:1px solid var(--graphite-edge);
+    background:var(--key-light),radial-gradient(160% 120% at 50% -20%,rgba(110,165,200,.07),transparent 62%),linear-gradient(180deg,var(--graphite-1) 0%,var(--graphite-2) 46%,var(--graphite-3) 100%);
+    box-shadow:var(--bevel-raised),inset 0 0 0 1px rgba(255,255,255,.06);
+    display:flex;align-items:center;justify-content:center}
+  .ins-glass{position:relative;width:100%;height:100%;border-radius:4px;
+    padding:22px 20px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+    background:radial-gradient(130% 100% at 50% -14%,rgba(255,255,255,.08),transparent 58%),linear-gradient(165deg,#1B222A 0%,#171C22 60%,#15191E 100%);
+    box-shadow:var(--bevel-recessed),inset 0 1px 0 rgba(255,255,255,.05)}
+  .ins-title{max-width:230px;text-align:center;font:700 15px/1.35 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.02em;text-transform:none;color:#C7DAE3}
+  .ins-seam{width:34px;height:1px;background:linear-gradient(90deg,transparent,var(--illum-line),transparent)}
+  .ins-tiles{display:flex;gap:16px;width:100%;max-width:280px;justify-content:center}
+  .ins-tile{aspect-ratio:1;width:64px;display:flex;align-items:center;justify-content:center;border-radius:8px;
+    background:linear-gradient(180deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,0) 45%),var(--graphite-light-3);
+    border:1px solid var(--graphite-edge);color:#A8ECFA;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -3px 6px rgba(0,0,0,.48),0 0 0 1px rgba(255,255,255,.08)}
+  @media (max-width:520px){
+    .ins-tiles{max-width:220px;gap:12px}
+    .ins-tile{width:52px}
+  }
+</style>
