@@ -11,22 +11,25 @@
 /* ---- LEVEL 0 — layered atmosphere: far navy/charcoal field, mid-field lift
        behind the console for silhouette separation, faint cyan horizon,
        atmospheric haze, vignette held to the outer edges only ---- */
-.hero{min-height:704px;padding-top:64px;overflow:hidden;position:relative;background:
+.hero{min-height:660px;padding-top:64px;overflow:hidden;position:relative;background:
   /* edge vignette — outer frame only, centre stays readable */
-  radial-gradient(130% 105% at 50% 44%,rgba(2,6,12,0) 56%,rgba(2,6,12,.52) 100%),
-  /* faint cyan horizon band behind the console */
-  linear-gradient(180deg,rgba(0,229,255,0) 63%,rgba(0,229,255,.085) 67.5%,rgba(0,229,255,0) 72%),
-  /* mid-field — lifted navy volume the console silhouettes against */
-  radial-gradient(940px 560px at 66% 40%,rgba(31,62,98,.85),rgba(31,62,98,0) 68%),
-  /* cyan atmosphere haze */
-  radial-gradient(1100px 560px at 70% 28%,rgba(0,229,255,.10),rgba(0,229,255,0) 62%),
+  radial-gradient(130% 105% at 50% 44%,rgba(2,6,12,0) 54%,rgba(2,6,12,.58) 100%),
+  /* upper shade band — the cowl's machined top edge silhouettes against it */
+  radial-gradient(760px 300px at 68% 6%,rgba(4,10,18,.62),rgba(4,10,18,0) 70%),
+  /* separation halo — atmosphere lifts immediately around the bay */
+  radial-gradient(760px 430px at 68% 47%,rgba(46,84,124,.68),rgba(46,84,124,0) 66%),
+  /* mid-field — lifted navy volume the bay silhouettes against */
+  radial-gradient(1080px 620px at 66% 44%,rgba(28,57,92,.72),rgba(28,57,92,0) 70%),
+  /* cyan atmosphere haze, high and behind */
+  radial-gradient(1100px 520px at 72% 24%,rgba(0,229,255,.085),rgba(0,229,255,0) 62%),
   /* far field — charcoal high, deepening navy low (never near-black) */
   linear-gradient(170deg,#1B2830 0%,#0F2035 34%,#102644 66%,#122B4C 100%)}
-.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:180px;pointer-events:none;background:
-  radial-gradient(56% 130px at 64% 100%,rgba(0,229,255,.15),rgba(0,229,255,0) 70%)}
+/* contained floor bounce directly beneath the bay (background plane) */
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:200px;pointer-events:none;z-index:0;background:
+  radial-gradient(30% 110px at 68% 96%,rgba(0,229,255,.16),rgba(0,229,255,0) 72%)}
 .hero-env{position:absolute;inset:0;z-index:0;pointer-events:none}
 .hero-env canvas{position:absolute;inset:0;width:100%;height:100%}
-.hero-wrap{position:relative;z-index:1;width:min(100% - 96px,1440px);margin-inline:auto;display:grid;grid-template-columns:minmax(300px,400px) 1fr;align-items:center;column-gap:40px;padding:44px 0 68px}
+.hero-wrap{position:relative;z-index:1;width:min(100% - 96px,1440px);margin-inline:auto;display:grid;grid-template-columns:minmax(290px,378px) 1fr;align-items:center;column-gap:32px;padding:40px 0 56px}
 
 /* ---- Copy column — confident, engineered, compact ---- */
 .hero-copy{min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:0;z-index:2}
@@ -41,13 +44,22 @@
 .hero .button-primary:hover{filter:brightness(1.06)}
 .hero .button-outline-light{border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.03)}
 /* instrumentation detail beneath the actions */
-.hero-copy::after{content:"";margin-top:36px;width:100%;max-width:300px;height:1px;background:linear-gradient(90deg,rgba(0,229,255,.4),rgba(0,229,255,0))}
+.hero-copy::after{content:"";margin-top:30px;width:100%;max-width:300px;height:1px;background:linear-gradient(90deg,rgba(0,229,255,.4),rgba(0,229,255,0))}
 
-/* ---- Stage: tighter perspective + off-axis origin = cinematic 3/4 camera ---- */
-.cockpit-stage{position:relative;max-width:100%;perspective:1500px;perspective-origin:32% 30%;z-index:1;padding:20px 0 112px}
+/* ---- Stage: operator-facing camera; the bay is the dominant object and
+       is allowed a controlled bleed toward the right edge at wide
+       viewports (hero clips, so no page overflow) ---- */
+.cockpit-stage{position:relative;max-width:100%;perspective:1700px;perspective-origin:44% 38%;z-index:1;padding:12px 0 74px}
+@media (min-width:1500px){.cockpit-stage{margin-right:-52px}}
+/* FOREGROUND plane — atmospheric mist the bay stands behind; sits over the
+   stage only, so the copy column stays crisp */
+.cockpit-stage::after{content:"";position:absolute;left:-24%;right:-24%;bottom:-40px;height:200px;pointer-events:none;z-index:4;background:
+  linear-gradient(180deg,rgba(14,33,60,0) 0%,rgba(13,30,56,.30) 62%,rgba(12,27,50,.52) 100%);
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 18%,#000 82%,transparent 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 18%,#000 82%,transparent 100%)}
 
 /* oversized environmental type — spatial, not decorative */
-.env-type{position:absolute;right:-2%;top:-8px;z-index:0;pointer-events:none;user-select:none;font-family:Montserrat,Arial,sans-serif;font-weight:700;font-size:clamp(72px,7.5vw,116px);line-height:.92;letter-spacing:-0.05em;text-transform:uppercase;text-align:right;color:transparent;-webkit-text-stroke:1px rgba(159,196,214,.10)}
+.env-type{position:absolute;right:-1%;top:-40px;z-index:0;pointer-events:none;user-select:none;font-family:Montserrat,Arial,sans-serif;font-weight:700;font-size:clamp(72px,7.9vw,124px);line-height:.9;letter-spacing:-0.05em;text-transform:uppercase;text-align:right;color:transparent;-webkit-text-stroke:1px rgba(159,196,214,.13)}
 
 /* restrained continuum topology — evidence paths originating at the cockpit */
 .hero-topology{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;opacity:.9}
@@ -123,21 +135,23 @@
 
 /* environment contact: physical stage — contact shadow + underlight pool.
    The console is planted, not floating. */
-.monolith-underglow{position:absolute;left:0;right:0;bottom:-168px;height:56px;pointer-events:none;background:radial-gradient(52% 100% at 50% 0%,rgba(0,229,255,.30),rgba(0,229,255,.06) 55%,rgba(0,229,255,0) 80%);filter:blur(7px);z-index:0}
-.stage-shadow{position:absolute;left:4%;right:4%;bottom:-14px;height:132px;pointer-events:none;z-index:0;background:
-  radial-gradient(46% 34% at 47% 40%,rgba(2,8,16,.58),rgba(2,8,16,0) 72%),
-  radial-gradient(58% 46% at 48% 44%,rgba(2,8,16,.34),rgba(2,8,16,0) 76%),
-  radial-gradient(34% 18% at 47% 38%,rgba(0,229,255,.14),rgba(0,229,255,0) 70%)}
-.monolith-reflection{position:absolute;left:12%;right:12%;bottom:-58px;height:104px;overflow:hidden;pointer-events:none;z-index:0;opacity:.22;filter:blur(3px) saturate(1.05);-webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.7),transparent 72%);mask-image:linear-gradient(180deg,rgba(0,0,0,.7),transparent 72%)}
+.monolith-underglow{position:absolute;left:6%;right:6%;bottom:-46px;height:52px;pointer-events:none;background:radial-gradient(50% 100% at 50% 0%,rgba(0,229,255,.26),rgba(0,229,255,.05) 55%,rgba(0,229,255,0) 80%);filter:blur(8px);z-index:0}
+.stage-shadow{position:absolute;left:2%;right:2%;bottom:34px;height:130px;pointer-events:none;z-index:0;background:
+  radial-gradient(44% 30% at 50% 26%,rgba(2,8,16,.66),rgba(2,8,16,0) 72%),
+  radial-gradient(60% 46% at 50% 30%,rgba(2,8,16,.38),rgba(2,8,16,0) 76%),
+  radial-gradient(30% 14% at 50% 24%,rgba(0,229,255,.13),rgba(0,229,255,0) 70%)}
+.monolith-reflection{position:absolute;left:15%;right:15%;bottom:24px;height:88px;overflow:hidden;pointer-events:none;z-index:0;opacity:.16;filter:blur(4px) saturate(1.05);-webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.6),transparent 68%);mask-image:linear-gradient(180deg,rgba(0,0,0,.6),transparent 68%)}
 .monolith-reflection img{display:block;width:100%;height:auto;transform:scaleY(-1);transform-origin:top center}
 
 /* ---- Governed SAI label — physically tied to the console by node + leader ---- */
 .cockpit-callout{display:none}
 .sai-tag{display:none}
-@media (min-width:1400px){
-  .sai-tag{display:flex;align-items:center;position:absolute;right:-14px;bottom:168px;z-index:6}
-  .sai-node{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 3px rgba(0,229,255,.18),0 0 10px rgba(0,229,255,.7);flex:0 0 auto}
-  .sai-line{width:46px;height:1px;background:linear-gradient(90deg,rgba(0,229,255,.75),rgba(0,229,255,.25));flex:0 0 auto}
+@media (min-width:1180px){
+  /* anchored to the console's underside — node on the hardware, riser
+     down, plate clear of the governed UI */
+  .sai-tag{display:flex;flex-direction:column;align-items:flex-end;position:absolute;right:34px;bottom:2px;z-index:6}
+  .sai-node{width:7px;height:7px;margin-right:-3px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 3px rgba(0,229,255,.18),0 0 10px rgba(0,229,255,.7);flex:0 0 auto}
+  .sai-line{width:1px;height:26px;margin-right:0;background:linear-gradient(180deg,rgba(0,229,255,.75),rgba(0,229,255,.22));flex:0 0 auto}
   .sai-tag .cockpit-callout{display:block;position:static;font:600 10px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.12em;text-transform:uppercase;color:#CBE9F2;background:rgba(7,19,34,.7);border:1px solid rgba(0,229,255,.30);border-radius:6px;padding:8px 12px}
 }
 
