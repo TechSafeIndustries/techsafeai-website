@@ -136,12 +136,12 @@
 /* PRESENTATION ONLY — display gain on the governed capture so the panel
    reads as a lit screen. No content is altered, added or removed: every
    label, figure, badge and provenance line is the governed image. */
-.cockpit-crop img{display:block;width:100%;height:auto;filter:brightness(1.26) contrast(1.04) saturate(1.05)}
+.cockpit-crop img{display:block;width:100%;height:auto;filter:brightness(1.34) contrast(1.06) saturate(1.06)}
 .cockpit-reflection{display:none}
 /* smoked technical glass: one controlled low-opacity glare + reflected
    UI light — the governed UI stays fully readable */
 .screen-glass{position:absolute;inset:11px;border-radius:5px;pointer-events:none;z-index:3;background:
-  linear-gradient(118deg,rgba(255,255,255,.030) 0%,rgba(255,255,255,.009) 10%,rgba(255,255,255,0) 22%,rgba(255,255,255,0) 84%,rgba(0,229,255,.014) 100%)}
+  linear-gradient(118deg,rgba(255,255,255,.018) 0%,rgba(255,255,255,.006) 9%,rgba(255,255,255,0) 20%,rgba(255,255,255,0) 86%,rgba(0,229,255,.010) 100%)}
 .cockpit-caption{position:absolute;left:2px;bottom:-142px;font:600 9.5px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.10em;text-transform:uppercase;color:#7E97A6;z-index:6;transform:translateZ(24px)}
 
 /* strong lower console / chassis — controls, integrated TechSafeAI badge,
@@ -233,7 +233,7 @@
     0 0 0 4px rgba(255,255,255,.22),
     0 0 44px -6px rgba(0,229,255,.28)}
   .screen-glass{inset:6px}
-  .cockpit-crop img{filter:brightness(1.38) contrast(1.075) saturate(1.06)}
+  .cockpit-crop img{filter:brightness(1.46) contrast(1.08) saturate(1.07)}
   .bay-cowl{height:34px;border-radius:9px 9px 0 0}
   .monolith-plate{font-size:8.5px;letter-spacing:.20em;color:rgba(214,236,246,.92)}
   /* slim towers keep the bay silhouette without stealing display width */
