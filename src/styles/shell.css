@@ -3,7 +3,7 @@
 .skip-link:focus{transform:none}
 .shell{width:min(var(--max),calc(100% - 56px));margin-inline:auto}
 .eyebrow{font:700 11px/1.3 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.15em;text-transform:uppercase;color:var(--illum)}
-.section-light .eyebrow,.section-muted .eyebrow,.content-section .eyebrow{color:var(--navy-900)}
+.section-light .eyebrow,.section-muted .eyebrow,.content-section .eyebrow,.section-cool .eyebrow{color:var(--navy-900)}
 .section{padding:var(--space-10) 0}
 .section-dark{background:var(--atmo-dark);color:#fff}
 .section-light{background:var(--surface-0)}
