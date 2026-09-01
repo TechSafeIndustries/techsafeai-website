@@ -1,6 +1,7 @@
 ---
 import ContentPage from '../../components/ContentPage.astro';
 import Icon from '../../components/Icon.astro';
+import BrandMark from '../../components/BrandMark.astro';
 import { consultingServices } from '../../data/site';
 
 const stages = [
@@ -70,6 +71,31 @@ const evidenceThemes = [
   eyebrow="Human-led expertise"
   intro="Consultancy Services are first-class, not secondary. Human-led expertise, assurance, review and implementation support for high-risk operations."
 >
+  <Fragment slot="hero-graphic">
+    <!-- claude/94 — replaces the old dots/line/"Industrial Authority"
+         default panel on this page (the same generic graphic Product's
+         hero carried before claude/86). Reuses the graphite-housing +
+         smoked-glass construction technique already established for the
+         Product hero graphic and this page's own split zones — same
+         material tokens, fresh markup, no diagram/hub content copied.
+         Content is this page's own already-established headline
+         ("Evidence-led. Human review.", used verbatim below in the
+         evidence strip) plus the same four icons the evidence strip
+         uses — a compact preview of that section, not new copy. -->
+    <div class="gov-graphic">
+      <div class="gov-glass">
+        <span class="gov-title">Evidence-led.<br/>Human review.</span>
+        <span class="gov-seam" aria-hidden="true"></span>
+        <div class="gov-tiles">
+          <span class="gov-tile" aria-hidden="true"><Icon name="doc-check" size={18} /></span>
+          <span class="gov-tile" aria-hidden="true"><Icon name="person-check" size={18} /></span>
+          <span class="gov-tile" aria-hidden="true"><Icon name="seal-check" size={18} /></span>
+          <span class="gov-tile" aria-hidden="true"><Icon name="shield-check" size={18} /></span>
+          <div class="gov-hub" aria-hidden="true"><BrandMark size={26} compact={true} /></div>
+        </div>
+      </div>
+    </div>
+  </Fragment>
   <section class="content-section split-zone-section">
     <div class="shell">
       <div class="section-title"><div><div class="eyebrow">Ways to engage</div><h2>Two ways to work with TechSafeAI.</h2></div></div>
@@ -87,33 +113,30 @@ const evidenceThemes = [
         <div class="split-zone zone-consult">
           <div class="zone-kicker"><span class="zone-icon-tile" aria-hidden="true"><Icon name="person" size={16} /></span>{engagement.consult.title}</div>
           <p class="zone-copy">{engagement.consult.summary}</p>
-          <div class="zone-glass zone-glass-illustration">
-            <!-- Verbatim reuse of the homepage's existing consultancy
-                 illustration (src/pages/index.astro, .split-illustration,
-                 lines ~294-308) — an already-approved abstract line
-                 illustration, not a new asset. No photography asset for
-                 real field/industrial imagery exists in this repository;
-                 sourcing or generating one is outside this mission's
-                 authority (licensing/brand risk for photography, and
-                 project governance's "no synthetic proof" principle for
-                 anything generated) so this substitutes the existing
-                 approved illustration rather than fabricating a photo. -->
-            <svg class="zone-illustration" viewBox="0 0 260 200" aria-hidden="true">
-              <g stroke="rgba(111,206,251,.75)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M52 66a26 26 0 0152 0"/><path d="M48 66h60"/>
-                <circle cx="78" cy="86" r="16"/>
-                <path d="M50 160c2-32 12-46 28-46s26 14 28 46"/>
-                <path d="M150 46a24 24 0 0148 0"/><path d="M146 46h56"/>
-                <circle cx="174" cy="65" r="15"/>
-                <path d="M148 138c2-30 11-43 26-43s24 13 26 43"/>
-                <rect x="118" y="110" width="34" height="24" rx="3"/>
-                <path d="M106 118l12 4M152 120l14-6"/>
-              </g>
-              <g stroke="rgba(45,184,249,.30)" stroke-width="1.5" fill="none">
-                <path d="M20 176h220"/>
-              </g>
-            </svg>
+          <div class="zone-glass zone-glass-photo">
+            <!-- Real industrial/field photograph (claude/94), replacing
+                 the abstract illustration substituted in claude/93. This
+                 repository has no owned/client photography, so this is a
+                 stock photo — sourced from Unsplash (unsplash.com/photos/
+                 hfj5CG9dvuU, photographer John Kakuk, Unsplash License —
+                 free for commercial use, no attribution required),
+                 cropped to frame out the excavator's legible "CAT"
+                 equipment-brand wordmark (a small decal on the helmet in
+                 the original frame is illegible/incidental). Two workers
+                 shown from behind only — not identifiable individuals.
+                 This is a placeholder for real TechSafeAI/client
+                 photography, not a depiction of an actual engagement;
+                 alt text and the caption below say so explicitly. Saved
+                 at public/assets/stock/consulting-field-context.jpg. -->
+            <img
+              src="/assets/stock/consulting-field-context.jpg"
+              width="1150"
+              height="862"
+              alt="Representative stock photograph of field operators at an industrial site — not a depiction of an actual TechSafeAI engagement."
+              loading="lazy"
+            />
           </div>
+          <span class="zone-photo-notice">Representative field imagery — stock photograph.</span>
           <a class="zone-link" href="#service-areas">See service areas ↓</a>
         </div>
       </div>
@@ -150,7 +173,7 @@ const evidenceThemes = [
     </div>
   </section>
 
-  <section class="content-section" style="background:#e8e5dd">
+  <section class="content-section method-section">
     <div class="shell content-grid">
       <div>
         <div class="eyebrow">Consulting methodology</div>
@@ -278,6 +301,10 @@ const evidenceThemes = [
   .evidence-card h3{margin:0 0 6px;font-size:16px}
   .evidence-card p{margin:0;font-size:12.5px;color:var(--text-secondary);line-height:1.45}
 
+  .zone-glass-photo{padding:0;overflow:hidden}
+  .zone-glass-photo img{display:block;width:100%;height:100%;object-fit:cover;min-height:160px}
+  .zone-photo-notice{font-size:11px;color:#7E97A6;margin-top:-6px}
+
   @media (max-width:900px){
     .split-zones{grid-template-columns:1fr}
     .evidence-grid{grid-template-columns:repeat(2,1fr)}
@@ -286,4 +313,49 @@ const evidenceThemes = [
     .evidence-grid{grid-template-columns:1fr}
     .split-zone{padding:24px 20px}
   }
+
+  /* Consulting hero graphic (claude/94) — same housing/glass construction
+     as the split zones above and the locked Product hero graphic, fresh
+     class names (.gov-*) so nothing here touches product/index.astro.
+     Removes the shared legacy diagonal-line pseudo-element on this page's
+     panel only, exactly as the Product page does for its own graphic. */
+  :global(.technical-panel:has(.gov-graphic))::after{display:none}
+  .gov-graphic{position:relative;z-index:2;width:100%;height:100%;min-height:300px;
+    padding:16px;border-radius:6px;border:1px solid var(--graphite-edge);
+    background:var(--key-light),radial-gradient(160% 120% at 50% -20%,rgba(110,165,200,.07),transparent 62%),linear-gradient(180deg,var(--graphite-1) 0%,var(--graphite-2) 46%,var(--graphite-3) 100%);
+    box-shadow:var(--bevel-raised),inset 0 0 0 1px rgba(255,255,255,.06);
+    display:flex;align-items:center;justify-content:center}
+  .gov-glass{position:relative;width:100%;height:100%;border-radius:4px;
+    padding:22px 20px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+    background:radial-gradient(130% 100% at 50% -14%,rgba(255,255,255,.08),transparent 58%),linear-gradient(165deg,#1B222A 0%,#171C22 60%,#15191E 100%);
+    box-shadow:var(--bevel-recessed),inset 0 1px 0 rgba(255,255,255,.05)}
+  .gov-title{max-width:220px;text-align:center;font:700 15px/1.35 var(--mono-label-font,ui-monospace,monospace);letter-spacing:.02em;text-transform:none;color:#C7DAE3}
+  .gov-seam{width:34px;height:1px;background:linear-gradient(90deg,transparent,var(--illum-line),transparent)}
+  .gov-tiles{position:relative;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:16px;width:100%;max-width:190px}
+  .gov-tile{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:8px;
+    background:linear-gradient(180deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,0) 45%),var(--graphite-light-3);
+    border:1px solid var(--graphite-edge);color:#8FE3F5;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -3px 6px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.05)}
+  .gov-hub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:50px;height:50px;border-radius:50%;
+    background:radial-gradient(120% 120% at 34% 24%,rgba(255,255,255,.11),transparent 55%),var(--lvl0,#04090F);
+    display:flex;align-items:center;justify-content:center;box-shadow:var(--bevel-recessed-illum);z-index:2}
+  @media (max-width:520px){
+    .gov-tiles{max-width:160px;gap:12px}
+    .gov-hub{width:42px;height:42px}
+  }
+
+  /* Consulting methodology (claude/94) — Founder correction: the flat
+     beige section (#e8e5dd) was flagged as legacy styling that should
+     not remain dominant. Converted to the same var(--atmo-dark) steel-
+     blue/navy atmosphere the split section above uses; the light,
+     bevelled .method-panel from claude/92 is unchanged and now reads as
+     an instrument display lifted off a dark chassis, matching "stronger
+     depth". Left-column copy recoloured for contrast against the dark
+     background; the panel's own bevel is unchanged, plus one added
+     outer shadow so it visibly lifts off the darker section. */
+  .method-section{background:var(--atmo-dark)}
+  .method-section .eyebrow{color:var(--illum)}
+  .method-section .content-grid h2{color:#FFFFFF}
+  .method-section .content-grid > div:first-child p{color:#AABAC3}
+  .method-panel{box-shadow:var(--bevel-light-raised),0 24px 44px -24px rgba(2,8,16,.6)}
 </style>
