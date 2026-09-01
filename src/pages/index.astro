@@ -115,24 +115,29 @@ const industryLinks = [
             <circle class="tn" cx="852" cy="452" r="3.5"/>
           </g>
         </svg>
+        {/* Operational Intelligence Cockpit — instrument bay per the
+            Founder-LOCKED visual reference (1 Sep 2026). The governed UI is
+            the display content; the bay is the presentation system.
+            .laptop / .laptop-screen class names retained as JS hooks. */}
         <div class="laptop">
-          <span class="monolith-plate">Operational Intelligence Cockpit</span>
-          <i class="shell-back" aria-hidden="true"></i>
-          <i class="shell-side r" aria-hidden="true"></i>
-          <i class="shell-top" aria-hidden="true"></i>
-          <div class="laptop-screen">
-            <i class="laptop-cam" aria-hidden="true"></i>
-            <Cockpit />
-            <i class="screen-glass" aria-hidden="true"></i>
-            <span class="cockpit-mark" aria-hidden="true"><BrandMark size={15} compact={true} animated={true} /></span>
-            <i class="bezel-seam" aria-hidden="true"></i>
+          <div class="bay-cowl">
+            <span class="monolith-plate">Operational Intelligence Cockpit</span>
           </div>
-          <i class="laptop-hinge" aria-hidden="true"></i>
-          <div class="laptop-base" aria-hidden="true">
-            <i class="laptop-kb"></i>
-            <i class="laptop-pad"></i>
+          <div class="bay-frame">
+            <i class="bay-side l" aria-hidden="true"></i>
+            <i class="bay-side r" aria-hidden="true"></i>
+            <div class="laptop-screen">
+              <Cockpit />
+              <i class="screen-glass" aria-hidden="true"></i>
+            </div>
           </div>
-          <i class="deck-front" aria-hidden="true"></i>
+          <div class="bay-console">
+            <span class="bay-controls" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+            <span class="bay-badge" aria-hidden="true"><BrandMark size={16} compact={true} animated={true} /><span class="bay-badge-word">TechSafe<b>AI</b></span></span>
+            <span class="bay-status" aria-hidden="true"><i class="ln"></i><i class="ln"></i><i class="dot"></i></span>
+          </div>
+          <i class="bay-foot l" aria-hidden="true"></i>
+          <i class="bay-foot r" aria-hidden="true"></i>
           <div class="monolith-underglow" aria-hidden="true"></div>
         </div>
         <div class="stage-shadow" aria-hidden="true"></div>

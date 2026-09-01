@@ -54,7 +54,7 @@ export function mountHeroScene(gsap: typeof GSAP, _st: typeof ST): void {
         ' float line = smoothstep(0.055,0.010,min(g.x,g.y));' +
         ' float fade = smoothstep(0.0,0.42,vUv.y) * (1.0 - smoothstep(0.42,0.95,vUv.y));' +
         ' float cx = 1.0 - smoothstep(0.15,0.5,abs(vUv.x - 0.62));' +
-        ' gl_FragColor = vec4(uColor, line * fade * (0.012 + 0.04 * cx));' +
+        ' gl_FragColor = vec4(uColor, line * fade * (0.007 + 0.022 * cx));' +
         '}'
     })
   );

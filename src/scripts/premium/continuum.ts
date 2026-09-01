@@ -130,7 +130,6 @@ function buildSpine(gsap: Gsap, ScrollTrigger: STType, main: HTMLElement, opts: 
 function heroHandoff(gsap: Gsap, _st: STType): void {
   const laptop = document.querySelector<HTMLElement>('.laptop');
   if (!laptop) return;
-  const screen = laptop.querySelector<HTMLElement>('.laptop-screen');
   const copyKids = document.querySelectorAll('.hero-copy > *');
   const callout = document.querySelector('.sai-tag');
   const topology = document.querySelector<SVGSVGElement>('.hero-topology');
@@ -139,18 +138,17 @@ function heroHandoff(gsap: Gsap, _st: STType): void {
   const underglow = document.querySelector('.monolith-underglow');
   const reflection = document.querySelector('.monolith-reflection');
 
-  const BASE_Y = -20;
-  const BASE_X = 8;
-  const SCREEN_X = -2;
-  const sway = { y: 0 }; // idle rotation offset, composed with cursor rig
+  /* Operator-facing camera (Founder-locked cockpit reference): near-frontal,
+     stable and substantial. No idle sway, no showcase rotation. */
+  const BASE_Y = -6;
+  const BASE_X = 5;
 
-  /* Entrance (desktop): the laptop rises and its screen opens. */
+  /* Entrance (desktop): subtle rise + edge-light activation. */
   const staged = document.documentElement.classList.contains('hero-staged');
   if (staged) {
     (window as Window & { __heroEntranceRan?: boolean }).__heroEntranceRan = true;
     gsap.set(copyKids, { autoAlpha: 0, y: 16, filter: 'blur(4px)' });
-    gsap.set(laptop, { autoAlpha: 0, y: 52, rotationY: BASE_Y - 8, rotationX: BASE_X });
-    if (screen) gsap.set(screen, { rotationX: -68, transformOrigin: 'bottom center' });
+    gsap.set(laptop, { autoAlpha: 0, y: 34, rotationY: BASE_Y, rotationX: BASE_X });
     if (callout) gsap.set(callout, { autoAlpha: 0, y: 10 });
     if (envType) gsap.set(envType, { autoAlpha: 0, x: 24 });
     if (topology) {
@@ -162,31 +160,26 @@ function heroHandoff(gsap: Gsap, _st: STType): void {
       });
       gsap.set(topology.querySelectorAll('.tn'), { autoAlpha: 0, scale: 0.4, transformOrigin: '50% 50%' });
     }
-    if (ring) gsap.set(ring, { autoAlpha: 0, scale: 0.85 });
+    if (ring) gsap.set(ring, { autoAlpha: 0, scale: 0.92 });
     if (reflection) gsap.set(reflection, { autoAlpha: 0 });
     document.documentElement.classList.remove('hero-staged');
 
     const EXPO = 'expo.out';
     const tl = gsap.timeline({ defaults: { ease: EXPO } });
-    tl.to(laptop, { autoAlpha: 1, y: 0, rotationY: BASE_Y, duration: 1.2 }, 0.05);
+    tl.to(laptop, { autoAlpha: 1, y: 0, duration: 1.1 }, 0.05);
     if (ring) tl.to(ring, { autoAlpha: 1, scale: 1, duration: 1.0 }, 0.3);
-    if (screen) tl.to(screen, { rotationX: SCREEN_X, duration: 1.25, ease: 'power3.inOut' }, 0.4);
-    tl.to(laptop, { '--rim': '112%', duration: 1.0, ease: 'power2.inOut' }, 1.2)
+    tl.to(laptop, { '--rim': '112%', duration: 1.0, ease: 'power2.inOut' }, 0.9)
       .set(laptop, { '--rim': '-12%' }, '>')
       .to(laptop, { '--rim': '50%', duration: 0.8, ease: 'power2.out' }, '>');
     if (envType) tl.to(envType, { autoAlpha: 1, x: 0, duration: 1.2 }, 0.5);
     if (topology) {
-      tl.to(topology.querySelectorAll('.tp'), { strokeDashoffset: 0, duration: 1.0, stagger: 0.12, ease: 'power2.inOut' }, 1.1)
-        .to(topology.querySelectorAll('.tn'), { autoAlpha: 1, scale: 1, duration: 0.4, stagger: 0.1, ease: 'back.out(2)' }, 1.5);
+      tl.to(topology.querySelectorAll('.tp'), { strokeDashoffset: 0, duration: 1.0, stagger: 0.12, ease: 'power2.inOut' }, 1.0)
+        .to(topology.querySelectorAll('.tn'), { autoAlpha: 1, scale: 1, duration: 0.4, stagger: 0.1, ease: 'back.out(2)' }, 1.4);
     }
-    if (reflection) tl.to(reflection, { autoAlpha: 1, duration: 0.9 }, 1.3);
-    if (callout) tl.to(callout, { autoAlpha: 1, y: 0, duration: 0.6 }, 1.5);
+    if (reflection) tl.to(reflection, { autoAlpha: 1, duration: 0.9 }, 1.2);
+    if (callout) tl.to(callout, { autoAlpha: 1, y: 0, duration: 0.6 }, 1.4);
     tl.to(copyKids, { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 0.85, stagger: 0.14 }, 0.25);
   }
-
-  /* Continuous 3D rotation: a slow showcase sway (composed with the cursor
-     rig below via the shared sway offset). */
-  gsap.to(sway, { y: 5, duration: 6.5, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: staged ? 1.8 : 0 });
 
   /* Scroll: the laptop settles flatter and the glow dims into the seam. */
   const scroll = { p: 0 };
@@ -203,8 +196,9 @@ function heroHandoff(gsap: Gsap, _st: STType): void {
     });
   }
 
-  /* Cursor light-rig + composition loop: cursor, idle sway and scroll all
-     drive one transform so nothing fights (single writer per property). */
+  /* Cursor light-rig + composition loop: cursor and scroll drive one
+     transform (single writer per property). Very small camera-depth
+     response only — the bay stays stable and substantial. */
   const cursor = { x: 0, y: 0 };
   if (window.matchMedia('(pointer: fine)').matches) {
     window.addEventListener('pointermove', (e) => {
@@ -219,12 +213,12 @@ function heroHandoff(gsap: Gsap, _st: STType): void {
     eased.y += (cursor.y - eased.y) * 0.04;
     const flat = scroll.p;
     gsap.set(laptop, {
-      rotationY: (BASE_Y + sway.y + eased.x * 2.4) * (1 - flat * 0.75),
-      rotationX: (BASE_X + eased.y * -2.2) * (1 - flat * 0.6),
-      y: flat * -16,
-      scale: 1 - flat * 0.03
+      rotationY: (BASE_Y + eased.x * 1.1) * (1 - flat * 0.75),
+      rotationX: (BASE_X + eased.y * -1.0) * (1 - flat * 0.6),
+      y: flat * -14,
+      scale: 1 - flat * 0.02
     });
-    rimObj.v += (50 + eased.x * 34 - rimObj.v) * 0.06;
+    rimObj.v += (50 + eased.x * 30 - rimObj.v) * 0.06;
     laptop.style.setProperty('--rim', `${rimObj.v}%`);
   });
 }
